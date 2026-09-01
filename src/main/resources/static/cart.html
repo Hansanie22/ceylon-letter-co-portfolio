@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. – Your shopping cart. Review and complete your order.">
+  <title>Ceylon Letter Co. – Shopping Cart</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div class="cart-layout">
+
+    <!-- CART ITEMS -->
+    <div>
+      <h1 class="cart-page-title">Your Cart</h1>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:32px; margin-top:-16px;">Review your items and
+        proceed to checkout</p>
+
+      <div id="cart-items-container"></div>
+
+      <!-- Empty Cart State (hidden by default) -->
+      <div id="empty-cart" style="display:none; text-align:center; padding:80px 0;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(201, 169, 110, 0.1); margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(201, 169, 110, 0.15);">
+          <svg width="40" height="40" fill="none" stroke="var(--gold)" stroke-width="1.2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
+          </svg>
+        </div>
+        <h3 style="font-family:var(--font-display); font-size:20px; font-weight:600; margin-bottom:8px;">Your cart is
+          empty</h3>
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:24px;">Looks like you haven't added anything
+          yet.</p>
+        <a href="products.html" class="btn btn-primary">Start Shopping</a>
+      </div>
+
+      <!-- Coupon removed -->
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="cart-summary-box">
+      <h3 class="cart-summary-title">Order Summary</h3>
+
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="subtotal-val">Rs. 497.00</span>
+      </div>
+      <div class="summary-row">
+        <span>Shipping</span>
+        <span id="shipping-val">Rs. 400.00</span>
+      </div>
+      <div class="summary-row" id="discount-row" style="display:none;">
+        <span>Discount</span>
+        <span style="color:#2a6e2a;" id="discount-val">−Rs. 0.00</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span id="total-val">Rs. 536.76</span>
+      </div>
+
+      <a href="#" onclick="proceedToCheckout(event)" class="btn btn-primary cart-checkout-btn" id="checkout-btn">
+        Proceed to Checkout
+      </a>
+
+      <div style="text-align:center; margin-top:16px;">
+        <a href="products.html"
+          style="font-size:12px; color:var(--text-muted); text-decoration:underline; transition:color 0.2s;"
+          onmouseover="this.style.color='var(--black)'" onmouseout="this.style.color='var(--text-muted)'">← Continue
+          Shopping</a>
+      </div>
+
+      <!-- Payment Icons -->
+      <div style="border-top:1px solid var(--border); margin-top:20px; padding-top:16px;">
+        <p
+          style="font-size:11px; color:var(--text-muted); text-align:center; margin-bottom:10px; letter-spacing:0.06em;">
+          SECURE CHECKOUT</p>
+        <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+          <span
+            style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:4px; color:var(--text-muted); letter-spacing:0.06em;">VISA</span>
+          <span
+            style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:4px; color:var(--text-muted); letter-spacing:0.06em;">MASTERCARD</span>
+          <span
+            style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:4px; color:var(--text-muted); letter-spacing:0.06em;">PAYPAL</span>
+          <span
+            style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:4px; color:var(--text-muted); letter-spacing:0.06em;">AMEX</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end cart-layout -->
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+  <script>
+    // Current cart items (authoritative from backend)
+    let _cartItems = [];
+
+    async function renderCart() {
+      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      let items = null;
+
+      if (isLoggedIn) {
+        // ── Fetch live data from backend ─────────────────────────────────────
+        try {
+          const res = await fetch('api/cart?_t=' + new Date().getTime(), { credentials: 'same-origin', cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && Array.isArray(data.cart)) {
+              items = data.cart;
+              // Merge any local-only items not yet synced to backend
+              const appCart    = window.AppLoader ? window.AppLoader.cart : [];
+              const backendVIds = new Set(items.map(c => c.variantId));
+              const localOnly   = appCart.filter(c => c.variantId && !backendVIds.has(c.variantId));
+              if (localOnly.length > 0) items = [...items, ...localOnly];
+
+              // Keep AppLoader cache in sync
+              if (window.AppLoader) {
+                const prevStr = JSON.stringify(window.AppLoader.cart);
+                window.AppLoader.cart = items;
+                window.AppLoader._save('cart', items);
+                if (prevStr !== JSON.stringify(items)) window.AppLoader._updateBadges();
+              }
+            }
+          }
+        } catch (err) {
+          console.warn("[Cart] API fetch failed, falling back to cache:", err);
+        }
+      }
+
+      // ── Fallback: use sessionStorage cache if API unavailable or guest ──
+      if (items === null) {
+        items = window.AppLoader ? window.AppLoader.cart : [];
+      }
+
+      _cartItems = items; // save for remove / qty operations
+
+      if (items.length === 0) {
+        _showEmpty();
+        return;
+      }
+
+      _showItems(items);
+    }
+
+    function _showEmpty() {
+      _cartItems = [];
+      document.getElementById('cart-items-container').style.display = 'none';
+      document.getElementById('empty-cart').style.display = 'block';
+      document.getElementById('checkout-btn').style.opacity = '0.4';
+      document.getElementById('checkout-btn').style.pointerEvents = 'none';
+      document.getElementById('subtotal-val').textContent = 'Rs. 0.00';
+      document.getElementById('shipping-val').textContent = 'Rs. 0.00';
+      document.getElementById('total-val').textContent    = 'Rs. 0.00';
+    }
+
+    function _showItems(items) {
+      document.getElementById('empty-cart').style.display = 'none';
+      document.getElementById('cart-items-container').style.display = 'block';
+      document.getElementById('checkout-btn').style.opacity = '1';
+      document.getElementById('checkout-btn').style.pointerEvents = 'auto';
+
+      const container = document.getElementById('cart-items-container');
+      container.innerHTML = '';
+
+      let subtotal = 0;
+
+      items.forEach(item => {
+        const qty       = item.quantity || 1;
+        const price     = parseFloat(item.price) || 0;
+        const variantId = item.variantId || item.id;
+        subtotal += price * qty;
+
+        let variantText = [];
+        if (item.color)   variantText.push(`Color: ${item.color}`);
+        if (item.size) variantText.push(`Size/Length: ${item.size}`);
+        
+        let customText = [];
+        if (item.engravingText) customText.push(`Engraving: ${item.engravingText}`);
+        if (item.customResize) customText.push(`Resize: ${item.customResize}`);
+        const variantStr = variantText.join(', ');
+        const customStr = customText.join(', ');
+
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div class="cart-item-img">
+            <img src="${item.img || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80'}" alt="${item.name.replace(/"/g, '&quot;')}">
+          </div>
+          <div>
+            <a href="product-view.html?id=${item.id}" class="cart-item-name" style="text-decoration:none;">${item.name}</a>
+            <p class="cart-item-variant" style="margin-bottom:4px;">${variantStr}</p>
+            ${customStr ? `<p class="cart-item-variant" style="margin-bottom:12px; font-size:12px; color:var(--text-secondary);">Custom: ${customStr}</p>` : '<div style="margin-bottom:12px;"></div>'}
+            <div class="quantity-selector" style="width:fit-content;">
+              <button class="qty-btn" onclick="updateCartQty(${variantId}, -1)" aria-label="Decrease">−</button>
+              <span class="qty-value">${qty}</span>
+              <button class="qty-btn" onclick="updateCartQty(${variantId}, 1)" aria-label="Increase">+</button>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <p class="cart-item-price">Rs. ${(price * qty).toFixed(2)}</p>
+            <button class="cart-item-remove" onclick="removeCartItemUI(${variantId})">Remove</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      const shipping = 350.00;
+      document.getElementById('subtotal-val').textContent = 'Rs. ' + subtotal.toFixed(2);
+      document.getElementById('shipping-val').textContent = 'Rs. ' + shipping.toFixed(2);
+      document.getElementById('total-val').textContent    = 'Rs. ' + (subtotal + shipping).toFixed(2);
+    }
+
+    function updateCartQty(variantId, delta) {
+      // Update local cache first for instant UI response
+      const idx = _cartItems.findIndex(c => (c.variantId || c.id) === variantId);
+      if (idx === -1) return;
+
+      let currentQty = _cartItems[idx].quantity || 1;
+      let stock = _cartItems[idx].stock !== undefined ? _cartItems[idx].stock : 999;
+      let newQty = currentQty + delta;
+      
+      if (delta > 0 && newQty > 10) {
+        window.AppLoader?.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email ceylonletterco@gmail.com', 'warning');
+        return;
+      }
+      
+      if (newQty < 1) newQty = 1;
+
+      if (delta > 0 && newQty > stock) {
+        window.AppLoader?.showNotification(`Only ${stock} items left in stock.`, 'warning');
+        return;
+      }
+
+      if (newQty === _cartItems[idx].quantity) return;
+
+      _cartItems[idx].quantity = newQty;
+      if (window.AppLoader) {
+        window.AppLoader.cart = _cartItems;
+        window.AppLoader._save('cart', _cartItems);
+        window.AppLoader._updateBadges();
+      }
+
+      _showItems(_cartItems); // re-render with updated totals
+
+      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      if (isLoggedIn) {
+        // Send update to backend
+        fetch('api/cart', {
+          method: 'POST',
+          credentials: 'same-origin', cache: 'no-store',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'set', variantId: variantId, quantity: newQty })
+        })
+        .then(async res => {
+          const data = await res.json();
+          if (!data.success) {
+            window.AppLoader?.showNotification(data.message || 'Failed to update quantity', 'error');
+            renderCart(); // re-fetch / re-render to restore original state
+          }
+        })
+        .catch(err => {
+          console.error('Update qty error:', err);
+          renderCart();
+        });
+      }
+    }
+
+    function removeCartItemUI(variantId) {
+      const proceed = async () => {
+        // 1. Remove from local cache immediately (instant UI feedback)
+        _cartItems = _cartItems.filter(c => (c.variantId || c.id) !== variantId);
+        if (window.AppLoader) {
+          window.AppLoader.cart = _cartItems;
+          window.AppLoader._save('cart', _cartItems);
+          window.AppLoader._updateBadges();
+        }
+
+        if (_cartItems.length === 0) {
+          _showEmpty();
+        } else {
+          _showItems(_cartItems);
+        }
+
+        // 2. Remove from database — use variantId (authoritative from backend)
+        const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+        if (isLoggedIn) {
+          try {
+            const res = await fetch(`api/cart?variantId=${variantId}`, {
+              method: 'DELETE',
+              credentials: 'same-origin', cache: 'no-store'
+            });
+            if (!res.ok) {
+              console.error('[Cart] Remove failed:', await res.text());
+              window.AppLoader?.showNotification('Failed to remove item. Please try again.', 'error');
+              renderCart(); // re-fetch to restore correct state
+            }
+          } catch (err) {
+            console.error('[Cart] Remove request failed:', err);
+            renderCart(); // restore on network error
+          }
+        }
+      };
+      if (typeof window.showConfirmDialog === 'function') {
+        window.showConfirmDialog("Are you sure you want to remove this item from your cart?", proceed);
+      } else {
+        proceed();
+      }
+    }
+
+    function proceedToCheckout(e) {
+      e.preventDefault();
+      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      if (!isLoggedIn) {
+        if (window.AppLoader) {
+          window.AppLoader.showNotification('Please sign in to proceed to checkout', 'info');
+        }
+        setTimeout(() => {
+          const returnUrl = encodeURIComponent('checkout.html');
+          window.location.href = `login.html?returnUrl=${returnUrl}`;
+        }, 1500);
+      } else {
+        window.location.href = 'checkout.html';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(renderCart, 350);
+
+      window.addEventListener('cartUpdated', () => {
+        clearTimeout(window._cartRenderTimer);
+        window._cartRenderTimer = setTimeout(renderCart, 100);
+      });
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'techno_cart' || e.key === 'Ceylon Letter Co._user') {
+          setTimeout(renderCart, 100);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

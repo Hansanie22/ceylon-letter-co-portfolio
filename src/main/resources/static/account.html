@@ -1,0 +1,2635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    const _userStr = localStorage.getItem('Ceylon Letter Co._user') || sessionStorage.getItem('Ceylon Letter Co._user');
+    if (!_userStr) {
+      window.location.replace('login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search));
+    } else {
+      try {
+        const _u = JSON.parse(_userStr);
+        if (_u && _u.role && _u.role.toUpperCase() !== 'CUSTOMER') {
+          window.location.replace('admin.html');
+        }
+      } catch (_) {}
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. – My Account. Manage your profile, orders, and settings.">
+  <title>Ceylon Letter Co. – My Account</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    .account-panel {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .table-container-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .order-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin: 0;
+      table-layout: auto;
+    }
+    .order-table th {
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #78716c;
+      padding: 13px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.02);
+      white-space: nowrap;
+    }
+    .order-table td {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .order-table tr:last-child td { border-bottom: none; }
+    .order-table tr:hover td { background: rgba(0,0,0,0.015); }
+
+    .order-id-link {
+      color: var(--black);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .order-id-link:hover {
+      color: #b45309;
+      text-decoration: underline;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .status-delivered { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-shipped { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .status-processing { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .status-return-req { background: #fef08a; color: #854d0e; border: 1px solid #fef08a; }
+    .status-returned { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .status-cancelled { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
+
+    /* ── Responsive Card Mode for Tables on Mobile ── */
+    @media (max-width: 768px) {
+      .account-panel {
+        padding: 16px;
+        border-radius: 12px;
+      }
+      .table-container-wrap {
+        border: none;
+        background: transparent;
+      }
+      .order-table, .order-table tbody, .order-table tr, .order-table td {
+        display: block;
+        width: 100%;
+      }
+      .order-table thead {
+        display: none;
+      }
+      .order-table tr {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 14px;
+        padding: 14px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      }
+      .order-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+        font-size: 13px;
+      }
+      .order-table td:last-child {
+        border-bottom: none;
+        padding-top: 12px;
+        justify-content: flex-end;
+      }
+      .order-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #78716c;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    /* ── Luxury Order Action Pill Buttons ── */
+    .btn-order-action {
+      padding: 6px 14px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--border);
+      color: var(--black);
+      background: var(--surface);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-order-action:hover {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-order-action svg {
+      transition: transform 0.2s ease;
+    }
+    .btn-order-action:hover svg {
+      transform: translateX(2px);
+    }
+
+    /* ── Luxury Icon Action Buttons & Floating Tooltips ── */
+    .action-icon-group {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+    }
+
+    .btn-icon-action {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--black);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .btn-icon-action svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+    .btn-icon-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    }
+    .btn-icon-action:hover svg {
+      transform: scale(1.1);
+    }
+
+    .btn-icon-view {
+      border-color: var(--border);
+      color: var(--black);
+    }
+    .btn-icon-view:hover {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+    }
+
+    .btn-icon-review {
+      background: var(--black);
+      color: #f59e0b;
+      border-color: var(--black);
+    }
+    .btn-icon-review:hover {
+      background: #1c1917;
+      color: #fbbf24;
+      border-color: #1c1917;
+    }
+
+    .btn-icon-return {
+      border-color: #f59e0b;
+      background: #fffbe0;
+      color: #b45309;
+    }
+    .btn-icon-return:hover {
+      background: #fef3c7;
+      border-color: #d97706;
+      color: #92400e;
+    }
+
+    .btn-icon-warranty {
+      border-color: #8b5cf6;
+      background: #f5f3ff;
+      color: #6d28d9;
+    }
+    .btn-icon-warranty:hover {
+      background: #ede9fe;
+      border-color: #7c3aed;
+      color: #5b21b6;
+    }
+
+    .btn-icon-track {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .btn-icon-track:hover {
+      background: #dbeafe;
+      border-color: #2563eb;
+      color: #1e40af;
+    }
+
+    /* CSS Tooltip */
+    .btn-icon-action[data-tooltip]::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: #18181b;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      z-index: 100;
+    }
+    .btn-icon-action[data-tooltip]::after {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 1px);
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px 5px 0 5px;
+      border-style: solid;
+      border-color: #18181b transparent transparent transparent;
+      opacity: 0;
+      transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+    }
+    .btn-icon-action:hover::before {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+    .btn-icon-action:hover::after {
+      opacity: 1;
+    }
+
+    /* ── Review Cards Grid ── */
+    .my-reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .my-review-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    .my-review-card:hover {
+      border-color: #d6cbbf;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    }
+
+    .avatar-circle {
+      width: 72px;
+      height: 72px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 600;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* Camera overlay on the profile avatar */
+    .avatar-upload-wrap {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .avatar-upload-wrap:hover .avatar-camera-overlay {
+      opacity: 1;
+    }
+    .avatar-camera-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.52);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+      pointer-events: none;
+    }
+    .avatar-camera-overlay svg {
+      width: 26px;
+      height: 26px;
+      color: #fff;
+      stroke: #fff;
+    }
+    /* Upload progress ring */
+    .avatar-uploading .avatar-camera-overlay {
+      opacity: 1;
+      background: rgba(0,0,0,0.65);
+    }
+
+    .tab-sections { display: none; }
+    .tab-sections.active { display: block; }
+
+    .profile-header-wrap {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .account-nav {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+    .account-nav::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
+
+    @media (max-width: 768px) {
+      .account-panel {
+        padding: 20px;
+      }
+
+      /* Order Table Mobile Responsive Cards */
+      .order-table, 
+      .order-table thead, 
+      .order-table tbody, 
+      .order-table th, 
+      .order-table td, 
+      .order-table tr { 
+        display: block; 
+      }
+      
+      .order-table thead {
+        display: none; 
+      }
+      
+      .order-table tr {
+        margin-bottom: 16px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        background: var(--white);
+        box-shadow: var(--shadow-sm);
+      }
+      
+      .order-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-light);
+        font-size: 13px;
+        text-align: right;
+      }
+      
+      .order-table td:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-top: 10px;
+        padding-top: 12px;
+        justify-content: flex-end;
+      }
+
+      .order-table tr:hover td {
+        background: transparent; /* Disable hover effect on mobile card items */
+      }
+
+      .order-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        font-family: var(--font-body);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-align: left;
+      }
+
+      .order-table td:last-child::before {
+        content: none; /* Hide the 'Action' label for button row on mobile */
+      }
+
+      /* Center and block style empty order message */
+      .order-table td[colspan="6"] {
+        display: block;
+        text-align: center;
+        justify-content: center;
+        border-bottom: none;
+        padding: 32px 16px;
+      }
+      .order-table td[colspan="6"]::before {
+        content: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .profile-header-wrap {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+      }
+      .account-panel {
+        padding: 16px;
+        border-radius: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar injected by app.js -->
+
+<div class="account-layout">
+
+  <!-- SIDEBAR NAV -->
+  <aside class="account-sidebar">
+
+    <!-- Profile Card -->
+    <div class="sidebar-profile-card">
+      <div class="avatar-circle sidebar-avatar-circle" id="sidebar-avatar">?</div>
+      <div class="sidebar-profile-info">
+        <p class="sidebar-profile-name" id="sidebar-name">Loading…</p>
+        <p class="sidebar-profile-email" id="sidebar-email">—</p>
+      </div>
+    </div>
+
+    <nav class="account-nav" role="navigation" aria-label="Account navigation">
+      <a href="#" class="account-nav-item active" onclick="switchSection(event,'orders')" id="nav-orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        My Orders
+      </a>
+      <a href="#" class="account-nav-item" onclick="switchSection(event,'warranty')" id="nav-warranty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Warranty Claims
+      </a>
+      <a href="#" class="account-nav-item" onclick="switchSection(event,'returns')" id="nav-returns">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Returns &amp; Refunds
+      </a>
+      <a href="#" class="account-nav-item" onclick="switchSection(event,'reviews')" id="nav-reviews">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        My Reviews
+      </a>
+      <a href="#" class="account-nav-item" onclick="switchSection(event,'profile')" id="nav-profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        Profile Settings
+      </a>
+      <a href="wishlist.html" class="account-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+        Wishlist
+      </a>
+      <a href="#" class="account-nav-item" onclick="switchSection(event,'addresses')" id="nav-addresses">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+        Addresses
+      </a>
+      <a href="#" class="account-nav-item" onclick="switchSection(event,'security')" id="nav-security">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+        Security
+      </a>
+      <a href="#" class="account-nav-item" id="sign-out-link" onclick="signOut(event)" style="color:var(--text-muted); margin-top:16px; border-top:1px solid var(--border); padding-top:16px; border-radius:0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+        Sign Out
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ACCOUNT CONTENT -->
+  <main class="account-content">
+
+    <!-- ORDERS SECTION -->
+    <div class="tab-sections active" id="section-orders">
+      <h2 class="account-section-title">My Orders</h2>
+      <div class="account-panel">
+        <div class="table-container-wrap">
+          <table class="order-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th style="text-align:right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Order ID"><a href="#" onclick="openOrderDetailsModal('#CLC-00245'); return false;" class="order-id-link">#CLC-00245</a></td>
+                <td data-label="Date" style="white-space:nowrap; color:var(--text-muted); font-size:12.5px;">Jun 12, 2026</td>
+                <td data-label="Items" style="font-size:12.5px; font-weight:500;">2 items</td>
+                <td data-label="Total" style="font-weight:700; color:var(--black); white-space:nowrap;">Rs. 497.00</td>
+                <td data-label="Status"><span class="status-badge status-delivered">Delivered</span></td>
+                <td data-label="Action" style="text-align:right; white-space:nowrap;">
+                  <button class="btn-order-action" onclick="openOrderDetailsModal('#CLC-00245')">
+                    <span>View Order</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Order ID"><a href="#" onclick="openOrderDetailsModal('#CLC-00231'); return false;" class="order-id-link">#CLC-00231</a></td>
+                <td data-label="Date" style="white-space:nowrap; color:var(--text-muted); font-size:12.5px;">May 28, 2026</td>
+                <td data-label="Items" style="font-size:12.5px; font-weight:500;">1 item</td>
+                <td data-label="Total" style="font-weight:700; color:var(--black); white-space:nowrap;">Rs. 329.00</td>
+                <td data-label="Status"><span class="status-badge status-shipped">Shipped</span></td>
+                <td data-label="Action" style="text-align:right; white-space:nowrap;">
+                  <button class="btn-order-action" onclick="openOrderDetailsModal('#CLC-00231')">
+                    <span>View Order</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Order ID"><a href="#" onclick="openOrderDetailsModal('#CLC-00218'); return false;" class="order-id-link">#CLC-00218</a></td>
+                <td data-label="Date" style="white-space:nowrap; color:var(--text-muted); font-size:12.5px;">May 10, 2026</td>
+                <td data-label="Items" style="font-size:12.5px; font-weight:500;">3 items</td>
+                <td data-label="Total" style="font-weight:700; color:var(--black); white-space:nowrap;">Rs. 1,547.00</td>
+                <td data-label="Status"><span class="status-badge status-delivered">Delivered</span></td>
+                <td data-label="Action" style="text-align:right; white-space:nowrap;">
+                  <button class="btn-order-action" onclick="openOrderDetailsModal('#CLC-00218')">
+                    <span>View Order</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Order ID"><a href="#" onclick="openOrderDetailsModal('#CLC-00203'); return false;" class="order-id-link">#CLC-00203</a></td>
+                <td data-label="Date" style="white-space:nowrap; color:var(--text-muted); font-size:12.5px;">Apr 22, 2026</td>
+                <td data-label="Items" style="font-size:12.5px; font-weight:500;">1 item</td>
+                <td data-label="Total" style="font-weight:700; color:var(--black); white-space:nowrap;">Rs. 199.00</td>
+                <td data-label="Status"><span class="status-badge status-processing">Processing</span></td>
+                <td data-label="Action" style="text-align:right; white-space:nowrap;">
+                  <button class="btn-order-action" onclick="openOrderDetailsModal('#CLC-00203')">
+                    <span>View Order</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- WARRANTY CLAIMS SECTION -->
+    <div class="tab-sections" id="section-warranty">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 class="account-section-title" style="margin-bottom:4px;">Warranty Claims</h2>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;">Track official Anti-Tarnish &amp; Durability warranty claims for your jewellery orders.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="switchSection(event,'orders')" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Claim from Delivered Orders
+        </button>
+      </div>
+
+      <div class="account-panel">
+        <div class="table-container-wrap">
+          <table class="order-table" id="warranty-claims-table">
+            <thead>
+              <tr>
+                <th>Claim ID</th>
+                <th>Date</th>
+                <th>Order</th>
+                <th>Product</th>
+                <th>Issue Reason</th>
+                <th>Status</th>
+                <th style="text-align:right;">Details</th>
+              </tr>
+            </thead>
+            <tbody id="warranty-claims-tbody">
+              <tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">Loading warranty claims...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RETURNS & REFUNDS SECTION -->
+    <div class="tab-sections" id="section-returns">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 class="account-section-title" style="margin-bottom:4px;">Returns &amp; Refunds</h2>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;">Manage and track product return requests and refund updates.</p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="switchSection(event,'orders')" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Request from Delivered Orders
+        </button>
+      </div>
+
+      <div class="account-panel">
+        <div class="table-container-wrap">
+          <table class="order-table" id="returns-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Return Reason</th>
+                <th>Status</th>
+                <th style="text-align:right;">Track</th>
+              </tr>
+            </thead>
+            <tbody id="returns-tbody">
+              <tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">Loading return requests...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS SECTION -->
+    <div class="tab-sections" id="section-reviews">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 class="account-section-title" style="margin-bottom:4px;">My Reviews</h2>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;">All verified product ratings and feedback published by you.</p>
+        </div>
+        <a href="products.html" class="btn btn-primary btn-sm" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Explore More Jewellery
+        </a>
+      </div>
+
+      <div id="my-reviews-container">
+        <div style="text-align:center; padding:40px; color:var(--text-muted); background:var(--white); border-radius:12px; border:1px solid var(--border);">
+          Loading your reviews...
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div class="tab-sections" id="section-profile">
+      <h2 class="account-section-title">Profile Settings</h2>
+      <div class="account-panel">
+        <div class="profile-header-wrap">
+          <!-- Clickable avatar with camera overlay -->
+          <div class="avatar-upload-wrap" id="avatar-upload-wrap" onclick="document.getElementById('avatar-file-input').click()" title="Click to change photo">
+            <div class="avatar-circle" id="profile-avatar">?</div>
+            <div class="avatar-camera-overlay">
+              <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/>
+              </svg>
+            </div>
+          </div>
+          <!-- Hidden file input -->
+          <input type="file" id="avatar-file-input" accept="image/jpeg,image/png,image/webp,image/gif"
+            style="display:none;" onchange="uploadAvatar(this)">
+          <div>
+            <p style="font-family:var(--font-display); font-size:18px; font-weight:600; color:var(--black); margin-bottom:4px;" id="profile-fullname">Loading…</p>
+            <p style="font-size:13px; color:var(--text-muted); margin:0;" id="profile-member-since">Member since —</p>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">Click the photo to upload (JPG / PNG / WebP • max 5 MB)</p>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="pf-first">First Name</label><input type="text" id="pf-first" value=""></div>
+          <div class="form-group"><label for="pf-last">Last Name</label><input type="text" id="pf-last" value=""></div>
+        </div>
+        <div class="form-group"><label for="pf-email">Email Address</label><input type="email" id="pf-email" value=""></div>
+        <div class="form-group"><label for="pf-phone">Phone Number</label><input type="tel" id="pf-phone" placeholder="Not set"></div>
+        <div class="form-group"><label for="pf-dob">Date of Birth</label><input type="date" id="pf-dob" value=""></div>
+        <button class="btn btn-primary" id="save-profile-btn" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- ADDRESSES SECTION -->
+    <div class="tab-sections" id="section-addresses">
+      <h2 class="account-section-title">Saved Addresses</h2>
+      <div id="addresses-grid">
+        <!-- Dynamically loaded address cards go here -->
+        <div class="account-panel" id="add-address-card" onclick="openAddressModal()" style="border-style:dashed; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; transition:all 0.2s; min-height:180px;" onmouseover="this.style.borderColor='var(--black)'" onmouseout="this.style.borderColor='var(--border)'">
+          <svg width="32" height="32" fill="none" stroke="var(--gray-300)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px;" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          <p style="font-size:13px; font-weight:600; color:var(--text-muted); margin:0;">Add New Address</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY SECTION -->
+    <div class="tab-sections" id="section-security">
+      <h2 class="account-section-title">Security</h2>
+      <div class="account-panel">
+        <h4 style="font-family:var(--font-display); font-size:16px; font-weight:600; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">Change Password</h4>
+        <div class="form-group"><label for="curr-pass">Current Password</label><input type="password" id="curr-pass" placeholder="••••••••"></div>
+        <div class="form-group"><label for="new-pass">New Password</label><input type="password" id="new-pass" placeholder="••••••••"></div>
+        <div class="form-group"><label for="conf-pass">Confirm New Password</label><input type="password" id="conf-pass" placeholder="••••••••"></div>
+        <button class="btn btn-primary" id="change-pw-btn" onclick="changePassword()">Update Password</button>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- ADDRESS MODAL -->
+<div id="address-modal" class="modal-overlay">
+  <div class="modal-dialog" style="max-width: 480px;">
+    
+    <button onclick="closeAddressModal()" style="position: absolute; top: 20px; right: 20px; color: var(--text-muted); cursor: pointer; background: none; border: none; padding: 4px; display: inline-flex; align-items: center; justify-content: center;">
+      <svg style="width:20px;height:20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    
+    <h3 style="font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em;" id="address-modal-title">Add New Address</h3>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Please fill in the details below.</p>
+    
+    <form id="address-form" onsubmit="saveAddress(event)" novalidate>
+      <input type="hidden" id="address-id" value="">
+      
+      <!-- Label -->
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="address-label">Address Label</label>
+        <select id="address-label" style="width: 100%; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; background-color: var(--white);">
+          <option value="Home">Home</option>
+          <option value="Work">Work</option>
+          <option value="Office">Office</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- Line 1 -->
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="address-line1">Address Line 1</label>
+        <input type="text" id="address-line1" placeholder="Street name, building/house number" required>
+      </div>
+
+      <!-- Line 2 -->
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="address-line2">Address Line 2 (Optional)</label>
+        <input type="text" id="address-line2" placeholder="Apartment, suite, unit, etc.">
+      </div>
+
+      <!-- City and Postal Code -->
+      <div class="form-row">
+        <div class="form-group"><label for="address-city">City</label><input type="text" id="address-city" placeholder="Colombo" required></div>
+        <div class="form-group"><label for="address-postal">Postal Code</label><input type="text" id="address-postal" placeholder="00100" required></div>
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- GPS Autofill Button -->
+        <button type="button" class="btn btn-outline" id="gps-autofill-btn" onclick="autofillLocation()" style="justify-content: center; width: 100%; gap: 8px;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" style="width: 16px; height: 16px;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+          </svg>
+          Use Current Location
+        </button>
+        
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+          <button type="submit" class="btn btn-primary" id="address-submit-btn" style="flex: 1; justify-content: center;">Save Address</button>
+          <button type="button" class="btn btn-outline" onclick="closeAddressModal()" style="flex: 1; justify-content: center;">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div id="review-modal" class="modal-overlay">
+  <div class="modal-dialog" style="max-width: 460px;">
+    
+    <button onclick="closeReviewModal()" style="position: absolute; top: 20px; right: 20px; color: var(--text-muted); cursor: pointer; background: none; border: none; padding: 4px; display: inline-flex; align-items: center; justify-content: center;">
+      <svg style="width:20px;height:20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    
+    <h3 style="font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em;">Write a Review</h3>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Share your experience with order <span id="modal-order-id" style="color: var(--black); font-weight: 600;"></span></p>
+    
+    <form id="review-form" onsubmit="submitReview(event)" novalidate>
+      <!-- Stars -->
+      <div class="form-group">
+        <label>Rating</label>
+        <div style="display: flex; gap: 6px; font-size: 28px; color: var(--gray-300); margin: 8px 0;" id="modal-stars-container">
+          <span class="modal-star" onclick="setModalRating(1)" style="cursor: pointer; transition: color 0.15s; display:inline-flex; align-items:center;">
+            <svg style="width:24px;height:24px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </span>
+          <span class="modal-star" onclick="setModalRating(2)" style="cursor: pointer; transition: color 0.15s; display:inline-flex; align-items:center;">
+            <svg style="width:24px;height:24px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </span>
+          <span class="modal-star" onclick="setModalRating(3)" style="cursor: pointer; transition: color 0.15s; display:inline-flex; align-items:center;">
+            <svg style="width:24px;height:24px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </span>
+          <span class="modal-star" onclick="setModalRating(4)" style="cursor: pointer; transition: color 0.15s; display:inline-flex; align-items:center;">
+            <svg style="width:24px;height:24px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </span>
+          <span class="modal-star" onclick="setModalRating(5)" style="cursor: pointer; transition: color 0.15s; display:inline-flex; align-items:center;">
+            <svg style="width:24px;height:24px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </span>
+        </div>
+      </div>
+      
+      <!-- Review Comments -->
+      <div class="form-group" style="margin-top: 16px;">
+        <label for="review-comments">Your Review</label>
+        <textarea id="review-comments" placeholder="Write your comments here..." style="min-height: 120px; resize: vertical;" required></textarea>
+      </div>
+      
+      <div style="display: flex; gap: 12px; margin-top: 28px;">
+        <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center;">Submit Review</button>
+        <button type="button" class="btn btn-outline" onclick="closeReviewModal()" style="flex: 1; justify-content: center;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .modal-star.selected {
+    color: var(--black) !important;
+  }
+  .timeline-dot.completed {
+    background: var(--black) !important;
+    box-shadow: 0 0 0 2px var(--black) !important;
+  }
+  .step-title.completed {
+    color: var(--black) !important;
+  }
+  .timeline-dot.active-step {
+    background: #4a9a4a !important;
+    box-shadow: 0 0 0 2px #4a9a4a !important;
+  }
+  .step-title.active-step {
+    color: #4a9a4a !important;
+  }
+</style>
+
+<!-- ORDER DETAILS MODAL -->
+<div id="order-details-modal" class="modal-overlay">
+  <div class="modal-dialog" style="max-width: 560px; max-height: 90vh; overflow-y: auto;">
+    
+    <button onclick="closeOrderDetailsModal()" style="position: absolute; top: 20px; right: 20px; color: var(--text-muted); cursor: pointer; background: none; border: none; padding: 4px; display: inline-flex; align-items: center; justify-content: center;">
+      <svg style="width:20px;height:20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding-right: 28px;">
+      <h3 style="font-family: var(--font-display); font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin:0;">Order Details</h3>
+      <span id="detail-order-status-badge"></span>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">ID: <span id="detail-order-id" style="color: var(--black); font-weight: 600;"></span> | Date: <span id="detail-order-date"></span></p>
+    
+    <!-- Items container -->
+    <div id="detail-items-container" style="max-height: 220px; overflow-y: auto; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+      <!-- Dynamic list -->
+    </div>
+
+    <!-- Shipping Address & Recipient Card -->
+    <div id="detail-shipping-card" style="display: none; background: var(--gray-50); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; font-size: 12px; text-align: left;">
+      <!-- Dynamic address -->
+    </div>
+    
+    <!-- Financial Breakdown Card -->
+    <div id="detail-financial-card" style="background: var(--gray-50); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 13px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; color:var(--text-secondary);">
+        <span>Subtotal</span><span id="detail-subtotal">Rs. 0.00</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; color:var(--text-secondary);">
+        <span>Shipping</span><span id="detail-shipping" style="font-weight:500; color:var(--black);">Rs. 0.00</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-weight:700; font-size:15px; border-top:1.5px solid var(--border); padding-top:10px; margin-top:8px; color:var(--black);">
+        <span>Total Amount</span><span id="detail-total">Rs. 0.00</span>
+      </div>
+
+      <div id="detail-deposit-breakdown" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);">
+        <!-- Deposit details -->
+      </div>
+
+      <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border);">
+        <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Payment Status</span>
+        <span id="detail-payment-status-badge"></span>
+      </div>
+    </div>
+    
+    <div id="detail-modal-actions-container" style="display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap;">
+      <button type="button" id="detail-track-btn" class="btn btn-primary" style="flex: 1; justify-content: center;">Track Order</button>
+      <button type="button" class="btn btn-outline" onclick="closeOrderDetailsModal()" style="flex: 1; justify-content: center;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER TRACKING MODAL -->
+<div id="order-tracking-modal" class="modal-overlay">
+  <div class="modal-dialog" style="max-width: 460px;">
+    
+    <button onclick="closeOrderTrackingModal()" style="position: absolute; top: 20px; right: 20px; color: var(--text-muted); cursor: pointer; background: none; border: none; padding: 4px; display: inline-flex; align-items: center; justify-content: center;">
+      <svg style="width:20px;height:20px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    
+    <h3 id="tracking-modal-title" style="font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em;">Track Shipment</h3>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">ID: <span id="tracking-order-id" style="color: var(--black); font-weight: 600;"></span></p>
+    
+    <div style="position: relative; padding-left: 32px; display: flex; flex-direction: column; gap: 24px;" id="tracking-timeline">
+      <div style="position: absolute; left: 9px; top: 12px; bottom: 12px; width: 2px; background: var(--taupe-light); z-index: 1;" id="timeline-line"></div>
+      <!-- Steps loaded dynamically -->
+    </div>
+    
+    <div style="display: flex; gap: 12px; margin-top: 32px;">
+      <button type="button" class="btn btn-primary" onclick="closeOrderTrackingModal()" style="flex: 1; justify-content: center;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer injected by app.js -->
+<script>window.deferGlobalLoader = true;</script>
+<script src="js/app.js"></script>
+<script>
+  function accountToast(msg, type = 'info') {
+    if (window.AppLoader && typeof window.AppLoader.showNotification === 'function') {
+      window.AppLoader.showNotification(msg, type);
+    } else {
+      let toastBox = document.getElementById('accountToastContainer');
+      if (!toastBox) {
+        toastBox = document.createElement('div');
+        toastBox.id = 'accountToastContainer';
+        toastBox.style.cssText = 'position:fixed;top:24px;right:24px;z-index:99999;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:400px;';
+        document.body.appendChild(toastBox);
+      }
+      const toast = document.createElement('div');
+      let bg = '#1e293b';
+      let icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+      if (type === 'success') {
+        bg = '#065f46';
+        icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20 6L9 17l-5-5"/></svg>';
+      } else if (type === 'error') {
+        bg = '#991b1b';
+        icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+      } else if (type === 'warning') {
+        bg = '#92400e';
+        icon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+      }
+
+      toast.style.cssText = `background:${bg};color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,0.25);pointer-events:auto;display:flex;align-items:center;gap:10px;`;
+      toast.innerHTML = `<span style="display:flex;align-items:center;">${icon}</span><span>${msg}</span>`;
+      toastBox.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+  }
+
+  let currentUser = null;
+  let userFullName = '';
+
+  /* ── Load logged-in user data from the server session ── */
+
+    // --- WebSocket Notifications ---
+    function connectUserWebSocket(userId) {
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${wsProtocol}//${window.location.host}${window.location.pathname.replace('/account.html', '')}/ws/notifications?userId=${userId}`;
+      const ws = new WebSocket(wsUrl);
+      ws.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        window.AppLoader?.showNotification(data.message, 'info');
+        loadUserOrders(); // Auto-refresh orders
+        if (typeof fetchNotifications === 'function') fetchNotifications();
+      };
+      ws.onclose = function() {
+        setTimeout(() => connectUserWebSocket(userId), 5000); // Reconnect
+      };
+    }
+
+  async function loadUserProfile() {
+    try {
+      const res = await fetch('api/auth/me', { credentials: 'same-origin', cache: 'no-store' });
+
+      if (res.status === 401) {
+        // Not logged in – redirect to login page
+        localStorage.removeItem('Ceylon Letter Co._user');
+        sessionStorage.removeItem('Ceylon Letter Co._user');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const data = await res.json();
+      if (!data.success) {
+        localStorage.removeItem('Ceylon Letter Co._user');
+        sessionStorage.removeItem('Ceylon Letter Co._user');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      currentUser = data;
+      window.currentUser = data;
+      userFullName = data.fullName || '';
+
+      // ── Sidebar Card ──
+      const sidebarAvatar = document.getElementById('sidebar-avatar');
+      const sidebarName   = document.getElementById('sidebar-name');
+      const sidebarEmail  = document.getElementById('sidebar-email');
+      if (sidebarAvatar) setAvatarContent(sidebarAvatar, data.profileImageUrl, data.initials);
+      if (sidebarName)   sidebarName.textContent   = data.fullName || '';
+      if (sidebarEmail)  sidebarEmail.textContent  = data.email    || '';
+
+      // ── Profile Section Header ──
+      const profileAvatar     = document.getElementById('profile-avatar');
+      const profileFullname   = document.getElementById('profile-fullname');
+      const profileMemberSince = document.getElementById('profile-member-since');
+      if (profileAvatar)      setAvatarContent(profileAvatar,      data.profileImageUrl, data.initials);
+      if (profileFullname)    profileFullname.textContent    = data.fullName || '';
+      if (profileMemberSince) profileMemberSince.textContent =
+        data.memberSince ? 'Member since ' + data.memberSince : 'Member since —';
+
+      // ── Profile Form Fields ──
+      const pfFirst = document.getElementById('pf-first');
+      const pfLast  = document.getElementById('pf-last');
+      const pfEmail = document.getElementById('pf-email');
+      const pfPhone = document.getElementById('pf-phone');
+      const pfDob   = document.getElementById('pf-dob');
+      if (pfFirst) pfFirst.value = data.firstName || '';
+      if (pfLast)  pfLast.value  = data.lastName  || '';
+      if (pfEmail) pfEmail.value = data.email      || '';
+      if (pfPhone && data.phone) pfPhone.value = data.phone;
+      if (pfDob   && data.dob)   pfDob.value   = data.dob;
+
+      // ── Address Card ──
+      const addrName = document.getElementById('address-name');
+      if (addrName) addrName.textContent = data.fullName || '';
+
+      // Load user saved addresses
+      loadUserAddresses();
+
+    } catch (err) {
+      console.error('[Account] Failed to load user profile:', err);
+    }
+  }
+
+  /* ── Sign out: invalidate server session then go to login ── */
+  function signOut(e) {
+    if (e) e.preventDefault();
+    if(window.showConfirmDialog) {
+        window.showConfirmDialog("Are you sure you want to sign out?", async () => {
+            sessionStorage.removeItem('Ceylon Letter Co._user');
+            sessionStorage.removeItem('techno_cart');
+            sessionStorage.removeItem('techno_wishlist');
+            try {
+              await fetch('api/auth/logout', {
+                method: 'POST',
+                credentials: 'same-origin', cache: 'no-store'
+              });
+            } catch (_) { /* ignore network errors */ }
+            window.location.href = 'login.html';
+        });
+    }
+  }
+
+  /* ── Avatar helpers ── */
+
+  /**
+   * Set the content of an .avatar-circle to either an <img> (if imageUrl
+   * is set) or the text initials fallback.
+   */
+  function setAvatarContent(el, imageUrl, initials) {
+    if (imageUrl) {
+      el.innerHTML = `<img src="${imageUrl}" alt="Profile photo" draggable="false">`;
+      el.style.background = 'transparent';
+    } else {
+      el.textContent = initials || '?';
+      el.style.background = '';
+    }
+  }
+
+  /** Apply the same image to every avatar on the page. */
+  function applyAvatarEverywhere(imageUrl, initials) {
+    const ids = ['sidebar-avatar', 'profile-avatar'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) setAvatarContent(el, imageUrl, initials);
+    });
+  }
+
+  /* ── Avatar upload ── */
+  async function uploadAvatar(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Client-side size guard
+    if (file.size > 5 * 1024 * 1024) {
+      window.AppLoader?.showNotification('Image must be smaller than 5 MB.', 'error');
+      input.value = '';
+      return;
+    }
+
+    // Instant local preview
+    const reader = new FileReader();
+    reader.onload = e => applyAvatarEverywhere(e.target.result, null);
+    reader.readAsDataURL(file);
+
+    // Show uploading state
+    const wrap = document.getElementById('avatar-upload-wrap');
+    wrap?.classList.add('avatar-uploading');
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      const res  = await fetch('api/auth/upload-avatar', {
+        method: 'POST',
+        credentials: 'same-origin', cache: 'no-store',
+        body: formData   // No Content-Type header – browser sets multipart boundary automatically
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        // Replace the blob preview with the server-side URL (with cache-bust)
+        applyAvatarEverywhere(data.imageUrl, null);
+        window.AppLoader?.showNotification('Profile photo updated!');
+      } else {
+        window.AppLoader?.showNotification(data.message || 'Upload failed.', 'error');
+        // Revert to initials on failure
+        const stored = JSON.parse(sessionStorage.getItem('Ceylon Letter Co._user') || '{}');
+        applyAvatarEverywhere(null, stored.initials || '?');
+      }
+    } catch (err) {
+      console.error('[Account] uploadAvatar error:', err);
+      window.AppLoader?.showNotification('Network error during upload.', 'error');
+    } finally {
+      wrap?.classList.remove('avatar-uploading');
+      input.value = ''; // allow re-selecting same file
+    }
+  }
+
+  /* ── Save profile to database ── */
+  async function saveProfile() {
+    const btn = document.getElementById('save-profile-btn');
+    const firstName = (document.getElementById('pf-first')?.value || '').trim();
+    const lastName  = (document.getElementById('pf-last')?.value  || '').trim();
+    const phone     = (document.getElementById('pf-phone')?.value || '').trim();
+    const dob       = (document.getElementById('pf-dob')?.value   || '').trim();
+
+    const fullName = (firstName + ' ' + lastName).trim();
+    if (!fullName) {
+      window.AppLoader?.showNotification('Full name cannot be empty.', 'error');
+      return;
+    }
+
+    if (dob) {
+      const selectedDate = new Date(dob);
+      const today = new Date();
+      if (selectedDate > today) {
+        window.AppLoader?.showNotification('Date of birth cannot be a future date.', 'error');
+        return;
+      }
+    }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+    try {
+      const res  = await fetch('api/auth/me', {
+        method: 'PUT',
+        credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, phone, dob })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        window.AppLoader?.showNotification('Profile updated successfully!');
+        userFullName = data.fullName || '';
+        // Refresh displayed name / initials
+        const sidebarAvatar  = document.getElementById('sidebar-avatar');
+        const sidebarName    = document.getElementById('sidebar-name');
+        const profileAvatar  = document.getElementById('profile-avatar');
+        const profileFull    = document.getElementById('profile-fullname');
+        const addrName       = document.getElementById('address-name');
+        if (sidebarAvatar) sidebarAvatar.textContent = data.initials || '?';
+        if (sidebarName)   sidebarName.textContent   = data.fullName || '';
+        if (profileAvatar) profileAvatar.textContent = data.initials || '?';
+        if (profileFull)   profileFull.textContent   = data.fullName || '';
+        if (addrName)      addrName.textContent      = data.fullName || '';
+
+        // Re-render addresses with the new name
+        renderAddresses();
+      } else {
+        window.AppLoader?.showNotification(data.message || 'Update failed.', 'error');
+      }
+    } catch (err) {
+      console.error('[Account] saveProfile error:', err);
+      window.AppLoader?.showNotification('Network error. Please try again.', 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Save Changes'; }
+    }
+  }
+
+  /* ── Change password ── */
+  async function changePassword() {
+    const btn        = document.getElementById('change-pw-btn');
+    const currentPw  = document.getElementById('curr-pass')?.value  || '';
+    const newPw      = document.getElementById('new-pass')?.value    || '';
+    const confirmPw  = document.getElementById('conf-pass')?.value   || '';
+
+    if (!currentPw || !newPw || !confirmPw) {
+      window.AppLoader?.showNotification('Please fill in all password fields.', 'warning');
+      return;
+    }
+    if (newPw.length < 8) {
+      window.AppLoader?.showNotification('New password must be at least 8 characters.', 'error');
+      return;
+    }
+    if (newPw !== confirmPw) {
+      window.AppLoader?.showNotification('New passwords do not match.', 'error');
+      return;
+    }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Updating…'; }
+
+    try {
+      const res  = await fetch('api/auth/change-password', {
+        method: 'POST',
+        credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw, confirmPassword: confirmPw })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        window.AppLoader?.showNotification('Password changed successfully!');
+        // Clear the fields
+        document.getElementById('curr-pass').value  = '';
+        document.getElementById('new-pass').value   = '';
+        document.getElementById('conf-pass').value  = '';
+      } else {
+        window.AppLoader?.showNotification(data.message || 'Password change failed.', 'error');
+      }
+    } catch (err) {
+      console.error('[Account] changePassword error:', err);
+      window.AppLoader?.showNotification('Network error. Please try again.', 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Update Password'; }
+    }
+  }
+
+  // Saved addresses list cache
+  let savedAddressesList = [];
+
+  /* ── Load user addresses from the server ── */
+  async function loadUserAddresses() {
+    try {
+      const res = await fetch('api/addresses', { credentials: 'same-origin', cache: 'no-store' });
+      const data = await res.json();
+
+      if (data.success) {
+        // Filter out temporary checkout addresses — these are internal and should not be shown to the user
+        savedAddressesList = (data.addresses || []).filter(a =>
+          (a.addressLabel || '').trim().toUpperCase() !== 'CHECKOUT TEMP'
+        );
+        renderAddresses();
+      } else {
+        console.error('[Addresses] Failed to load:', data.message);
+      }
+    } catch (err) {
+      console.error('[Addresses] Failed to load user addresses:', err);
+    }
+  }
+
+  /* ── Render address cards ── */
+  function renderAddresses() {
+    const grid = document.getElementById('addresses-grid');
+    if (!grid) return;
+
+    // Clear old dynamic cards (everything except the "+ Add New Address" card)
+    const cards = grid.querySelectorAll('.account-panel:not(#add-address-card)');
+    cards.forEach(c => c.remove());
+
+    const addCard = document.getElementById('add-address-card');
+
+    savedAddressesList.forEach((addr, idx) => {
+      const isDefault = idx === 0; // treat first address as default for presentation
+      const card = document.createElement('div');
+      card.className = 'account-panel';
+      card.style.position = 'relative';
+      card.innerHTML = `
+        ${isDefault ? '<span style="position:absolute; top:16px; right:16px; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; background:var(--black); color:var(--white); padding:3px 8px; border-radius:4px;">Default</span>' : ''}
+        <p style="font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px;">${addr.addressLabel || 'Home'}</p>
+        <p style="font-size:14px; font-weight:600; color:var(--black); margin-bottom:4px; font-family:var(--font-display);">${userFullName}</p>
+        <p style="font-size:13px; color:var(--text-secondary); line-height:1.8; margin-bottom:16px;">
+          ${addr.addressLine1}${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}<br>
+          ${addr.city} ${addr.postalCode}<br>
+          Sri Lanka
+        </p>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="openAddressModal(${addr.id})">Edit</button>
+          <button class="btn btn-sm" onclick="deleteAddress(${addr.id})" style="border:1.5px solid var(--border); color:var(--text-secondary); background:transparent;">Remove</button>
+        </div>
+      `;
+      grid.insertBefore(card, addCard);
+    });
+  }
+
+  /* ── Open address modal for add or edit ── */
+  function openAddressModal(addressId = null) {
+    const modal = document.getElementById('address-modal');
+    const form  = document.getElementById('address-form');
+    const title = document.getElementById('address-modal-title');
+    if (!modal || !form) return;
+
+    form.reset();
+    document.getElementById('address-id').value = '';
+
+    if (addressId) {
+      title.textContent = 'Edit Address';
+      const addr = savedAddressesList.find(a => a.id === addressId);
+      if (addr) {
+        document.getElementById('address-id').value    = addr.id;
+        document.getElementById('address-label').value = addr.addressLabel || 'Home';
+        document.getElementById('address-line1').value = addr.addressLine1 || '';
+        document.getElementById('address-line2').value = addr.addressLine2 || '';
+        document.getElementById('address-city').value  = addr.city || '';
+        document.getElementById('address-postal').value = addr.postalCode || '';
+      }
+    } else {
+      title.textContent = 'Add New Address';
+    }
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  /* ── Close address modal ── */
+  function closeAddressModal() {
+    const modal = document.getElementById('address-modal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
+
+  /* ── Save or update address via API ── */
+  async function saveAddress(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('address-submit-btn');
+    const origTxt = submitBtn ? submitBtn.textContent : '';
+
+    const id         = document.getElementById('address-id').value;
+    const label      = document.getElementById('address-label').value;
+    const line1      = (document.getElementById('address-line1').value || '').trim();
+    const line2      = (document.getElementById('address-line2').value || '').trim();
+    const city       = (document.getElementById('address-city').value  || '').trim();
+    const postalCode = (document.getElementById('address-postal').value || '').trim();
+
+    if (!line1 || !city || !postalCode) {
+      window.AppLoader?.showNotification('Please fill in all required fields.', 'warning');
+      return;
+    }
+
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Saving…'; }
+
+    const isEdit = id !== '';
+    const url = isEdit ? `api/addresses/${id}` : 'api/addresses';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(url, {
+        method: method,
+        credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          addressLabel: label,
+          addressLine1: line1,
+          addressLine2: line2,
+          city: city,
+          postalCode: postalCode
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        window.AppLoader?.showNotification(data.message || 'Address saved successfully!');
+        closeAddressModal();
+        loadUserAddresses();
+      } else {
+        window.AppLoader?.showNotification(data.message || 'Failed to save address.', 'error');
+      }
+    } catch (err) {
+      console.error('[Addresses] saveAddress error:', err);
+      window.AppLoader?.showNotification('Network error. Please try again.', 'error');
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = origTxt; }
+    }
+  }
+
+  /* ── Delete address via API ── */
+  async function deleteAddress(addressId) {
+    const action = async () => {
+      try {
+        const res = await fetch(`api/addresses/${addressId}`, {
+          method: 'DELETE',
+          credentials: 'same-origin', cache: 'no-store'
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          window.AppLoader?.showNotification('Address removed successfully!');
+          loadUserAddresses();
+        } else {
+          window.AppLoader?.showNotification(data.message || 'Failed to remove address.', 'error');
+        }
+      } catch (err) {
+        console.error('[Addresses] deleteAddress error:', err);
+        window.AppLoader?.showNotification('Network error. Please try again.', 'error');
+      }
+    };
+
+    if (typeof window.showConfirmDialog === 'function') {
+      window.showConfirmDialog('Are you sure you want to remove this address?', action);
+    } else {
+      action();
+    }
+  }
+
+  /* ── Autofill current location using Geolocation + Nominatim API ── */
+  function autofillLocation() {
+    const btn = document.getElementById('gps-autofill-btn');
+    const origTxt = btn ? btn.innerHTML : '';
+
+    if (!navigator.geolocation) {
+      window.AppLoader?.showNotification('Geolocation is not supported by your browser.', 'error');
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px; height:16px; animation: spin 1s linear infinite; display:inline-block; vertical-align:middle; margin-right:4px;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+        Locating…
+      `;
+    }
+
+    // CSS animation inline injection for keyframe spin if not present
+    if (!document.getElementById('spin-keyframe-style')) {
+      const style = document.createElement('style');
+      style.id = 'spin-keyframe-style';
+      style.textContent = `
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async position => {
+        const { latitude, longitude } = position.coords;
+        try {
+          // OpenStreetMap Nominatim reverse geocoding API
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`, {
+            headers: { 'Accept-Language': 'en' }
+          });
+          const data = await res.json();
+
+          if (data && data.address) {
+            const addr = data.address;
+            
+            // Build line 1: e.g. "24 Galle Road"
+            const house = addr.house_number || '';
+            const road = addr.road || addr.suburb || addr.neighbourhood || '';
+            const line1 = (house + ' ' + road).trim() || data.display_name.split(',')[0];
+
+            // Build line 2: e.g. "Kollupitiya"
+            const line2 = addr.suburb || addr.neighbourhood || addr.village || '';
+
+            // City
+            const city = addr.city || addr.town || addr.suburb || addr.state_district || 'Colombo';
+
+            // Postal Code
+            const postalCode = addr.postcode || '';
+
+            // Fill inputs
+            document.getElementById('address-line1').value = line1;
+            document.getElementById('address-line2').value = line2;
+            document.getElementById('address-city').value  = city;
+            document.getElementById('address-postal').value = postalCode;
+
+            window.AppLoader?.showNotification('Address fields populated from current location!', 'success');
+          } else {
+            window.AppLoader?.showNotification('Could not resolve address details.', 'error');
+          }
+        } catch (err) {
+          console.error('[Geolocation] reverse geocoding error:', err);
+          window.AppLoader?.showNotification('Failed to fetch address details from GPS.', 'error');
+        } finally {
+          if (btn) { btn.disabled = false; btn.innerHTML = origTxt; }
+        }
+      },
+      error => {
+        console.error('[Geolocation] error:', error);
+        let msg = 'Could not retrieve your location.';
+        if (error.code === error.PERMISSION_DENIED) {
+          msg = 'Permission denied. Please allow location access in your browser.';
+        }
+        window.AppLoader?.showNotification(msg, 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = origTxt; }
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }
+
+  // Run on DOM ready
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      await Promise.all([loadUserProfile(), loadUserOrders()]);
+      const params = new URLSearchParams(window.location.search);
+      const sec = params.get('section');
+      if (sec && document.getElementById('section-' + sec)) {
+        const navEl = document.getElementById('nav-' + sec);
+        if (navEl) navEl.click();
+      }
+    } finally {
+      document.body.classList.add('loaded');
+    }
+  });
+</script>
+<script>
+  let selectedRating = 0;
+  let userOrdersList = [];
+  let userWarrantyClaimsList = [];
+  let userReviewsList = [];
+
+  function switchSection(e, sectionId) {
+    if (e && e.preventDefault) e.preventDefault();
+    document.querySelectorAll('.tab-sections').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.account-nav-item').forEach(n => n.classList.remove('active'));
+    
+    const targetSection = document.getElementById('section-' + sectionId);
+    if (targetSection) targetSection.classList.add('active');
+    
+    const navLink = document.getElementById('nav-' + sectionId);
+    if (navLink) navLink.classList.add('active');
+    else if (e && e.currentTarget) e.currentTarget.classList.add('active');
+
+    // Trigger dynamic data loader
+    if (sectionId === 'warranty') loadUserWarrantyClaims();
+    else if (sectionId === 'returns') loadUserReturns();
+    else if (sectionId === 'reviews') loadUserReviews();
+    else if (sectionId === 'orders') loadUserOrders();
+  }
+
+  /* ── 1. WARRANTY CLAIMS TRACKER ── */
+  async function loadUserWarrantyClaims() {
+    const tbody = document.getElementById('warranty-claims-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">Loading warranty claims...</td></tr>`;
+
+    try {
+      const res = await fetch('api/warranty-claims/my', { credentials: 'same-origin', cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && data.claims) {
+        userWarrantyClaimsList = data.claims;
+        renderWarrantyClaimsTable();
+      } else {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">${data.message || 'No warranty claims found.'}</td></tr>`;
+      }
+    } catch (err) {
+      console.error('[Warranty] Failed to load:', err);
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px; color:#ef4444;">Failed to load warranty claims. Please try again.</td></tr>`;
+    }
+  }
+
+  function renderWarrantyClaimsTable() {
+    const tbody = document.getElementById('warranty-claims-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (!userWarrantyClaimsList || userWarrantyClaimsList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; padding:40px 20px; color:var(--text-muted); font-family:var(--font-display);">
+            <div style="font-size:15px; font-weight:600; color:var(--black); margin-bottom:6px;">No Warranty Claims Filed Yet</div>
+            <p style="font-size:13px; margin:0 0 16px; color:var(--text-muted);">You can file a warranty claim for any delivered jewellery order with active anti-tarnish guarantee.</p>
+            <button class="btn btn-primary btn-sm" onclick="switchSection(event,'orders')">Go to My Orders</button>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    userWarrantyClaimsList.forEach(c => {
+      let stBadge = '';
+      const st = (c.claimStatus || 'PENDING_REVIEW').toUpperCase();
+      if (st === 'PENDING_REVIEW') {
+        stBadge = `<span style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.04em;">Under Review</span>`;
+      } else if (st === 'ONGOING' || st === 'PROCESSING') {
+        stBadge = `<span style="background:#dbeafe; color:#1d4ed8; border:1px solid #bfdbfe; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.04em;">Processing</span>`;
+      } else if (st === 'WARRANTY_CLAIMED' || st === 'APPROVED' || st === 'RESOLVED') {
+        stBadge = `<span style="background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.04em;">Approved</span>`;
+      } else if (st === 'REJECTED' || st === 'DECLINED') {
+        stBadge = `<span style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.04em;">Declined</span>`;
+      } else {
+        stBadge = `<span class="status-badge status-processing">${st}</span>`;
+      }
+
+      const dateStr = c.createdAt ? c.createdAt.substring(0, 10) : '—';
+      const orderLabel = (c.orderType === 'POS' ? '#POS-' : '#CLC-') + String(c.orderId).padStart(5, '0');
+
+      tbody.innerHTML += `
+        <tr>
+          <td data-label="Claim ID" style="font-weight:700; font-family:var(--font-display); color:var(--black);">#CLM-${String(c.id).padStart(5, '0')}</td>
+          <td data-label="Date" style="white-space:nowrap; color:var(--text-muted); font-size:12.5px;">${dateStr}</td>
+          <td data-label="Order"><span style="font-weight:600; color:var(--black);">${orderLabel}</span></td>
+          <td data-label="Product" style="font-weight:600; color:var(--black); font-size:13px;">${c.productName || 'Jewellery Item'}</td>
+          <td data-label="Issue Reason" style="font-size:12.5px; color:var(--text-secondary); max-width:220px; white-space:normal; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; word-break:break-word;" title="${c.claimReason || ''}">${c.claimReason || '—'}</td>
+          <td data-label="Status">${stBadge}</td>
+          <td data-label="Details" style="text-align:right; white-space:nowrap;">
+            <button class="btn-order-action" onclick="openWarrantyClaimDetailsModal(${c.id})">
+              <span>View Claim</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  function openWarrantyClaimDetailsModal(claimId) {
+    const claim = userWarrantyClaimsList.find(c => c.id === claimId);
+    if (!claim) return;
+
+    const existing = document.getElementById('claimDetailModal');
+    if (existing) existing.remove();
+
+    const dateStr = claim.createdAt ? claim.createdAt.substring(0, 10) : '—';
+    const orderLabel = (claim.orderType === 'POS' ? '#POS-' : '#CLC-') + String(claim.orderId).padStart(5, '0');
+
+    const modal = document.createElement('div');
+    modal.id = 'claimDetailModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+    modal.innerHTML = `
+      <div style="background:var(--white);border-radius:16px;padding:28px;width:90%;max-width:480px;border:1px solid var(--border);box-shadow:0 25px 60px rgba(0,0,0,0.3);position:relative;max-height:90vh;overflow-y:auto;">
+        <button onclick="document.getElementById('claimDetailModal').remove()" style="position:absolute;top:20px;right:20px;background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;display:flex;align-items:center;">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="background:rgba(139,92,246,0.12);color:#7c3aed;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;text-transform:uppercase;">Warranty Claim</span>
+          <span style="font-size:12px;color:var(--text-muted);">${dateStr}</span>
+        </div>
+        <h3 style="margin:0 0 16px;font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--black);">#CLM-${String(claim.id).padStart(5, '0')}</h3>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;background:var(--surface);padding:14px;border-radius:10px;border:1px solid var(--border);">
+          <div>
+            <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:600;display:block;">Order</span>
+            <strong style="font-size:13px;color:var(--black);">${orderLabel}</strong>
+          </div>
+          <div>
+            <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:600;display:block;">Status</span>
+            <strong style="font-size:13px;color:#b45309;">${claim.claimStatus || 'PENDING_REVIEW'}</strong>
+          </div>
+          <div style="grid-column:span 2;">
+            <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:600;display:block;">Product Name</span>
+            <strong style="font-size:13.5px;color:var(--black);">${claim.productName || 'Jewellery Item'}</strong>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="font-size:12px;font-weight:700;color:var(--black);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;">Issue Details</label>
+          <div style="background:rgba(0,0,0,0.02);padding:12px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;color:var(--text-secondary);line-height:1.5;">
+            ${claim.claimReason || 'No details provided.'}
+          </div>
+        </div>
+
+        ${claim.proofImageUrl ? `
+          <div style="margin-bottom:20px;">
+            <label style="font-size:12px;font-weight:700;color:var(--black);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;">Uploaded Photo Proof</label>
+            <a href="${claim.proofImageUrl}" target="_blank" style="display:block;border-radius:8px;overflow:hidden;border:1px solid var(--border);max-height:200px;">
+              <img src="${claim.proofImageUrl}" alt="Warranty Proof" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+            </a>
+          </div>
+        ` : ''}
+
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn btn-primary btn-sm" onclick="document.getElementById('claimDetailModal').remove()">Close</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  /* ── 2. RETURNS & REFUNDS TRACKER ── */
+  function loadUserReturns() {
+    const tbody = document.getElementById('returns-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const returnOrders = userOrdersList.filter(o => o.orderStatus === 'RETURN_REQUESTED' || o.orderStatus === 'RETURNED' || (o.returnReason && o.returnReason.length > 0));
+
+    if (!returnOrders || returnOrders.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; padding:40px 20px; color:var(--text-muted); font-family:var(--font-display);">
+            <div style="font-size:15px; font-weight:600; color:var(--black); margin-bottom:6px;">No Return Requests</div>
+            <p style="font-size:13px; margin:0 0 16px; color:var(--text-muted);">You haven't requested returns on any delivered orders.</p>
+            <button class="btn btn-primary btn-sm" onclick="switchSection(event,'orders')">Go to My Orders</button>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    returnOrders.forEach(o => {
+      let stBadge = '';
+      if (o.orderStatus === 'RETURNED') {
+        stBadge = `<span class="status-badge status-returned">Returned &amp; Refunded</span>`;
+      } else {
+        stBadge = `<span class="status-badge status-return-req">Return Requested</span>`;
+      }
+
+      tbody.innerHTML += `
+        <tr>
+          <td data-label="Order ID"><a href="#" onclick="openOrderDetailsModal(${o.id}); return false;" class="order-id-link">#CLC-${String(o.id).padStart(5, '0')}</a></td>
+          <td data-label="Date" style="white-space:nowrap; color:var(--text-muted); font-size:12.5px;">${o.date}</td>
+          <td data-label="Items" style="font-size:12.5px; font-weight:500;">${o.itemsCount} item${o.itemsCount > 1 ? 's' : ''}</td>
+          <td data-label="Total" style="font-weight:700; color:var(--black); white-space:nowrap;">Rs. ${parseFloat(o.total).toFixed(2)}</td>
+          <td data-label="Return Reason" style="font-size:12.5px; color:var(--text-secondary); max-width:200px; white-space:normal; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; word-break:break-word;" title="${o.returnReason || ''}">${o.returnReason || 'Product Return'}</td>
+          <td data-label="Status">${stBadge}</td>
+          <td data-label="Track" style="text-align:right; white-space:nowrap;">
+            <button class="btn-order-action" onclick="openOrderTrackingModal(${o.id})">
+              <span>Track Return</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  /* ── 3. MY REVIEWS & FEEDBACK ── */
+  async function loadUserReviews() {
+    const container = document.getElementById('my-reviews-container');
+    if (!container) return;
+    container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted); background:var(--white); border-radius:12px; border:1px solid var(--border);">Loading your reviews...</div>`;
+
+    try {
+      const res = await fetch('api/reviews/my', { credentials: 'same-origin', cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && data.reviews) {
+        userReviewsList = data.reviews;
+        renderUserReviewsGrid();
+      } else {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted); background:var(--white); border-radius:12px; border:1px solid var(--border);">${data.message || 'No reviews found.'}</div>`;
+      }
+    } catch (err) {
+      console.error('[Reviews] Failed to load:', err);
+      container.innerHTML = `<div style="text-align:center; padding:40px; color:#ef4444; background:var(--white); border-radius:12px; border:1px solid var(--border);">Failed to load reviews. Please try again.</div>`;
+    }
+  }
+
+  function renderUserReviewsGrid() {
+    const container = document.getElementById('my-reviews-container');
+    if (!container) return;
+
+    if (!userReviewsList || userReviewsList.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:48px 20px; background:var(--white); border-radius:12px; border:1px solid var(--border); font-family:var(--font-display);">
+          <div style="font-size:16px; font-weight:600; color:var(--black); margin-bottom:6px;">No Reviews Published Yet</div>
+          <p style="font-size:13px; color:var(--text-muted); margin:0 0 20px;">Share your feedback and star ratings on your purchased jewellery items.</p>
+          <button class="btn btn-primary btn-sm" onclick="switchSection(event,'orders')">Go to Delivered Orders</button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="my-reviews-grid">
+        ${userReviewsList.map(r => {
+          const starSvg = `<svg style="width:16px;height:16px;color:#f59e0b;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+          const emptyStarSvg = `<svg style="width:16px;height:16px;color:#e5e7eb;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+          
+          let starsHtml = '';
+          for (let i = 1; i <= 5; i++) {
+            starsHtml += (i <= r.rating) ? starSvg : emptyStarSvg;
+          }
+
+          const variantDetails = [r.metalColor, r.sizeLength].filter(Boolean).join(' • ');
+
+          return `
+            <div class="my-review-card">
+              <div>
+                <div style="display:flex; gap:12px; margin-bottom:14px;">
+                  ${r.imageUrl ? `<img src="${r.imageUrl}" alt="${r.productName}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--border);flex-shrink:0;"/>` : ''}
+                  <div>
+                    <h4 style="margin:0 0 2px; font-size:14px; font-weight:700; color:var(--black); font-family:var(--font-display);">${r.productName || 'Jewellery Product'}</h4>
+                    ${variantDetails ? `<span style="font-size:11.5px; color:var(--text-muted); display:block; margin-bottom:4px;">${variantDetails}</span>` : ''}
+                    <div style="display:flex; align-items:center; gap:3px;">
+                      ${starsHtml}
+                      <span style="font-size:11.5px; font-weight:700; color:var(--black); margin-left:4px;">${r.rating}.0</span>
+                    </div>
+                  </div>
+                </div>
+                <p style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin:0 0 14px; font-style:italic;">
+                  "${r.comment || 'Verified purchase'}"
+                </p>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:12px; margin-top:10px;">
+                <span style="font-size:11.5px; color:var(--text-muted);">${r.date}</span>
+                <div style="display:flex; gap:8px;">
+                  <a href="product-view.html?id=${r.productId}" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:11px; text-decoration:none;">View</a>
+                  <button class="btn btn-outline btn-sm" onclick="deleteUserReview(${r.id})" style="padding:4px 10px; font-size:11px; color:#dc2626; border-color:#fca5a5;">Delete</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  async function deleteUserReview(reviewId) {
+    if (!confirm('Are you sure you want to delete this review?')) return;
+
+    try {
+      const res = await fetch(`api/reviews/${reviewId}`, { method: 'DELETE', credentials: 'same-origin' });
+      const data = await res.json();
+      if (data.success) {
+        accountToast('Review deleted successfully.', 'success');
+        loadUserReviews();
+      } else {
+        accountToast(data.message || 'Failed to delete review.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      accountToast('Error deleting review: ' + err.message, 'error');
+    }
+  }
+
+  function openReviewModal(orderId) {
+    document.getElementById('modal-order-id').textContent = '#CLC-' + String(orderId).padStart(5, '0');
+    document.getElementById('review-modal').setAttribute('data-order-id', orderId);
+    document.getElementById('review-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    setModalRating(5); // Default to 5 stars
+  }
+
+  function closeReviewModal() {
+    document.getElementById('review-modal').style.display = 'none';
+    document.getElementById('review-comments').value = '';
+    selectedRating = 0;
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
+
+  function setModalRating(rating) {
+    selectedRating = rating;
+    const stars = document.querySelectorAll('.modal-star');
+    stars.forEach((star, idx) => {
+      if (idx < rating) {
+        star.classList.add('selected');
+      } else {
+        star.classList.remove('selected');
+      }
+    });
+  }
+
+  async function submitReview(e) {
+    e.preventDefault();
+    const rawOrderId = document.getElementById('review-modal').getAttribute('data-order-id');
+    const cleanOrderId = String(rawOrderId).replace(/[^0-9]/g, '');
+    const commentEl = document.getElementById('review-comments');
+    const comment = commentEl.value.trim();
+    const rating = selectedRating || 5;
+
+    // Reset border
+    commentEl.style.borderColor = 'var(--border)';
+
+    if (!comment || comment.length < 3) {
+      commentEl.style.borderColor = '#ef4444';
+      commentEl.focus();
+      accountToast('Please write a short review comment sharing your experience.', 'warning');
+      return;
+    }
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.textContent = 'Submitting Review...';
+      submitBtn.disabled = true;
+    }
+
+    try {
+      // Find first item in the order to review (Review entity links to variant)
+      const res = await fetch(`api/orders/${cleanOrderId}`, { credentials: 'same-origin', cache: 'no-store' });
+      const order = await res.json();
+      if (!order.success || !order.items || order.items.length === 0) {
+        accountToast('Order items not found for review.', 'error');
+        if (submitBtn) { submitBtn.textContent = 'Submit Review'; submitBtn.disabled = false; }
+        return;
+      }
+
+      const firstItem = order.items[0];
+
+      const reviewRes = await fetch('api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          variantId: firstItem.variantId,
+          productId: firstItem.productId,
+          rating: rating,
+          comment: comment
+        })
+      });
+      const data = await reviewRes.json();
+
+      if (data.success) {
+        accountToast('Review submitted successfully! Thank you for your feedback.', 'success');
+        closeReviewModal();
+      } else {
+        accountToast(data.message || 'Failed to submit review.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      accountToast('Network error. Failed to submit review.', 'error');
+    } finally {
+      if (submitBtn) { submitBtn.textContent = 'Submit Review'; submitBtn.disabled = false; }
+    }
+  }
+
+  async function loadUserOrders() {
+    try {
+      const res = await fetch('api/orders', { credentials: 'same-origin', cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && data.orders) {
+        userOrdersList = data.orders;
+        renderUserOrdersTable();
+      }
+    } catch (err) {
+      console.error('[Orders] Failed to load:', err);
+    }
+  }
+
+  function renderUserOrdersTable() {
+    const tbody = document.querySelector('.order-table tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (userOrdersList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted); font-family:var(--font-display);">You have not placed any orders yet.</td></tr>`;
+      return;
+    }
+
+    userOrdersList.forEach(o => {
+      let badgeClass = '';
+      if (o.orderStatus === 'DELIVERED') badgeClass = 'status-delivered';
+      else if (o.orderStatus === 'SHIPPED') badgeClass = 'status-shipped';
+      else if (o.orderStatus === 'RETURN_REQUESTED') badgeClass = 'status-return-req';
+      else if (o.orderStatus === 'RETURNED') badgeClass = 'status-returned';
+      else if (o.orderStatus === 'CANCELLED') badgeClass = 'status-cancelled';
+      else badgeClass = 'status-processing';
+
+      const formattedStatus = o.orderStatus.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+
+      tbody.innerHTML += `
+        <tr>
+          <td data-label="Order ID"><a href="#" onclick="openOrderDetailsModal(${o.id}); return false;" class="order-id-link">#CLC-${String(o.id).padStart(5, '0')}</a></td>
+          <td data-label="Date" style="white-space:nowrap; color:var(--text-muted); font-size:12.5px;">${o.date}</td>
+          <td data-label="Items" style="font-size:12.5px; font-weight:500;">${o.itemsCount} item${o.itemsCount > 1 ? 's' : ''}</td>
+          <td data-label="Total" style="font-weight:700; color:var(--black); white-space:nowrap;">
+            Rs. ${parseFloat(o.total).toFixed(2)}
+            ${(o.paymentMethod === 'COD_WITH_BANK_DEPOSIT' || o.paymentMethod === 'COD_WITH_DEPOSIT') 
+              ? `<br><span style="font-size:11px; color:#b45309; font-weight:500;">Deposit: Rs. 1000.00</span>
+                 <br><span style="font-size:11px; color:var(--text-muted);">Balance: Rs. ${(parseFloat(o.total) - 1000).toFixed(2)}</span>`
+              : ''}
+          </td>
+          <td data-label="Status"><span class="status-badge ${badgeClass}">${formattedStatus}</span></td>
+          <td data-label="Action" style="text-align:right; white-space:nowrap;">
+            <button class="btn-order-action" onclick="openOrderDetailsModal(${o.id})">
+              <span>View Order</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  async function openOrderDetailsModal(orderId) {
+    try {
+      const res = await fetch(`api/orders/${orderId}`, { credentials: 'same-origin', cache: 'no-store' });
+      const order = await res.json();
+      if (!order.success) {
+        window.AppLoader?.showNotification(order.message || 'Failed to load order details.', 'error');
+        return;
+      }
+
+      document.getElementById('detail-order-id').textContent = '#CLC-' + String(order.id).padStart(5, '0');
+      document.getElementById('detail-order-date').textContent = order.date;
+      document.getElementById('detail-subtotal').textContent = 'Rs. ' + parseFloat(order.subtotal || 0).toFixed(2);
+      document.getElementById('detail-shipping').textContent = 'Rs. ' + parseFloat(order.shippingFee || 350).toFixed(2);
+      document.getElementById('detail-total').textContent = 'Rs. ' + parseFloat(order.total || 0).toFixed(2);
+
+      // Status Badge Header
+      const statusBadge = document.getElementById('detail-order-status-badge');
+      if (statusBadge) {
+        let badgeColor = '#b45309';
+        let badgeBg = 'rgba(245,158,11,0.15)';
+        if (order.orderStatus === 'DELIVERED') { badgeColor = '#15803d'; badgeBg = 'rgba(34,197,94,0.15)'; }
+        else if (order.orderStatus === 'PROCESSING' || order.orderStatus === 'SHIPPED') { badgeColor = '#1d4ed8'; badgeBg = 'rgba(59,130,246,0.15)'; }
+        else if (order.orderStatus === 'CANCELLED' || order.orderStatus === 'RETURNED') { badgeColor = '#b91c1c'; badgeBg = 'rgba(239,68,68,0.15)'; }
+        statusBadge.innerHTML = `<span style="background:${badgeBg}; color:${badgeColor}; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.04em;">${order.orderStatus}</span>`;
+      }
+
+      // Shipping Address Card
+      const shippingCard = document.getElementById('detail-shipping-card');
+      if (shippingCard) {
+        if (order.shippingAddress || order.recipientName) {
+          shippingCard.style.display = 'block';
+          shippingCard.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--black); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; font-size: 11px;">
+              <svg style="width: 15px; height: 15px; color: var(--black);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Shipping Address & Contact
+            </div>
+            <p style="margin: 0 0 4px 0; color: var(--black); font-weight: 600;">${order.recipientName || 'Customer'}</p>
+            <p style="margin: 0 0 4px 0; color: var(--text-secondary); line-height: 1.4;">${order.shippingAddress || 'No shipping address specified'}</p>
+            ${order.recipientPhone ? `<p style="margin: 4px 0 0 0; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;"><svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg> ${order.recipientPhone}</p>` : ''}
+          `;
+        } else {
+          shippingCard.style.display = 'none';
+        }
+      }
+
+      // Financial Deposit & Balance Breakdown
+      const depositBreakdown = document.getElementById('detail-deposit-breakdown');
+      const hasDeposit = order.hasDeposit || order.paymentMethod === 'COD_WITH_BANK_DEPOSIT' || order.paymentMethod === 'COD_WITH_DEPOSIT';
+      if (depositBreakdown) {
+        if (hasDeposit) {
+          depositBreakdown.style.display = 'block';
+          const depositAmt = parseFloat(order.depositAmount || 1000).toFixed(2);
+          const balDue = parseFloat(order.balanceDue || (order.total - 1000)).toFixed(2);
+          depositBreakdown.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; color: #b45309; font-weight: 600; font-size: 12px; margin-bottom: 6px;">
+              <span style="display: inline-flex; align-items: center; gap: 6px;">
+                <svg style="width:14px;height:14px;color:#b45309;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Advance Deposit Paid
+              </span>
+              <span style="background: rgba(34,197,94,0.15); color: #15803d; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px;">Rs. ${depositAmt} (PAID)</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); font-weight: 700; font-size: 13px;">
+              <span>Remaining Balance Due (COD)</span>
+              <span style="color: ${order.isSettled ? '#15803d' : '#dc2626'}; font-weight: 700;">
+                ${order.isSettled ? 'Rs. 0.00 (Settled)' : 'Rs. ' + balDue}
+              </span>
+            </div>
+          `;
+        } else {
+          depositBreakdown.style.display = 'none';
+        }
+      }
+
+      // Payment Status Badge
+      const pmtStatusBadge = document.getElementById('detail-payment-status-badge');
+      if (pmtStatusBadge) {
+        if (order.isSettled || order.orderStatus === 'DELIVERED') {
+          pmtStatusBadge.innerHTML = `
+            <span style="background: rgba(34,197,94,0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.3); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;">
+              <svg style="width:12px;height:12px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              SETTLED / FULLY PAID
+            </span>
+          `;
+        } else {
+          pmtStatusBadge.innerHTML = `
+            <span style="background: rgba(234,179,8,0.15); color: #b45309; border: 1px solid rgba(234,179,8,0.3); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;">
+              <svg style="width:12px;height:12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              ${hasDeposit ? 'BALANCE PENDING ON DELIVERY' : 'PAYMENT PENDING'}
+            </span>
+          `;
+        }
+      }
+
+      const container = document.getElementById('detail-items-container');
+      container.innerHTML = '';
+
+      order.items.forEach(item => {
+        let variantText = [];
+        if (item.color) variantText.push(item.color);
+        if (item.size) variantText.push(item.size);
+        const variantStr = variantText.join(' / ');
+        const imgUrl = item.imageUrl ? item.imageUrl : 'images/favicon.png';
+
+        const engravingHtml = item.engravingText ? `
+          <p style="font-size: 11px; color: #b45309; margin: 2px 0; display: inline-flex; align-items: center; gap: 4px; font-style: italic; font-weight: 500;">
+            <svg style="width:12px;height:12px;color:#b45309;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            Engraving: ${item.engravingText}
+          </p>
+        ` : '';
+
+        const resizeHtml = item.customResize ? `
+          <p style="font-size: 11px; color: #b45309; margin: 2px 0; display: inline-flex; align-items: center; gap: 4px; font-style: italic; font-weight: 500;">
+            <svg style="width:12px;height:12px;color:#b45309;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+            Resize: ${item.customResize}
+          </p>
+        ` : '';
+
+        container.innerHTML += `
+          <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border-light);">
+            <div style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 6px; overflow: hidden; background: var(--bg-secondary);">
+              <img src="${imgUrl}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='images/favicon.png'">
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <p style="font-size: 13px; font-weight: 600; color: var(--black); margin-bottom: 2px; font-family: var(--font-display); word-break: break-word;">${item.name}</p>
+              ${variantStr ? `<p style="font-size: 11px; color: var(--text-muted); margin: 0;">${variantStr}</p>` : ''}
+              ${engravingHtml}
+              ${resizeHtml}
+              <p style="font-size: 11px; color: var(--text-muted); margin-top:2px;">Qty: ${item.quantity}</p>
+            </div>
+            <span style="font-size: 13px; font-weight: 600; color: var(--black); margin-left: 12px; flex-shrink: 0;">Rs. ${parseFloat(item.price * item.quantity).toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      if (order.customNotes && order.customNotes.trim() !== '') {
+        container.innerHTML += `
+          <div style="background: rgba(201, 169, 110, 0.12); border: 1px solid rgba(201, 169, 110, 0.35); border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 12px; color: #92400e; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box;">
+            <svg style="width:15px;height:15px;flex-shrink:0;color:#b45309;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <span><strong>Order Note:</strong> ${order.customNotes}</span>
+          </div>
+        `;
+      }
+
+      // Dynamic Action Buttons in Modal
+      const actionsContainer = document.getElementById('detail-modal-actions-container');
+      if (actionsContainer) {
+        let btns = '';
+        
+        // Tracking Button
+        btns += `
+          <button type="button" class="btn btn-primary" onclick="closeOrderDetailsModal(); openOrderTrackingModal(${order.id});" style="flex:1; min-width:130px; justify-content:center; gap:6px; font-size:12px;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            ${(order.orderStatus === 'RETURN_REQUESTED' || order.orderStatus === 'RETURNED' || order.orderStatus === 'RETURN_APPROVED') ? 'Track Return' : 'Track Order'}
+          </button>
+        `;
+
+        // If Delivered: Review, Return, Warranty
+        if (order.orderStatus === 'DELIVERED') {
+          btns += `
+            <button type="button" class="btn btn-outline" onclick="closeOrderDetailsModal(); openReviewModal(${order.id});" style="flex:1; min-width:125px; justify-content:center; gap:6px; font-size:12px; background:#fffbe0; border-color:#f59e0b; color:#b45309;">
+              <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Write Review
+            </button>
+            <button type="button" class="btn btn-outline" onclick="closeOrderDetailsModal(); openReturnRequestModal(${order.id});" style="flex:1; min-width:125px; justify-content:center; gap:6px; font-size:12px; color:#b45309;">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              Request Return
+            </button>
+          `;
+
+          if (order.hasActiveWarranty === true) {
+            btns += `
+              <button type="button" class="btn btn-outline" onclick="closeOrderDetailsModal(); openWarrantyClaimModal(${order.id});" style="flex:1; min-width:125px; justify-content:center; gap:6px; font-size:12px; color:#7c3aed; border-color:#c4b5fd; background:#f5f3ff;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Claim Warranty
+              </button>
+            `;
+          }
+        }
+
+        // Close Button
+        btns += `
+          <button type="button" class="btn btn-outline" onclick="closeOrderDetailsModal()" style="min-width:80px; justify-content:center; font-size:12px;">Close</button>
+        `;
+
+        actionsContainer.innerHTML = btns;
+      }
+
+      document.getElementById('order-details-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } catch (err) {
+      console.error(err);
+      window.AppLoader?.showNotification('Error loading order details.', 'error');
+    }
+  }
+
+  function closeOrderDetailsModal() {
+    document.getElementById('order-details-modal').style.display = 'none';
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
+
+  async function openOrderTrackingModal(orderId) {
+    try {
+      const res = await fetch(`api/orders/${orderId}`, { credentials: 'same-origin', cache: 'no-store' });
+      const order = await res.json();
+      if (!order.success) return;
+
+      document.getElementById('tracking-order-id').textContent = '#CLC-' + String(order.id).padStart(5, '0');
+
+      const timeline = document.getElementById('tracking-timeline');
+      const steps = timeline.querySelectorAll('div:not(#timeline-line)');
+      steps.forEach(s => s.remove());
+      const titleEl = document.getElementById('tracking-modal-title');
+
+      const orderStatus = order.orderStatus; // PENDING | PROCESSING | SHIPPED | DELIVERED | CANCELLED | RETURN_REQUESTED | RETURN_APPROVED | RETURNED
+      titleEl.textContent = 'Track Shipment';
+
+      let trackingSteps = [];
+      let currentStepIdx = 0;
+
+      if (orderStatus === 'RETURN_REQUESTED' || orderStatus === 'RETURN_APPROVED' || orderStatus === 'Return Approved' || orderStatus === 'RETURNED') {
+        titleEl.textContent = 'Track Return';
+        trackingSteps = [
+          { title: 'Return Requested', statusKey: 'RETURN_REQUESTED', time: 'Processing Request' },
+          { title: 'Return Approved', statusKey: 'RETURN_APPROVED', time: 'Awaiting Item' },
+          { title: 'Return Processed', statusKey: 'RETURNED', time: 'Refunded / Exchanged' }
+        ];
+        if (orderStatus === 'RETURN_REQUESTED') currentStepIdx = 0;
+        else if (orderStatus === 'RETURN_APPROVED' || orderStatus === 'Return Approved') currentStepIdx = 1;
+        else if (orderStatus === 'RETURNED') currentStepIdx = 2;
+      } else if (orderStatus === 'CANCELLED') {
+        trackingSteps = [
+          { title: 'Order Placed', statusKey: 'PENDING', time: order.date },
+          { title: 'Cancelled', statusKey: 'CANCELLED', time: 'Order Cancelled' }
+        ];
+        currentStepIdx = 1;
+      } else {
+        trackingSteps = [
+          { title: 'Order Placed', statusKey: 'PENDING', time: order.date },
+          { title: 'Processing', statusKey: 'PROCESSING', time: 'Preparing package' },
+          { title: 'Shipped', statusKey: 'SHIPPED', time: 'In Transit' },
+          { title: 'Delivered', statusKey: 'DELIVERED', time: 'Arrival' }
+        ];
+        if (orderStatus === 'PROCESSING') currentStepIdx = 1;
+        else if (orderStatus === 'SHIPPED') currentStepIdx = 2;
+        else if (orderStatus === 'DELIVERED') currentStepIdx = 3;
+      }
+
+      trackingSteps.forEach((step, idx) => {
+        let activeClass = 'pending';
+        let timeText = '';
+
+        if (idx < currentStepIdx) {
+          activeClass = 'completed';
+          timeText = idx === 0 ? order.date : 'Completed';
+        } else if (idx === currentStepIdx) {
+          activeClass = 'active-step';
+          timeText = idx === 0 ? order.date : step.time;
+          if (orderStatus === 'DELIVERED' && step.statusKey === 'DELIVERED') timeText = 'Arrived';
+          if (orderStatus === 'RETURNED' && step.statusKey === 'RETURNED') timeText = 'Resolved';
+          if (orderStatus === 'CANCELLED' && step.statusKey === 'CANCELLED') timeText = 'Cancelled';
+        } else {
+          timeText = 'Pending';
+        }
+
+        const stepHtml = `
+          <div style="position: relative; display: flex; flex-direction: column;">
+            <span class="timeline-dot ${activeClass}" style="position: absolute; left: -32px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--taupe-light); border: 4px solid var(--white); z-index: 2; box-shadow: 0 0 0 2px var(--taupe-light);"></span>
+            <span style="font-size: 13px; font-weight: 700; color: var(--text-muted); font-family: var(--font-display);" class="step-title ${activeClass}">${step.title}</span>
+            <span style="font-size: 11px; color: var(--text-muted);" class="step-time">${timeText}</span>
+          </div>
+        `;
+         timeline.insertAdjacentHTML('beforeend', stepHtml);
+      });
+
+      document.getElementById('order-tracking-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function requestReturn(orderId) {
+    const msg = 'Are you sure you want to return this order? Please ensure you have read the return policy on the Returns page.';
+    const proceed = async () => {
+      try {
+        const res = await fetch(`api/orders/${orderId}/return`, {
+          method: 'PUT',
+          credentials: 'same-origin', cache: 'no-store'
+        });
+        const data = await res.json();
+        if (data.success) {
+          window.AppLoader?.showNotification(data.message || 'Return requested successfully!');
+          loadUserOrders();
+        } else {
+          window.AppLoader?.showNotification(data.message || 'Failed to request return.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        window.AppLoader?.showNotification('Error connecting to server.', 'error');
+      }
+    };
+
+    if (typeof window.showConfirmDialog === 'function') {
+      window.showConfirmDialog(msg, proceed);
+    } else {
+      await proceed();
+    }
+  }
+
+  function closeOrderTrackingModal() {
+    document.getElementById('order-tracking-modal').style.display = 'none';
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
+
+  function openReturnRequestModal(orderId) {
+    const existing = document.getElementById('custReturnModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'custReturnModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+    modal.innerHTML = `
+      <div style="background:var(--white);border-radius:16px;padding:28px;width:90%;max-width:440px;border:1px solid var(--border);box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+        <h3 style="margin:0 0 8px;font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--black);">Request Return for #CLC-${String(orderId).padStart(5, '0')}</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Please specify your return reason and upload a photo proof of the item.</p>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:12px;font-weight:600;color:var(--black);display:block;margin-bottom:6px;">Return Reason *</label>
+          <select id="retReasonSel" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--black);font-size:13px;">
+            <option value="Damaged Item on Delivery">Damaged Item on Delivery</option>
+            <option value="Wrong Item Received">Wrong Item Received</option>
+            <option value="Defective / Quality Issue">Defective / Quality Issue</option>
+            <option value="Size / Dimension Discrepancy">Size / Dimension Discrepancy</option>
+            <option value="Other Reason">Other Reason</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:12px;font-weight:600;color:var(--black);display:block;margin-bottom:6px;">Additional Notes / Description</label>
+          <textarea id="retNotes" rows="3" placeholder="Describe the issue with the item..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--black);font-size:13px;box-sizing:border-box;"></textarea>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="font-size:12px;font-weight:600;color:var(--black);display:block;margin-bottom:6px;">Upload Photo Proof (Image File / Link)</label>
+          <input type="file" id="retProofFile" accept="image/*" style="font-size:12px;margin-bottom:6px;width:100%;"/>
+          <input type="text" id="retProofUrl" placeholder="Or enter image URL..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;box-sizing:border-box;"/>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('custReturnModal').remove()">Cancel</button>
+          <button class="btn btn-primary btn-sm" id="submitRetBtn">Submit Return Request</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('submitRetBtn').addEventListener('click', async () => {
+      const reasonSel = document.getElementById('retReasonSel');
+      const notesEl = document.getElementById('retNotes');
+      const fileInput = document.getElementById('retProofFile');
+      let proofUrl = document.getElementById('retProofUrl').value.trim();
+
+      const selVal = reasonSel.value;
+      const notesVal = notesEl.value.trim();
+
+      // Reset borders
+      notesEl.style.borderColor = 'var(--border)';
+
+      if (selVal === 'Other Reason' && notesVal.length < 5) {
+        notesEl.style.borderColor = '#ef4444';
+        notesEl.focus();
+        accountToast('Please provide details explaining your return reason in the notes field.', 'warning');
+        return;
+      }
+
+      if (fileInput.files && fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
+        accountToast('Photo proof file size must be less than 10 MB.', 'warning');
+        return;
+      }
+
+      const fullReason = selVal + (notesVal ? ': ' + notesVal : '');
+      const btn = document.getElementById('submitRetBtn');
+      btn.textContent = 'Submitting Return Request...';
+      btn.disabled = true;
+
+      try {
+        if (fileInput.files && fileInput.files[0]) {
+          try {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            const upRes = await fetch('api/upload', { method: 'POST', body: formData, credentials: 'same-origin' });
+            if (upRes.ok) {
+              const upData = await upRes.json();
+              if (upData.url || upData.filePath) proofUrl = upData.url || upData.filePath;
+            }
+          } catch (upErr) {
+            console.warn('[Upload] File upload warning:', upErr);
+          }
+        }
+
+        const res = await fetch(`api/orders/${orderId}/return-request`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin', body: JSON.stringify({ reason: fullReason + (proofUrl ? ' | Proof: ' + proofUrl : '') })
+        });
+        const d = await res.json();
+        if (d.success) {
+          accountToast('Return request for #CLC-' + String(orderId).padStart(5, '0') + ' submitted successfully! Our support team will review it.', 'success');
+          modal.remove();
+          loadUserOrders();
+        } else {
+          accountToast(d.message || 'Error submitting return request.', 'error');
+          btn.textContent = 'Submit Return Request';
+          btn.disabled = false;
+        }
+      } catch(e) {
+        accountToast('Error submitting return request: ' + e.message, 'error');
+        btn.textContent = 'Submit Return Request';
+        btn.disabled = false;
+      }
+    });
+  }
+
+  function openWarrantyClaimModal(orderId) {
+    const existing = document.getElementById('custWarrantyModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'custWarrantyModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+    modal.innerHTML = `
+      <div style="background:var(--white);border-radius:16px;padding:28px;width:90%;max-width:440px;border:1px solid var(--border);box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+        <h3 style="margin:0 0 8px;font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--black);">File Warranty Claim (#CLC-${String(orderId).padStart(5, '0')})</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Ceylon Letter Co. Official Anti-Tarnish &amp; Durability Warranty. Please specify issue details.</p>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:12px;font-weight:600;color:var(--black);display:block;margin-bottom:6px;">Product / Item Name *</label>
+          <input id="warProdName" type="text" placeholder="e.g. Snake Flat Chain (Silver)" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--black);font-size:13px;box-sizing:border-box;" oninput="this.style.borderColor='var(--border)'"/>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:12px;font-weight:600;color:var(--black);display:block;margin-bottom:6px;">Warranty Issue Details *</label>
+          <textarea id="warReason" rows="3" placeholder="Describe color fading, tarnishing, or defect..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--black);font-size:13px;box-sizing:border-box;" oninput="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="font-size:12px;font-weight:600;color:var(--black);display:block;margin-bottom:6px;">Upload Photo Proof (Image File / Link)</label>
+          <input type="file" id="warProofFile" accept="image/*" style="font-size:12px;margin-bottom:6px;width:100%;"/>
+          <input type="text" id="warProofUrl" placeholder="Or enter image URL..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;box-sizing:border-box;"/>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('custWarrantyModal').remove()">Cancel</button>
+          <button class="btn btn-primary btn-sm" id="submitWarBtn">Submit Warranty Claim</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('submitWarBtn').addEventListener('click', async () => {
+      const prodNameEl = document.getElementById('warProdName');
+      const reasonEl = document.getElementById('warReason');
+      const fileInput = document.getElementById('warProofFile');
+      let proofUrl = document.getElementById('warProofUrl').value.trim();
+
+      const prodName = prodNameEl.value.trim();
+      const reason = reasonEl.value.trim();
+
+      // Reset borders
+      prodNameEl.style.borderColor = 'var(--border)';
+      reasonEl.style.borderColor = 'var(--border)';
+
+      if (!prodName) {
+        prodNameEl.style.borderColor = '#ef4444';
+        prodNameEl.focus();
+        accountToast('Please enter the jewellery product name for this warranty claim.', 'warning');
+        return;
+      }
+
+      if (!reason || reason.length < 5) {
+        reasonEl.style.borderColor = '#ef4444';
+        reasonEl.focus();
+        accountToast('Please describe the warranty defect in detail (minimum 5 characters).', 'warning');
+        return;
+      }
+
+      if (fileInput.files && fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
+        accountToast('Photo proof file size must be less than 10 MB.', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('submitWarBtn');
+      btn.textContent = 'Submitting Claim...';
+      btn.disabled = true;
+
+      try {
+        if (fileInput.files && fileInput.files[0]) {
+          try {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            const upRes = await fetch('api/upload', { method: 'POST', body: formData, credentials: 'same-origin' });
+            if (upRes.ok) {
+              const upData = await upRes.json();
+              if (upData.url || upData.filePath) proofUrl = upData.url || upData.filePath;
+            }
+          } catch (upErr) {
+            console.warn('[Upload] Image upload warning:', upErr);
+          }
+        }
+
+        const u = window.currentUser || currentUser || {};
+        const res = await fetch(`api/warranty-claims/submit`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin', body: JSON.stringify({
+            orderId, orderType: 'WEB',
+            customerName: u.fullName || u.firstName || 'Customer',
+            customerPhone: u.phone || '',
+            customerEmail: u.email || '',
+            productName: prodName || 'Jewellery Item',
+            claimReason: reason, proofImageUrl: proofUrl
+          })
+        });
+        const d = await res.json();
+        if (d.success) {
+          accountToast('Warranty claim for #CLC-' + String(orderId).padStart(5, '0') + ' submitted successfully! Our team will contact you shortly.', 'success');
+          modal.remove();
+        } else {
+          accountToast(d.message || 'Error submitting warranty claim.', 'error');
+          btn.textContent = 'Submit Warranty Claim';
+          btn.disabled = false;
+        }
+      } catch(e) {
+        accountToast('Error submitting claim: ' + e.message, 'error');
+        btn.textContent = 'Submit Warranty Claim';
+        btn.disabled = false;
+      }
+    });
+  }
+</script>
+</body>
+</html>
+
+
+

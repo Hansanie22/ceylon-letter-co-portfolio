@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. – Wishlist. Your saved products.">
+  <title>Ceylon Letter Co. – Wishlist</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div style="max-width:1280px; margin:0 auto; padding:48px 32px;">
+
+    <div id="wishlist-header"
+      style="display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; padding-bottom:24px; border-bottom:1px solid var(--border);">
+      <div>
+        <h1
+          style="font-family:var(--font-display); font-size:32px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--black); margin-bottom:4px;">
+          Wishlist</h1>
+        <p id="wishlist-count-text" style="font-size:13px; color:var(--text-muted); margin:0;">0 saved items</p>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="clearWishlistUI()">Clear All</button>
+    </div>
+
+    <!-- Empty Wishlist State -->
+    <div id="empty-wishlist" style="display:none; text-align:center; padding:80px 0;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(201, 169, 110, 0.1); margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(201, 169, 110, 0.15);">
+        <svg width="40" height="40" fill="none" stroke="var(--gold)" stroke-width="1.2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        </svg>
+      </div>
+      <h3 style="font-family:var(--font-display); font-size:20px; font-weight:600; margin-bottom:8px;">Your wishlist is empty</h3>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:24px;">Looks like you haven't saved any products yet.</p>
+      <a href="products.html" class="btn btn-primary">Start Shopping</a>
+    </div>
+
+    <div class="products-grid" id="wishlist-grid"></div>
+
+    <div style="text-align:center; margin-top:48px;" id="wishlist-continue-btn">
+      <a href="products.html" class="btn btn-outline">Continue Shopping</a>
+    </div>
+
+  </div>
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+  <script>
+    let _wishlistRendered = false;
+
+    async function renderWishlist() {
+      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      let items = null;
+
+      if (isLoggedIn) {
+        // ── Try fetching live data from backend ──────────────────────────────
+        try {
+          const res = await fetch('api/wishlist?_t=' + new Date().getTime(), { credentials: 'same-origin', cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && Array.isArray(data.wishlist)) {
+              items = data.wishlist;
+
+              // Merge any local-only items not yet synced to backend
+              const appWishlist = window.AppLoader ? window.AppLoader.wishlist : [];
+              const backendIds  = new Set(items.map(w => w.id).filter(Boolean));
+              const localOnly   = appWishlist.filter(w => w.id && !backendIds.has(w.id));
+              if (localOnly.length > 0) items = [...items, ...localOnly];
+
+              // Update AppLoader cache to stay consistent
+              if (window.AppLoader) {
+                const prevStr = JSON.stringify(window.AppLoader.wishlist);
+                window.AppLoader.wishlist = items;
+                window.AppLoader._save('wishlist', items);
+                if (prevStr !== JSON.stringify(items)) {
+                  window.AppLoader._updateBadges();
+                }
+              }
+            }
+          }
+        } catch (err) {
+          console.warn("[Wishlist] API fetch failed, falling back to cache:", err);
+        }
+      }
+
+      // ── Fallback: use sessionStorage cache if API unavailable ──────────────
+      if (items === null) {
+        items = window.AppLoader ? window.AppLoader.wishlist : [];
+      }
+
+      if (items.length === 0) {
+        _showEmpty();
+        return;
+      }
+
+      _showGrid(items);
+    }
+
+    function _showEmpty() {
+      document.getElementById('wishlist-grid').style.display   = 'none';
+      document.getElementById('wishlist-header').style.display = 'none';
+      document.getElementById('wishlist-continue-btn').style.display = 'none';
+      document.getElementById('empty-wishlist').style.display  = 'block';
+      document.getElementById('wishlist-grid').dataset.renderedIds = '';
+    }
+
+    function _showGrid(items) {
+      document.getElementById('empty-wishlist').style.display  = 'none';
+      document.getElementById('wishlist-grid').style.display   = 'grid';
+      document.getElementById('wishlist-header').style.display = 'flex';
+      document.getElementById('wishlist-continue-btn').style.display = 'block';
+      document.getElementById('wishlist-count-text').textContent = items.length + ' saved items';
+
+      const grid = document.getElementById('wishlist-grid');
+      
+      const currentIds = items.map(i => i.id || 0).join(',');
+      if (grid.dataset.renderedIds === currentIds) {
+        return; // Prevent blinking
+      }
+      grid.dataset.renderedIds = currentIds;
+
+      grid.innerHTML = '';
+
+      items.forEach(item => {
+        if (!item) return;
+        const itemId = item.id || 0;
+        const itemVariantId = item.variantId || 0;
+        const itemName = item.name || 'Unnamed Product';
+        const itemImg = item.img || item.primaryImage || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80';
+        const itemPrice = parseFloat(item.price || 0);
+
+        const div = document.createElement('article');
+        div.className = 'product-card active';
+        div.innerHTML = `
+          <div class="product-image-wrap">
+            <img src="${itemImg}"
+                 alt="${itemName.replace(/"/g, '&quot;')}" loading="lazy"
+                 style="cursor:pointer" onclick="window.location.href='product-view.html?id=${itemId}'">
+            <button class="product-quick-add"
+              onclick="event.stopPropagation(); window.AppLoader?.addToCart({id:${itemId},variantId:${itemVariantId},name:'${itemName.replace(/'/g, "\\'")}',price:${itemPrice},img:'${itemImg.replace(/'/g, "\\'")}'})"
+            >Add to Cart</button>
+          </div>
+          <div class="product-info" style="display:flex; flex-direction:column; gap:4px;">
+            <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0; line-height:1;">${item.brand || 'Ceylon Letter Co.'}</p>
+            <a href="product-view.html?id=${itemId}" class="product-name" style="text-decoration:none;">${itemName}</a>
+            <div class="product-price"><span class="price-new">Rs. ${itemPrice.toFixed(2)}</span></div>
+            <button onclick="removeWishlistUI(${itemId})"
+              style="font-size:12px; color:var(--text-muted); text-decoration:underline; text-align:left; background:none; border:none; cursor:pointer; padding:0; margin-top:4px; transition:color 0.2s;"
+              onmouseover="this.style.color='var(--black)'"
+              onmouseout="this.style.color='var(--text-muted)'">Remove</button>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    async function removeWishlistUI(id) {
+      const proceed = async () => {
+        if (window.AppLoader) {
+          await window.AppLoader.removeFromWishlist(id);
+          renderWishlist();
+        }
+      };
+      if (typeof window.showConfirmDialog === 'function') {
+        window.showConfirmDialog("Are you sure you want to remove this item from your wishlist?", proceed);
+      } else {
+        proceed();
+      }
+    }
+
+    async function clearWishlistUI() {
+      const proceed = async () => {
+        if (window.AppLoader) {
+          await window.AppLoader.clearWishlist();
+          renderWishlist();
+        }
+      };
+      if (typeof window.showConfirmDialog === 'function') {
+        window.showConfirmDialog("Are you sure you want to clear your entire wishlist?", proceed);
+      } else {
+        proceed();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Render after AppLoader has initialized (waits for navbar/footer inject)
+      setTimeout(renderWishlist, 350);
+
+      // Re-render on explicit wishlist change events
+      window.addEventListener('wishlistUpdated', () => {
+        // Debounce to avoid multiple rapid renders
+        clearTimeout(window._wishlistRenderTimer);
+        window._wishlistRenderTimer = setTimeout(renderWishlist, 100);
+      });
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'techno_wishlist' || e.key === 'Ceylon Letter Co._user') {
+          setTimeout(renderWishlist, 100);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+

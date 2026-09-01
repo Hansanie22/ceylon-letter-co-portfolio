@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. Exchange Policy – How to exchange products and review eligibility rules.">
+  <title>Ceylon Letter Co. – Exchange Policy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    .returns-layout {
+      max-width: 900px;
+      margin: 60px auto 100px auto;
+      padding: 0 var(--sp-8);
+    }
+
+    .returns-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .returns-header h1 {
+      font-size: var(--text-3xl);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--sp-3);
+    }
+
+    /* Step Grid Styles */
+    .steps-section {
+      margin-bottom: 80px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .step-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: flex;
+      gap: 20px;
+      transition: all var(--transition-base);
+    }
+
+    .step-item:hover {
+      border-color: var(--black);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-content h3 {
+      font-size: var(--text-md);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: var(--sp-2);
+      color: var(--black);
+    }
+
+    .step-content p {
+      font-size: var(--text-sm);
+      line-height: 1.7;
+    }
+
+    /* Policy Grid Styles */
+    .policy-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+
+    .policy-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+    }
+
+    .policy-box h3 {
+      font-size: var(--text-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      color: var(--black);
+    }
+
+    .policy-box ul li {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .policy-box ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--black);
+      font-weight: bold;
+    }
+
+    .returns-cta {
+      text-align: center;
+      background: var(--bg-dark);
+      color: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 60px 40px;
+    }
+
+    .returns-cta h2 {
+      color: var(--white);
+      font-size: var(--text-2xl);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: var(--sp-3);
+    }
+
+    .returns-cta p {
+      color: var(--gray-300);
+      max-width: 500px;
+      margin: 0 auto 32px auto;
+      font-size: var(--text-sm);
+    }
+
+    @media (max-width: 768px) {
+      .steps-grid, .policy-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div class="returns-layout">
+    <div class="returns-header reveal">
+      <h1>Exchange Policy</h1>
+      <p style="color:var(--text-secondary);">We back our curated items with a dedicated exchange policy.</p>
+    </div>
+
+    <!-- Policies -->
+    <section class="reveal" aria-labelledby="policies-heading">
+      <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+        <p style="font-size: var(--text-md); margin-bottom: 24px;">We only offer exchanges (no refunds).</p>
+        
+        <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Eligible Cases:</h2>
+        <ul style="margin-bottom: 32px; padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+          <li style="margin-bottom: 8px;">Factory damage (report within 24 hours)</li>
+          <li style="margin-bottom: 8px;">Wrong item received</li>
+        </ul>
+
+        <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Not Eligible:</h2>
+        <ul style="margin-bottom: 32px; padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+          <li style="margin-bottom: 8px;">Change of mind</li>
+          <li style="margin-bottom: 8px;">Used or damaged after delivery</li>
+        </ul>
+
+        <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Process:</h2>
+        <ul style="margin-bottom: 32px; padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+          <li style="margin-bottom: 8px;">Contact support via WhatsApp or email</li>
+          <li style="margin-bottom: 8px;">Provide order details and proof</li>
+          <li style="margin-bottom: 8px;">Exchange processed after verification</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+</body>
+
+</html>
+

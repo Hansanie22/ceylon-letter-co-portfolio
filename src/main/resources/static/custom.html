@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. Custom Orders – Information on our custom jewellery design service.">
+  <title>Ceylon Letter Co. – Custom Orders</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    .custom-layout {
+      max-width: 800px;
+      margin: 60px auto 100px auto;
+      padding: 0 var(--sp-8);
+    }
+    .custom-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .custom-header h1 {
+      font-size: var(--text-3xl);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--sp-3);
+    }
+    .custom-content h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-md);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--black);
+      margin-top: 40px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .custom-content p {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .custom-content ul {
+      margin-bottom: 24px;
+      padding-left: 20px;
+      list-style-type: square;
+    }
+    .custom-content ul li {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div class="custom-layout">
+    <div class="custom-header reveal">
+      <h1>Custom Orders</h1>
+      <p style="color:var(--text-muted); font-size: 14px;">We accept custom jewellery designs.</p>
+    </div>
+
+    <div class="custom-content reveal">
+      <h2>Available Services</h2>
+      <ul>
+        <li>Name pendants</li>
+        <li>Custom designs</li>
+        <li>Flat minimal designs</li>
+        <li>Bulk orders</li>
+      </ul>
+
+      <h2>Production Time</h2>
+      <ul>
+        <li>Standard orders: 3 – 6 working days</li>
+        <li>Bulk orders: up to 6 days</li>
+      </ul>
+
+      <h2>Payment Information</h2>
+      <ul>
+        <li>Rs. 1000 minimum advance required</li>
+        <li>Payment slip must be submitted</li>
+      </ul>
+
+      <h2>Cancellation Policy</h2>
+      <ul>
+        <li>Allowed within 24 hours only</li>
+      </ul>
+      
+      <div style="text-align: center; margin-top: 48px;">
+          <a href="messages.html" class="btn btn-primary">Start a Custom Order</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+</body>
+</html>

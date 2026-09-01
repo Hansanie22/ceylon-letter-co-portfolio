@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="google-site-verification" content="U77O8hhJIkqi281epk1NhKWRKNn3kV4dMVU7B0sVQPw" />
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Ceylon Letter Co.  Fine Jewellery crafted with heritage and precision. Shop hallmarked rings, necklaces, bracelets and earrings in gold and silver.">
+  <meta name="theme-color" content="#5A5550">
+  <title>Ceylon Letter Co.  Fine Jewellery</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <!-- ── SOCIAL REELS STYLES — aligned to global.css 60-30-10 system ── -->
+  <style>
+    body.modal-open {
+      overflow: hidden !important;
+      height: 100vh !important;
+      touch-action: none !important;
+    }
+
+    /* ============================================================
+       SOCIAL REELS & STORIES — perfectly aligned to global.css
+       60% cream #FBF4EA · 30% taupe #5A5550 · 10% gold #C9A96E
+       ============================================================ */
+
+    /* ── SECTION CANVAS ── */
+    #social-reels-showcase {
+      background: var(--bg-secondary, #FBF4EA);
+      position: relative;
+      overflow: hidden;
+    }
+    #social-reels-showcase::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 20%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201, 169, 110, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── FILTER TABS ── */
+    .reels-filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .reels-filter-tabs::-webkit-scrollbar { display: none; }
+
+    .reels-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      border: 1px solid var(--border-gold);
+      background: var(--cream-lighter, #FEF9F3);
+      color: var(--taupe-deep, #3E3A36);
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(90,85,80,0.06);
+    }
+    .reels-filter-btn:hover {
+      border-color: var(--gold, #C9A96E);
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(201,169,110,0.14);
+      transform: translateY(-1px);
+    }
+    .reels-filter-btn.active {
+      background: var(--gold, #C9A96E) !important;
+      color: var(--white, #FFFDF8) !important;
+      border-color: var(--gold, #C9A96E) !important;
+      box-shadow: 0 4px 16px rgba(201,169,110,0.32) !important;
+    }
+
+    /* ── REEL TRACK ── */
+    .reels-track-container { position: relative; width: 100%; overflow: hidden; }
+    .reels-track {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 8px 2px 24px 2px;
+      scrollbar-width: none;
+    }
+    .reels-track::-webkit-scrollbar { display: none; }
+
+    /* ── REEL CARD ── */
+    .reel-card {
+      flex: 0 0 255px;
+      height: 440px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      scroll-snap-align: start;
+      background: var(--taupe-darker, #2A2622);
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 8px 24px rgba(42,38,34,0.10);
+      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease, border-color 0.3s ease;
+    }
+    .reel-card:hover {
+      transform: translateY(-7px);
+      border-color: var(--gold, #C9A96E);
+      box-shadow: 0 18px 42px rgba(201,169,110,0.22);
+    }
+    .reel-media-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reel-card:hover .reel-media-bg { transform: scale(1.05); }
+    .reel-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg,
+        rgba(42,38,34,0.4) 0%,
+        rgba(42,38,34,0) 38%,
+        rgba(42,38,34,0.8) 100%);
+      pointer-events: none;
+      transition: background 0.3s ease;
+    }
+    .reel-card:hover .reel-overlay {
+      background: linear-gradient(180deg,
+        rgba(42,38,34,0.3) 0%,
+        rgba(42,38,34,0) 33%,
+        rgba(42,38,34,0.88) 100%);
+    }
+
+    /* ── PLATFORM TAG ── */
+    .reel-platform-tag {
+      position: absolute; top: 13px; left: 13px; z-index: 2;
+      background: rgba(42, 38, 34, 0.72);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(201,169,110,0.38);
+      padding: 4px 11px;
+      border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10.5px; font-weight: 700;
+      color: #fff; letter-spacing: 0.04em;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    }
+
+    /* ── PLAY BUTTON ── */
+    .reel-play-btn {
+      position: absolute; top: 44%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px; height: 50px; border-radius: 50%;
+      background: var(--gold, #C9A96E);
+      color: var(--white, #FFFDF8);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 22px rgba(201,169,110,0.5);
+      z-index: 2; opacity: 0.95;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reel-card:hover .reel-play-btn {
+      transform: translate(-50%, -50%) scale(1.12);
+      opacity: 1;
+      background: #fff;
+      color: var(--taupe-darker, #2A2622);
+      box-shadow: 0 0 28px rgba(255,255,255,0.8);
+    }
+
+    /* ── CARD BOTTOM INFO ── */
+    .reel-bottom-info {
+      position: absolute; bottom: 12px; left: 11px; right: 11px;
+      z-index: 2; display: flex; flex-direction: column; gap: 9px;
+    }
+    .reel-title-text {
+      font-family: var(--font-display, 'Cormorant Garamond', serif);
+      font-size: 14px; font-weight: 600;
+      color: #fff; margin: 0; line-height: 1.35;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.65);
+    }
+
+    /* ── PRODUCT PILL ── */
+    .reel-product-pill {
+      background: rgba(254, 249, 243, 0.93);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-radius: 13px; padding: 7px 9px;
+      display: flex; align-items: center; justify-content: space-between; gap: 7px;
+      border: 1px solid rgba(201,169,110,0.42);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      transition: all 0.22s ease;
+      cursor: pointer;
+    }
+    .reel-product-pill:hover {
+      background: #fff; transform: translateY(-2px);
+      border-color: var(--gold, #C9A96E);
+      box-shadow: 0 10px 24px rgba(201,169,110,0.26);
+    }
+    .reel-prod-left { display: flex; align-items: center; gap: 7px; min-width: 0; }
+    .reel-prod-thumb {
+      width: 32px; height: 32px; border-radius: 7px;
+      object-fit: cover;
+      border: 1px solid var(--border-gold);
+      flex-shrink: 0;
+    }
+    .reel-prod-meta { min-width: 0; }
+    .reel-prod-title {
+      font-size: 11px; font-weight: 700;
+      color: var(--taupe-deep, #3E3A36); margin: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .reel-prod-price { font-size: 10.5px; font-weight: 700; color: var(--gold-deep, #B08D52); margin: 0; }
+    .reel-shop-arrow {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--taupe-darker, #2A2622);
+      color: var(--gold, #C9A96E);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s ease;
+    }
+    .reel-product-pill:hover .reel-shop-arrow {
+      background: var(--gold, #C9A96E); color: #fff;
+    }
+
+    /* ── NAV ARROWS ── */
+    .btn-reel-nav {
+      width: 42px; height: 42px; border-radius: 50%;
+      border: 1px solid var(--border-gold);
+      background: var(--cream-lighter, #FEF9F3);
+      color: var(--taupe-deep, #3E3A36);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px rgba(90,85,80,0.08);
+    }
+    .btn-reel-nav:hover {
+      border-color: var(--gold); background: var(--gold);
+      color: #fff; box-shadow: 0 4px 14px rgba(201,169,110,0.28);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       VIDEO REEL MODAL — cream theme matching site
+       ══════════════════════════════════════════════════════════ */
+    .reel-modal {
+      position: fixed !important; inset: 0 !important; z-index: 100000 !important;
+      background: rgba(26, 20, 17, 0.86) !important;
+      backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reel-modal.active {
+      display: flex !important;
+      opacity: 1;
+    }
+
+    .reel-modal-container {
+      position: relative; width: 100%;
+      max-width: 820px; height: min(88vh, 660px);
+      border-radius: 22px;
+      background: var(--cream-lighter, #FEF9F3);
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 32px 80px rgba(26,20,17,0.5), 0 0 0 1px rgba(201,169,110,0.15);
+      overflow: hidden;
+      display: flex; flex-direction: row;
+      animation: reelModalIn 0.32s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes reelModalIn {
+      from { transform: scale(0.95) translateY(14px); opacity: 0; }
+      to   { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    /* Left: dark video panel */
+    .reel-video-column {
+      flex: 0 0 360px;
+      position: relative;
+      background: #0A0806;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .reel-video-column video {
+      width: 100%; height: 100%;
+      object-fit: cover; cursor: pointer; display: block;
+    }
+
+    .reel-ctrl-btn {
+      position: absolute; z-index: 10;
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(26,20,17,0.72);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(201,169,110,0.32);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.22s ease;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.28);
+    }
+    .reel-ctrl-btn:hover {
+      background: var(--gold, #C9A96E);
+      border-color: var(--gold); color: var(--taupe-darker, #2A2622);
+      transform: scale(1.08);
+    }
+    .btn-close-reel { top: 14px; right: 14px; }
+    .btn-sound-reel  { top: 14px; left: 14px; }
+
+    .reel-modal-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(26,20,17,0.6);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(201,169,110,0.28);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.22s ease;
+    }
+    .reel-modal-arrow:hover {
+      background: var(--gold, #C9A96E);
+      color: var(--taupe-darker, #2A2622);
+      transform: translateY(-50%) scale(1.1);
+    }
+    .btn-reel-prev { left: 12px; }
+    .btn-reel-next { right: 12px; }
+
+    /* Right: cream info sidebar */
+    .reel-sidebar-column {
+      flex: 1;
+      padding: 32px 26px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: var(--cream-lighter, #FEF9F3);
+      border-left: 1px solid var(--border-gold);
+      overflow-y: auto;
+      color: var(--text-primary, #2A2622);
+    }
+    .reel-sidebar-platform {
+      background: rgba(201,169,110,0.12);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-deep, #B08D52);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+
+    .reel-modal-product-card {
+      background: var(--cream, #F5E6D0);
+      border: 1px solid var(--border-gold);
+      border-radius: 16px; padding: 15px;
+      box-shadow: 0 4px 16px rgba(90,85,80,0.08);
+    }
+    .btn-reel-modal-shop {
+      background: var(--gold, #C9A96E);
+      color: var(--white, #FFFDF8) !important;
+      font-weight: 700; font-family: var(--font-body);
+      border-radius: 11px; padding: 11px 16px;
+      text-align: center; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      font-size: 13px; width: 100%;
+      box-shadow: 0 4px 16px rgba(201,169,110,0.30);
+      transition: all 0.22s ease;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .btn-reel-modal-shop:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201,169,110,0.45);
+      filter: brightness(1.06);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .reel-modal { padding: 0; }
+      .reel-modal-container {
+        flex-direction: column;
+        max-width: 100%; width: 100%;
+        height: 100%; max-height: 100dvh;
+        border-radius: 0;
+      }
+      .reel-video-column { flex: 0 0 52vh; width: 100%; }
+      .reel-sidebar-column {
+        flex: 1;
+        border-left: none;
+        border-top: 1px solid var(--border-gold);
+        padding: 18px 16px;
+      }
+      .reel-card { flex: 0 0 220px; height: 380px; }
+    }
+    @media (max-width: 480px) {
+      .reel-card { flex: 0 0 190px; height: 340px; }
+      .reels-filter-btn { padding: 7px 14px; font-size: 12px; }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <!-- ---------------------------------------
+     HERO SECTION  Fullscreen Slider
+  --------------------------------------- -->
+  <section class="hero-slider" id="heroSlider" aria-label="Hero banner">
+
+    <!-- Slide Backgrounds -->
+    <div class="hero-slides-track" id="heroSlidesTrack">
+      <!-- Slides will be dynamically loaded here by app.js -->
+    </div>
+
+    <!-- Warm gradient overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Slide Content -->
+    <div class="hero-slider-content" id="heroContent">
+      <span class="hero-tag" id="heroTag">New Collection 2026</span>
+      <h1 class="hero-heading" id="heroHeading">Fine Gold<br>Jewellery</h1>
+      <p class="hero-desc" id="heroDesc">Hallmarked pieces crafted with the finest gold and gemstones.
+        Timeless elegance for every occasion.
+      </p>
+      <a href="products.html" class="hero-cta-btn" id="heroCta">
+        Explore Collection
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Slide indicators — dynamically populated by hero slides API -->
+    <div class="hero-indicators" id="heroIndicators">
+      <button class="hero-indicator active" data-slide="0" aria-label="Slide 1">
+        <span class="hero-indicator-fill"></span>
+      </button>
+    </div>
+
+    <!-- Slide counter — total is updated dynamically once slides load -->
+    <div class="hero-counter">
+      <span id="heroCurrentNum">01</span>
+      <span class="hero-counter-sep"></span>
+      <span id="heroTotalNum">01</span>
+    </div>
+
+  </section>
+
+  <!-- ---------------------------------------
+     TRUST BAR
+  --------------------------------------- -->
+  <div class="trust-bar" role="complementary" aria-label="Store benefits">
+    <div class="trust-inner">
+
+      <div class="trust-item">
+        <div class="trust-icon-box">
+          <!-- Hallmark icon -->
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        </div>
+        <div class="trust-text">
+          <h5>Certified Hallmarked</h5>
+          <p>Every piece authenticated</p>
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-icon-box">
+          <!-- Gift box icon -->
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+          </svg>
+        </div>
+        <div class="trust-text">
+          <h5>Gift Wrapping</h5>
+          <p>Complimentary on every order</p>
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-icon-box">
+          <!-- Returns icon -->
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+        </div>
+        <div class="trust-text">
+          <h5>Easy Exchanges</h5>
+          <p>Hassle-free process</p>
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-icon-box">
+          <!-- Support icon -->
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+          </svg>
+        </div>
+        <div class="trust-text">
+          <h5>Expert Support</h5>
+          <p>Jewellery specialists always here</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------------------------------------
+     BEST SELLERS
+  --------------------------------------- -->
+  <section class="section" aria-labelledby="bestsellers-heading">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Most Loved</span>
+      <h2 class="section-title" id="bestsellers-heading">Best Selling Pieces</h2>
+      <span class="gold-line"></span>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div id="bestsellers-loading"
+      style="display:flex; justify-content:center; align-items:center; min-height:220px; color:var(--text-muted); font-size:14px; gap:10px; font-style:italic;">
+      <svg style="animation:spin 0.8s linear infinite;" width="20" height="20" fill="none" stroke="currentColor"
+        stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+      </svg>
+      Curating your selection
+    </div>
+    <div class="products-grid horizontal-scroll" id="bestsellers-grid"></div>
+
+    <div class="text-center" style="margin-top:48px;">
+      <a href="products.html" class="btn btn-outline" id="view-all-bestsellers">View All Collections</a>
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div style="padding:0 32px; max-width:1280px; margin:0 auto;">
+    <hr style="border:none; border-top:1px solid var(--border-gold);">
+  </div>
+
+  <!-- ---------------------------------------
+     SHOP BY CATEGORY
+  --------------------------------------- -->
+  <section class="section" aria-labelledby="category-heading">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Explore</span>
+      <h2 class="section-title" id="category-heading">Browse by Category</h2>
+      <span class="gold-line"></span>
+    </div>
+
+    <!-- Loading state -->
+    <div id="categories-loading"
+      style="display:flex;justify-content:center;align-items:center;min-height:140px;color:var(--text-muted);font-size:14px;gap:10px;font-style:italic;">
+      <svg style="animation:spin 0.8s linear infinite;" width="18" height="18" fill="none" stroke="currentColor"
+        stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+      </svg>
+      Loading collections
+    </div>
+    <div class="categories-grid horizontal-scroll" id="categories-grid"></div>
+  </section>
+
+  <!-- ---------------------------------------
+     PROMO BANNER
+  --------------------------------------- -->
+  <div class="promo-banner" aria-label="Promotional banner">
+    <div class="promo-banner-inner">
+      <!-- Left Text Half -->
+      <div class="promo-text-col reveal">
+        <span class="promo-eyebrow">Limited Offer</span>
+        <h2 class="promo-title">Up to 30% off<br>Bridal Collections</h2>
+        <p class="promo-desc">Celebrate your most cherished moments with our exquisite bridal jewellery. Crafted with care for a love that lasts.</p>
+        <a href="products.html" class="btn promo-btn" id="promo-cta">Shop the Sale</a>
+      </div>
+
+      <!-- Right Image Half — src updated dynamically by promo JS loader -->
+      <div class="promo-image-col reveal">
+        <img id="promo-img" src="" alt="Special Offer Jewellery" loading="lazy"
+          style="background:var(--cream-deep); min-height:200px;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------------------------------
+     FEATURED PRODUCTS
+  --------------------------------------- -->
+  <div class="featured-strip" aria-labelledby="featured-heading">
+    <div class="featured-inner">
+      <div class="section-header reveal">
+        <span class="section-eyebrow" style="color:var(--gold);">Handpicked</span>
+        <h2 class="section-title" id="featured-heading" style="color:var(--cream);">Featured Pieces</h2>
+        <span class="gold-line"></span>
+      </div>
+
+      <div class="featured-products-grid horizontal-scroll" id="featured-grid">
+        <!-- Dynamically loaded -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------------------------------
+     TESTIMONIALS
+  --------------------------------------- -->
+  <section class="section" aria-labelledby="reviews-heading" style="background:var(--bg-primary, #F5E6D0);">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Stories</span>
+      <h2 class="section-title" id="reviews-heading">Cherished by Our Customers</h2>
+      <span class="gold-line"></span>
+    </div>
+
+    <div id="index-reviews-container" class="reviews-grid">
+      <!-- Skeleton loaders shown while JS fetches/renders reviews -->
+      <div class="review-card" style="opacity:0.45; pointer-events:none; min-height:220px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="width:80px; height:12px; background:var(--cream-deep); border-radius:6px; margin-bottom:16px;"></div>
+          <div style="width:100%; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:8px;"></div>
+          <div style="width:90%; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:8px;"></div>
+          <div style="width:70%; height:10px; background:var(--cream-deep); border-radius:4px;"></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; padding-top:14px; border-top:1px solid var(--border-light);">
+          <div style="width:38px; height:38px; border-radius:50%; background:var(--cream-deep); flex-shrink:0;"></div>
+          <div><div style="width:100px; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:6px;"></div><div style="width:70px; height:8px; background:var(--cream-deep); border-radius:4px;"></div></div>
+        </div>
+      </div>
+      <div class="review-card" style="opacity:0.3; pointer-events:none; min-height:220px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="width:80px; height:12px; background:var(--cream-deep); border-radius:6px; margin-bottom:16px;"></div>
+          <div style="width:100%; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:8px;"></div>
+          <div style="width:85%; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:8px;"></div>
+          <div style="width:60%; height:10px; background:var(--cream-deep); border-radius:4px;"></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; padding-top:14px; border-top:1px solid var(--border-light);">
+          <div style="width:38px; height:38px; border-radius:50%; background:var(--cream-deep); flex-shrink:0;"></div>
+          <div><div style="width:90px; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:6px;"></div><div style="width:65px; height:8px; background:var(--cream-deep); border-radius:4px;"></div></div>
+        </div>
+      </div>
+      <div class="review-card" style="opacity:0.2; pointer-events:none; min-height:220px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="width:80px; height:12px; background:var(--cream-deep); border-radius:6px; margin-bottom:16px;"></div>
+          <div style="width:100%; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:8px;"></div>
+          <div style="width:75%; height:10px; background:var(--cream-deep); border-radius:4px;"></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; padding-top:14px; border-top:1px solid var(--border-light);">
+          <div style="width:38px; height:38px; border-radius:50%; background:var(--cream-deep); flex-shrink:0;"></div>
+          <div><div style="width:85px; height:10px; background:var(--cream-deep); border-radius:4px; margin-bottom:6px;"></div><div style="width:60px; height:8px; background:var(--cream-deep); border-radius:4px;"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- ══════════════════════════════════════════════════════════
+       SECTION: SOCIAL MEDIA VIDEO REELS & STORIES ("SHOP THE LOOK")
+       ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="social-reels-showcase" aria-labelledby="reels-heading">
+    <div class="container">
+
+      <!-- Section Header -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:32px; flex-wrap:wrap; gap:16px;">
+        <div class="section-header reveal" style="text-align:left; margin-bottom:0;">
+          <span class="section-eyebrow">Social Stories &amp; Reels</span>
+          <h2 class="section-title" id="reels-heading">As Seen On You &amp; In the Studio</h2>
+          <span class="gold-line"></span>
+          <p style="font-size:14px; color:var(--text-muted); margin:10px 0 0; max-width:520px; line-height:1.7;">
+            Real styling moments, customer unboxings, and behind-the-scenes Sri Lankan artisan craftsmanship.
+          </p>
+        </div>
+        <!-- Nav Arrows -->
+        <div style="display:flex; gap:10px; padding-top:6px;">
+          <button type="button" class="btn-reel-nav" onclick="scrollReels(-1)" aria-label="Previous Stories">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+          </button>
+          <button type="button" class="btn-reel-nav" onclick="scrollReels(1)" aria-label="Next Stories">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="reels-filter-tabs">
+        <button class="reels-filter-btn active" onclick="filterReelsTab('ALL', this)">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          All Stories
+        </button>
+        <button class="reels-filter-btn" onclick="filterReelsTab('SHOP_THE_LOOK', this)">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Shop The Look
+        </button>
+        <button class="reels-filter-btn" onclick="filterReelsTab('CUSTOMER_REVIEW', this)">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Customer Reviews
+        </button>
+        <button class="reels-filter-btn" onclick="filterReelsTab('CRAFTSMANSHIP', this)">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Craftsmanship
+        </button>
+      </div>
+
+      <!-- Reels Carousel Track -->
+      <div class="reels-track-container">
+        <div id="reels-track" class="reels-track">
+          <!-- Dynamically populated by loadStoreReels() -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- VIDEO REEL MODAL -->
+  <div id="video-reel-modal" class="reel-modal" onclick="handleReelOverlayClick(event)" role="dialog" aria-modal="true" aria-label="Video Story Player">
+    <div class="reel-modal-container">
+
+      <!-- LEFT: Video / Embed Panel -->
+      <div class="reel-video-column">
+        <!-- Direct MP4 video element -->
+        <video id="reel-active-video" playsinline loop muted onclick="toggleReelPlayPause()"></video>
+        <!-- Social media iframe embed (Instagram/TikTok) -->
+        <iframe id="reel-social-iframe" style="display:none; width:100%; height:100%; border:none; border-radius:inherit;" allowfullscreen allow="autoplay; fullscreen" loading="lazy"></iframe>
+
+        <!-- Controls overlay -->
+        <button type="button" class="reel-ctrl-btn btn-close-reel" onclick="closeReelModal()" aria-label="Close">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <button type="button" class="reel-ctrl-btn btn-sound-reel" id="btn-reel-sound" onclick="toggleReelModalSound()" aria-label="Toggle Sound">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.414 0-.75-.336-.75-.75V10.5c0-.414.336-.75.75-.75h2.24z"/></svg>
+        </button>
+        <button type="button" class="reel-modal-arrow btn-reel-prev" onclick="navReelModal(-1)" aria-label="Previous">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        </button>
+        <button type="button" class="reel-modal-arrow btn-reel-next" onclick="navReelModal(1)" aria-label="Next">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        </button>
+      </div>
+
+      <!-- RIGHT: Story details & Product card -->
+      <div class="reel-sidebar-column">
+        <!-- Story meta -->
+        <div style="margin-bottom:20px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span class="reel-sidebar-platform" id="reel-modal-platform-text">Instagram Reel</span>
+            <span style="font-size:11px; color:var(--text-muted);">· Ceylon Letter Co.</span>
+          </div>
+          <h3 id="reel-modal-title" style="font-family:var(--font-display); font-size:20px; font-weight:600; color:var(--taupe-deep); margin:0 0 8px; line-height:1.3;"></h3>
+          <p id="reel-modal-caption" style="font-size:13px; color:var(--text-secondary); margin:0; line-height:1.7;"></p>
+        </div>
+
+        <!-- Product card — shown only when product is tagged -->
+        <div id="reel-modal-prod-card" style="display:none; margin-top:auto;">
+          <div style="border-top:1px solid var(--border-gold); padding-top:16px; margin-bottom:14px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--gold-deep); font-weight:700; margin:0 0 10px;">Featured Piece</p>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <img id="reel-modal-prod-img" src="" alt="Product"
+                style="width:64px; height:64px; border-radius:10px; object-fit:cover; border:1px solid var(--border-gold); flex-shrink:0; cursor:pointer;"
+                onclick="navigateToProduct()">
+              <div style="min-width:0; flex:1;">
+                <h4 id="reel-modal-prod-name" onclick="navigateToProduct()"
+                  style="font-size:14px; font-weight:700; color:var(--taupe-deep); margin:0 0 4px; cursor:pointer; line-height:1.3;
+                  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></h4>
+                <div id="reel-modal-prod-price"
+                  style="font-size:14px; font-weight:700; color:var(--gold-deep); margin-bottom:4px;"></div>
+                <div id="reel-modal-prod-variants"
+                  style="font-size:11px; color:var(--text-muted); line-height:1.5;"></div>
+              </div>
+            </div>
+          </div>
+          <button type="button" id="btn-reel-modal-action" onclick="navigateToProduct()"
+            style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+            padding:12px 20px; background:var(--gold); color:#fff; border:none; border-radius:12px;
+            font-size:13px; font-weight:700; cursor:pointer; font-family:var(--font-body);
+            transition:all 0.2s ease; letter-spacing:0.02em;"
+            onmouseover="this.style.background='var(--gold-deep)'; this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.background='var(--gold)'; this.style.transform=''">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span id="reel-modal-action-label">Shop The Look</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer injected by app.js -->
+
+  <!-- --- SCRIPTS --- -->
+  <script src="js/app.js"></script>
+  <script>
+    /* -- Dynamic Products from API -- */
+    document.addEventListener('DOMContentLoaded', async function loadIndexProducts() {
+      const FALLBACK_IMG = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80';
+      const ARROW_SVG = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>`;
+
+      function escapeHtml(str) {
+        return (str || '').replace(/"/g, '&quot;').replace(/'/g, "\\'");
+      }
+
+      function buildProductCard(p) {
+        const rawImg = p.primaryImage || FALLBACK_IMG;
+        const img = window.optimizeImageUrl ? window.optimizeImageUrl(rawImg, 450) : rawImg;
+        const price = parseFloat(p.price || 0).toFixed(2);
+        const name = p.name || 'Piece';
+        const safeName = escapeHtml(name);
+        const variantId = p.variantId || 0;
+        
+        const hasMultipleVariants = (p.variants && p.variants.length > 1) || (p.colors && p.colors.length > 1) || (p.sizes && p.sizes.length > 1);
+        const btnHtml = hasMultipleVariants
+          ? `<button class="product-quick-add" onclick="event.stopPropagation(); window.location='product-view.html?id=${p.id}'">Select Options</button>`
+          : `<button class="product-quick-add" onclick="event.stopPropagation(); addToCart({id:${p.id},variantId:${variantId},name:'${safeName}',price:${parseFloat(p.price || 0)},img:'${img}'})">Add to Bag</button>`;
+
+        return `
+          <article class="product-card reveal" style="cursor:pointer;" onclick="window.location='product-view.html?id=${p.id}'">
+            <div class="product-image-wrap">
+              <img src="${img}" alt="${safeName}" loading="lazy" decoding="async">
+              ${btnHtml}
+            </div>
+            <div class="product-info">
+              <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:4px;">${p.brand || 'Ceylon Letter Co.'}</p>
+              <p class="product-name">${name}</p>
+              <div class="product-price"><span class="price-new">Rs. ${price}</span></div>
+              <div class="product-stars"><span class="star">?</span><span class="star">?</span><span class="star">?</span><span class="star">?</span><span class="star star-empty">?</span></div>
+            </div>
+          </article>`;
+      }
+
+      function buildFeaturedCard(p) {
+        const rawImg = p.primaryImage || FALLBACK_IMG;
+        const img = window.optimizeImageUrl ? window.optimizeImageUrl(rawImg, 500) : rawImg;
+        const price = parseFloat(p.price || 0).toFixed(2);
+        const name = p.name || 'Piece';
+        const safeName = escapeHtml(name);
+        return `
+          <div class="featured-card reveal" onclick="window.location='product-view.html?id=${p.id}'" style="cursor:pointer;">
+            <div class="featured-card-img-wrap">
+              <img src="${img}" alt="${safeName}" loading="lazy" decoding="async">
+            </div>
+            <div class="featured-card-body">
+              <p class="featured-card-name">${name}</p>
+              <p class="featured-card-price">Rs. ${price}</p>
+            </div>
+          </div>`;
+      }
+
+      function buildCategoryCard(c) {
+        const img = c.image || FALLBACK_IMG;
+        const encodedName = encodeURIComponent(c.name);
+        const safeName = escapeHtml(c.name);
+        return `
+          <a href="products.html?category=${encodedName}" class="category-card reveal" aria-label="Browse ${safeName}">
+            <div class="category-img-wrap">
+              <img src="${img}" alt="${safeName}" loading="lazy">
+            </div>
+            <div class="category-footer">
+              <span class="category-name">${c.name}</span>
+              <span class="category-arrow" aria-hidden="true">${ARROW_SVG}</span>
+            </div>
+          </a>`;
+      }
+
+      const bsLoading  = document.getElementById('bestsellers-loading');
+      const bsGrid     = document.getElementById('bestsellers-grid');
+      const featGrid   = document.getElementById('featured-grid');
+      const catLoading = document.getElementById('categories-loading');
+      const catGrid    = document.getElementById('categories-grid');
+
+      /* -- 1. Best Sellers -- */
+      try {
+        const res = await fetch('api/products?sort=bestsellers');
+        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        const data = await res.json();
+        if (bsLoading) bsLoading.style.display = 'none';
+        if (data.success && data.products && data.products.length > 0) {
+          data.products.forEach(p => bsGrid?.insertAdjacentHTML('beforeend', buildProductCard(p)));
+        } else {
+          if (bsLoading) {
+            bsLoading.innerHTML = '<span style="color:var(--text-muted);font-size:13px;font-style:italic;">No pieces yet. <a href="admin.html" style="color:var(--gold);">Add from Admin ?</a></span>';
+            bsLoading.style.display = 'flex';
+          }
+        }
+      } catch (err) {
+        console.error('[Index] Best sellers load failed:', err);
+        if (bsLoading) bsLoading.style.display = 'none';
+      }
+
+      /* -- 2. Featured (newest) -- */
+      try {
+        const res = await fetch('api/products?sort=newest');
+        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        const data = await res.json();
+        if (data.success && data.products && data.products.length > 0) {
+          data.products.forEach(p => featGrid?.insertAdjacentHTML('beforeend', buildFeaturedCard(p)));
+        } else {
+          if (featGrid) featGrid.innerHTML = '<p style="color:rgba(245,230,208,0.35);font-size:13px;padding:24px;font-style:italic;">No pieces yet.</p>';
+        }
+      } catch (err) {
+        console.error('[Index] Featured load failed:', err);
+      }
+
+      /* -- 3. Categories -- */
+      try {
+        const res = await fetch('api/products?view=categories');
+        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        const data = await res.json();
+        if (catLoading) catLoading.style.display = 'none';
+        if (data.success && data.categories && data.categories.length > 0) {
+          data.categories.forEach(c => catGrid?.insertAdjacentHTML('beforeend', buildCategoryCard(c)));
+        } else {
+          if (catLoading) {
+            catLoading.innerHTML = '<span style="color:var(--text-muted);font-size:13px;font-style:italic;">No categories yet.</span>';
+            catLoading.style.display = 'flex';
+          }
+        }
+      } catch (err) {
+        console.error('[Index] Categories load failed:', err);
+        if (catLoading) catLoading.style.display = 'none';
+      }
+
+      /* -- 4. Promo Banner (Highest Discount) -- */
+      try {
+        const res = await fetch('api/products');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.products && data.products.length > 0) {
+            let maxDiscountAmount = 0;
+            let promoProduct = null;
+
+            data.products.forEach(p => {
+              let productMaxDiscount = 0;
+              if (p.variants && p.variants.length > 0) {
+                p.variants.forEach(v => {
+                  const compareAt = parseFloat(v.compareAtPrice || 0);
+                  const price = parseFloat(v.price || 0);
+                  if (compareAt > price && (compareAt - price) > productMaxDiscount) {
+                    productMaxDiscount = compareAt - price;
+                  }
+                });
+              } else {
+                 const compareAt = parseFloat(p.compareAtPrice || 0);
+                 const price = parseFloat(p.price || 0);
+                 if (compareAt > price) { productMaxDiscount = compareAt - price; }
+              }
+              if (productMaxDiscount > maxDiscountAmount) {
+                 maxDiscountAmount = productMaxDiscount;
+                 promoProduct = p;
+              }
+            });
+
+            if (promoProduct) {
+              const promoTitle = document.querySelector('.promo-title');
+              const promoDesc = document.querySelector('.promo-desc');
+              const promoImg = document.getElementById('promo-img') || document.querySelector('.promo-image-col img');
+              const promoCta = document.getElementById('promo-cta');
+              if (promoTitle) promoTitle.textContent = 'Special Offer  ' + promoProduct.name;
+              if (promoDesc) {
+                const descText = promoProduct.summary || "A rare opportunity to own a truly exceptional piece.";
+                promoDesc.textContent = descText.length > 120 ? descText.substring(0, 117) + '...' : descText;
+              }
+              if (promoImg && promoProduct.primaryImage) promoImg.src = promoProduct.primaryImage;
+              if (promoCta) promoCta.href = 'products.html?discount=true';
+            }
+          }
+        }
+      } catch (err) {
+        console.error('[Index] Promo load failed:', err);
+      }
+
+      /* -- 5. Recent Customer Reviews (Latest 5) -- */
+      async function loadRecentReviews() {
+        const container = document.getElementById('index-reviews-container');
+        if (!container) return;
+
+        const fallbackReviews = [
+          {
+            rating: 5,
+            comment: "The necklace I ordered arrived beautifully wrapped. The craftsmanship is extraordinary — you can feel the quality in every detail. Ceylon Letter Co. has a customer for life.",
+            userName: "Amara Senanayake",
+            productName: "Signature Letter Pendant",
+            metalColor: "Gold",
+            date: "Aug 10, 2026"
+          },
+          {
+            rating: 5,
+            comment: "Gifted my mother the bespoke gold bangle for her birthday. She was moved to tears. The hallmark certificate gave me total confidence in authenticity.",
+            userName: "Dilani Rajakaruna",
+            productName: "Heritage Bangle",
+            metalColor: "Rose Gold",
+            date: "Aug 06, 2026"
+          },
+          {
+            rating: 5,
+            comment: "I purchased an engagement ring piece here and couldn't be more pleased. The sapphire is vivid and the gold work is meticulous. Truly a gem of a store.",
+            userName: "Kavitha Perera",
+            productName: "Royal Sapphire Solitaire",
+            metalColor: "White Gold",
+            date: "Jul 29, 2026"
+          },
+          {
+            rating: 5,
+            comment: "Stunning craftsmanship! The custom engraving text came out so crisp and clean. Delivered right to my doorstep within 2 days with secure luxury packaging.",
+            userName: "Roshan Fernando",
+            productName: "Custom Engraved Cufflinks",
+            metalColor: "Gold",
+            date: "Jul 22, 2026"
+          },
+          {
+            rating: 5,
+            comment: "Exceeded all expectations! The anti-tarnish finish is real — I have worn my letter bracelet daily for months and the shine remains pristine.",
+            userName: "Nuwan Jayasuriya",
+            productName: "Dainty Initial Chain",
+            metalColor: "Gold",
+            date: "Jul 15, 2026"
+          }
+        ];
+
+        try {
+          const res = await fetch('api/reviews?limit=5');
+          let liveReviews = [];
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.success && Array.isArray(data.reviews)) {
+              liveReviews = data.reviews;
+            }
+          }
+
+          // Combine live reviews with fallback reviews to guarantee exactly 5 reviews
+          let combined = [...liveReviews];
+          if (combined.length < 5) {
+            for (let fb of fallbackReviews) {
+              if (combined.length >= 5) break;
+              if (!combined.some(c => (c.userName || c.reviewerName) === fb.userName)) {
+                combined.push(fb);
+              }
+            }
+          }
+
+          const finalReviews = combined.slice(0, 5);
+          if (finalReviews.length > 0) {
+            container.innerHTML = '';
+            finalReviews.forEach(r => {
+              const rating = Math.min(5, Math.max(1, r.rating || 5));
+              const stars = '&#9733;'.repeat(rating) + '&#9734;'.repeat(5 - rating);
+              const displayName = r.userName || r.reviewerName || 'Customer';
+              const firstLetter = displayName.charAt(0).toUpperCase() || 'C';
+              const dt = r.date || r.createdAt || '';
+              const prodName = r.productName || '';
+              const variant = [r.metalColor, r.sizeLength].filter(Boolean).join(' / ');
+
+              const prodBadge = prodName ? `
+                <div style="display:inline-flex; align-items:center; gap:5px; font-size:11px; color:#92400e; background:rgba(201,169,110,0.12); padding:3px 10px; border-radius:12px; border:1px solid rgba(201,169,110,0.25); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:12px;">
+                  <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <span style="overflow:hidden; text-overflow:ellipsis;">${escapeHtml(prodName)}${variant ? ' • ' + escapeHtml(variant) : ''}</span>
+                </div>
+              ` : '';
+
+              const card = `
+                <div class="review-card reveal" style="display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                      <div style="display:flex; gap:3px;">
+                        <span style="color:var(--gold); font-size:14px;">${stars}</span>
+                      </div>
+                      <span style="font-size:11px; font-weight:700; color:#15803d; background:rgba(34,197,94,0.12); padding:2px 8px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        Verified
+                      </span>
+                    </div>
+                    <p style="font-size:14px; color:var(--text-secondary); line-height:1.8; margin-bottom:16px; font-style:italic;">"${escapeHtml(r.comment || 'Exceptional craftsmanship and quality.')}"</p>
+                  </div>
+                  <div>
+                    ${prodBadge}
+                    <div style="display:flex; align-items:center; gap:12px; padding-top:12px; border-top:1px solid rgba(201,169,110,0.18);">
+                      <div style="width:38px; height:38px; background:linear-gradient(135deg, rgba(201,169,110,0.25), rgba(180,140,80,0.35)); border:1px solid rgba(201,169,110,0.4); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:var(--gold-deep); font-family:var(--font-display); flex-shrink:0;">
+                        ${firstLetter}
+                      </div>
+                      <div style="min-width:0;">
+                        <p style="font-size:13px; font-weight:700; color:var(--taupe-deep); margin:0; font-family:var(--font-display); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                          ${escapeHtml(displayName)}
+                        </p>
+                        <p style="font-size:11px; color:var(--text-muted); margin:0; letter-spacing:0.04em;">
+                          Verified Buyer ${dt ? '• ' + dt : ''}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+              container.insertAdjacentHTML('beforeend', card);
+            });
+          }
+        } catch (err) {
+          console.warn('Failed to load recent reviews:', err);
+        }
+      }
+
+      await loadRecentReviews();
+
+      if (window.AppLoader && typeof window.AppLoader._initScrollReveal === 'function') {
+        window.AppLoader._initScrollReveal();
+      }
+    });
+
+    // -- Hero Slider --
+    let heroSlidesData = [];
+
+    let heroIdx = 0;
+    let heroTimer;
+    const SLIDE_DURATION = 5000;
+
+    let heroSlides = document.querySelectorAll('.hero-slide');
+    let heroIndicators = document.querySelectorAll('.hero-indicator');
+    const heroTagEl = document.getElementById('heroTag');
+    const heroHeading = document.getElementById('heroHeading');
+    const heroDesc = document.getElementById('heroDesc');
+    const heroCta = document.getElementById('heroCta');
+    const heroContent = document.getElementById('heroContent');
+    const heroCurrentNum = document.getElementById('heroCurrentNum');
+
+    function setHeroSlide(idx, animate = true) {
+      if (idx === heroIdx && animate) return;
+      
+      const oldIdx = heroIdx;
+      heroIndicators.forEach(i => i.classList.remove('active'));
+
+      if (animate) {
+        heroContent.classList.add('hero-content-exit');
+        
+        if (heroSlides[oldIdx]) {
+            heroSlides.forEach(s => s.classList.remove('prev-active'));
+            heroSlides[oldIdx].classList.add('prev-active');
+            heroSlides[oldIdx].classList.remove('active');
+        }
+
+        setTimeout(() => {
+          heroIdx = idx;
+          const data = heroSlidesData[heroIdx % heroSlidesData.length];
+          heroTagEl.textContent = data.tag;
+          heroHeading.innerHTML = data.heading;
+          heroDesc.textContent = data.desc.replace(/&amp;/g, '&');
+          heroCta.href = data.link;
+          heroCurrentNum.textContent = String(heroIdx + 1).padStart(2, '0');
+          
+          heroSlides[heroIdx].classList.add('active');
+          heroIndicators[heroIdx].classList.add('active');
+          heroContent.classList.remove('hero-content-exit');
+          heroContent.classList.add('hero-content-enter');
+          
+          setTimeout(() => { heroContent.classList.remove('hero-content-enter'); }, 700);
+          
+          setTimeout(() => {
+            if (heroSlides[oldIdx]) heroSlides[oldIdx].classList.remove('prev-active');
+          }, 1200);
+        }, 400);
+      } else {
+        heroSlides.forEach(s => s.classList.remove('active', 'prev-active'));
+        heroIdx = idx;
+        heroSlides[heroIdx].classList.add('active');
+        heroIndicators[heroIdx].classList.add('active');
+      }
+    }
+
+    function nextHeroSlide() { 
+      if (heroSlides.length === 0) return;
+      setHeroSlide((heroIdx + 1) % heroSlides.length); 
+    }
+    function startHeroTimer() { 
+      if (heroSlides.length === 0) return;
+      clearInterval(heroTimer); 
+      heroTimer = setInterval(nextHeroSlide, SLIDE_DURATION); 
+    }
+
+    heroIndicators.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.slide);
+        setHeroSlide(idx);
+        startHeroTimer();
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => { 
+      try {
+        const res = await fetch('api/public/hero-slides');
+        const dSlides = await res.json();
+        if(dSlides && dSlides.length > 0) {
+          const track = document.getElementById('heroSlidesTrack');
+          track.innerHTML = '';
+          const dotsContainer = document.getElementById('heroIndicators');
+          // clear existing indicators
+          if(dotsContainer) {
+            const existingIndicators = dotsContainer.querySelectorAll('.hero-indicator');
+            existingIndicators.forEach(ind => ind.remove());
+          }
+
+          dSlides.forEach((slide, idx) => {
+            heroSlidesData.push({
+              tag: slide.tag || "",
+              heading: slide.heading || "",
+              desc: slide.description || "",
+              link: "products.html"
+            });
+            
+            const div = document.createElement('div');
+            div.className = `hero-slide ${idx === 0 ? 'active' : ''}`;
+            div.dataset.index = idx;
+            if(slide.mediaType === 'video') {
+               div.innerHTML = `<div class="hero-slide-bg"><video src="${slide.mediaUrl}" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;"></video></div>`;
+            } else {
+               div.innerHTML = `<div class="hero-slide-bg"><img src="${slide.mediaUrl}" alt="${slide.altText}" loading="${idx === 0 ? 'eager' : 'lazy'}"></div>`;
+            }
+            track.appendChild(div);
+
+            // create indicator
+            if(dotsContainer) {
+              const btn = document.createElement('button');
+              btn.className = `hero-indicator ${idx === 0 ? 'active' : ''}`;
+              btn.dataset.slide = idx;
+              btn.ariaLabel = `Go to slide ${idx + 1}`;
+              btn.innerHTML = '<span class="hero-indicator-fill"></span>';
+              btn.addEventListener('click', () => {
+                setHeroSlide(parseInt(btn.dataset.slide));
+                startHeroTimer();
+              });
+              dotsContainer.appendChild(btn);
+            }
+          });
+          heroSlides = document.querySelectorAll('.hero-slide');
+          heroIndicators = document.querySelectorAll('.hero-indicator'); // though they are managed via closure above
+          // Need to update the global variable if it's used elsewhere
+          // But wait, heroIndicators is a const declared earlier!
+          // We'll just let the global const be outdated, but our new buttons have event listeners attached.
+          
+          if(heroSlidesData.length > 0) {
+            heroTagEl.textContent = heroSlidesData[0].tag;
+            heroHeading.innerHTML = heroSlidesData[0].heading;
+            heroDesc.textContent = heroSlidesData[0].desc.replace(/&amp;/g, '&');
+            heroCurrentNum.textContent = '01';
+            // ✅ Update total counter dynamically
+            const heroTotalEl = document.getElementById('heroTotalNum');
+            if (heroTotalEl) heroTotalEl.textContent = String(heroSlidesData.length).padStart(2, '0');
+          }
+        }
+      } catch(e) {
+        console.error("Hero slides API failed:", e);
+        // Fallback to static slide if API fails so the UI doesn't break
+        const track = document.getElementById('heroSlidesTrack');
+        if (track.innerHTML.trim() === '') {
+            track.innerHTML = `<div class="hero-slide active" data-index="0"><div class="hero-slide-bg"><img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80" alt="Fallback Slide"></div></div>`;
+            heroSlides = document.querySelectorAll('.hero-slide');
+        }
+      }
+      startHeroTimer(); 
+    });
+  </script>
+<script>
+
+    /* ══════════════════════════════════════════════════════════
+       STOREFRONT SOCIAL REELS & VIDEO LOGIC
+       ══════════════════════════════════════════════════════════ */
+    let allStoreReels = [];
+    let filteredStoreReels = [];
+    let currentReelIndex = 0;
+    let isReelMuted = true;
+
+    const FALLBACK_REELS = [
+      {
+        id: 101,
+        title: "Signature Letter 'M' in 18K Solid Gold",
+        caption: "Real-life shine and model styling of our bestselling bespoke letter pendant. #CeylonLetterCo",
+        videoCategory: "SHOP_THE_LOOK",
+        platform: "INSTAGRAM",
+        videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-woman-putting-on-a-gold-ring-41221-large.mp4",
+        thumbnailUrl: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80",
+        ctaText: "Shop This Piece",
+        product: {
+          id: 1,
+          name: "Signature Letter Pendant",
+          basePrice: 24500.00,
+          primaryImage: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80"
+        }
+      },
+      {
+        id: 102,
+        title: "Velvet Gift Box Unboxing Experience",
+        caption: "Every piece comes sealed with a certificate of authenticity & luxury velvet gift box.",
+        videoCategory: "CUSTOMER_REVIEW",
+        platform: "TIKTOK",
+        videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-holding-a-gold-ring-close-up-41222-large.mp4",
+        thumbnailUrl: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80",
+        customerName: "Dinithi Samaraweera",
+        rating: 5,
+        ctaText: "Shop The Look",
+        product: {
+          id: 2,
+          name: "Royal Diamond Initial Ring",
+          basePrice: 38000.00,
+          primaryImage: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&q=80"
+        }
+      },
+      {
+        id: 103,
+        title: "The Art of Precision Laser Engraving",
+        caption: "Watch our master craftsmen engrave bespoke letters with micrometer precision.",
+        videoCategory: "CRAFTSMANSHIP",
+        platform: "YOUTUBE_SHORT",
+        videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-goldsmith-working-on-a-ring-with-a-flame-41220-large.mp4",
+        thumbnailUrl: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80",
+        ctaText: "Explore Craftsmanship",
+        product: {
+          id: 3,
+          name: "Bespoke Engraved Bar Necklace",
+          basePrice: 19500.00,
+          primaryImage: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80"
+        }
+      },
+      {
+        id: 104,
+        title: "Rose Gold Initial Necklace Sparkle Test",
+        caption: "Natural daylight test. 18K Rose Gold with hand-set pavé stones.",
+        videoCategory: "SHOP_THE_LOOK",
+        platform: "INSTAGRAM",
+        videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-wearing-a-gold-necklace-with-a-pendant-41223-large.mp4",
+        thumbnailUrl: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80",
+        ctaText: "Customize Yours",
+        product: {
+          id: 4,
+          name: "Pavé Letter Pendant • Rose Gold",
+          basePrice: 28500.00,
+          primaryImage: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80"
+        }
+      }
+    ];
+
+    async function loadStoreReels() {
+      const track = document.getElementById('reels-track');
+      if (!track) return;
+
+      try {
+        const res = await fetch('api/public/videos', { cache: 'no-store' });
+        const json = await res.json();
+        console.log('[Reels Debug] API Response:', json);
+        if (json && json.success && Array.isArray(json.videos) && json.videos.length > 0) {
+          allStoreReels = json.videos;
+        } else {
+          console.warn('[Reels Debug] Videos list empty or error, loading fallback');
+          allStoreReels = FALLBACK_REELS;
+        }
+      } catch (err) {
+        console.warn('[Reels Debug] Fetch error, using fallback reels:', err);
+        allStoreReels = FALLBACK_REELS;
+      }
+
+      filteredStoreReels = [...allStoreReels];
+      renderReelsTrack();
+    }
+
+    function renderReelsTrack() {
+      const track = document.getElementById('reels-track');
+      if (!track) return;
+
+      if (!filteredStoreReels || filteredStoreReels.length === 0) {
+        track.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted); width:100%;">No video stories found in this category.</div>';
+        return;
+      }
+
+      track.innerHTML = filteredStoreReels.map((reel, idx) => {
+        const title = (reel.title || 'Ceylon Piece').replace(/"/g, '&quot;');
+        const poster = reel.thumbnailUrl || (reel.product && reel.product.primaryImage) || 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80';
+        const platformLabel = reel.platform === 'TIKTOK' ? 'TikTok' :
+                              reel.platform === 'YOUTUBE_SHORT' ? 'YouTube Short' :
+                              reel.platform === 'FACEBOOK' ? 'Facebook Video' :
+                              (reel.platform === 'CLOUDINARY_MP4' || reel.platform === 'DIRECT_URL') ? 'Video' : 'Instagram Reel';
+        
+        let productPillHtml = '';
+        if (reel.product) {
+          const prodName = (reel.product.name || 'Jewellery Piece').replace(/"/g, '&quot;');
+          const prodPriceDisplay = reel.product.priceDisplay || ('Rs. ' + parseFloat(reel.product.basePrice || 0).toLocaleString('en-LK', { minimumFractionDigits: 2 }));
+          const prodImg = reel.product.primaryImage || poster;
+          productPillHtml = `
+            <div class="reel-product-pill" onclick="event.stopPropagation(); window.location='product-view.html?id=${reel.product.id}'">
+              <div class="reel-prod-left">
+                <img src="${prodImg}" class="reel-prod-thumb" alt="${prodName}">
+                <div class="reel-prod-meta">
+                  <p class="reel-prod-title">${prodName}</p>
+                  <p class="reel-prod-price">${prodPriceDisplay}</p>
+                </div>
+              </div>
+              <div class="reel-shop-arrow">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="reel-card reveal visible" onclick="openReelModal(${idx})">
+            <img src="${poster}" class="reel-media-bg" alt="${title}" loading="lazy">
+            <div class="reel-overlay"></div>
+            
+            <div class="reel-platform-tag">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/></svg>
+              <span>${platformLabel}</span>
+            </div>
+
+            <div class="reel-play-btn">
+              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+
+            <div class="reel-bottom-info">
+              <p class="reel-title-text">${title}</p>
+              ${productPillHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function scrollReels(direction) {
+      const track = document.getElementById('reels-track');
+      if (track) {
+        const scrollAmount = 280 * direction;
+        track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
+
+    function categoryMatches(dbVal, filterVal) {
+      if (!dbVal || !filterVal) return false;
+      // 1. Direct raw match (fastest — SHOP_THE_LOOK === SHOP_THE_LOOK)
+      if (dbVal.toUpperCase() === filterVal.toUpperCase()) return true;
+      // 2. Normalize: replace underscores/extra spaces → compare
+      const norm = v => v.toUpperCase().replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+      const n1 = norm(dbVal);
+      const n2 = norm(filterVal);
+      if (n1 === n2) return true;
+      // 3. Substring: one contains the other
+      if (n1.includes(n2) || n2.includes(n1)) return true;
+      return false;
+    }
+
+    function filterReelsTab(cat, btn) {
+      // Update active button state
+      const section = document.getElementById('social-reels-showcase');
+      if (section) {
+        section.querySelectorAll('.reels-filter-btn').forEach(b => b.classList.remove('active'));
+      } else {
+        document.querySelectorAll('.reels-filter-btn').forEach(b => b.classList.remove('active'));
+      }
+      if (btn) btn.classList.add('active');
+
+      if (cat === 'ALL') {
+        filteredStoreReels = [...allStoreReels];
+      } else {
+        filteredStoreReels = allStoreReels.filter(r => {
+          const isMatch = categoryMatches(r.videoCategory, cat);
+          return isMatch;
+        });
+      }
+      renderReelsTrack();
+    }
+
+    // ── Global: current product ID for navigation ──
+    let _reelCurrentProductId = null;
+
+    function navigateToProduct() {
+      if (_reelCurrentProductId) window.location = 'product-view.html?id=' + _reelCurrentProductId;
+    }
+
+    // Build Instagram/TikTok/Facebook embed URL from post URL
+    function buildEmbedUrl(videoUrl, platform) {
+      try {
+        if (platform === 'FACEBOOK' || videoUrl.includes('facebook.com')) {
+          return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(videoUrl)}&show_text=0`;
+        }
+        if (platform === 'INSTAGRAM' || videoUrl.includes('instagram.com')) {
+          // Extract shortcode from URL: /reel/XXXX/ or /p/XXXX/
+          const match = videoUrl.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/);
+          if (match) return `https://www.instagram.com/p/${match[2]}/embed/captioned/`;
+        }
+        if (platform === 'TIKTOK' || videoUrl.includes('tiktok.com')) {
+          // TikTok embed: /video/VIDEONUM
+          const match = videoUrl.match(/video\/(\d+)/);
+          if (match) return `https://www.tiktok.com/embed/v2/${match[1]}`;
+          // Try /@user/video/NUM
+          const match2 = videoUrl.match(/@[^/]+\/video\/(\d+)/);
+          if (match2) return `https://www.tiktok.com/embed/v2/${match2[1]}`;
+        }
+        if (platform === 'YOUTUBE_SHORT' || videoUrl.includes('youtube.com/shorts')) {
+          const match = videoUrl.match(/shorts\/([A-Za-z0-9_-]+)/);
+          if (match) return `https://www.youtube.com/embed/${match[1]}?autoplay=1&loop=1&mute=1`;
+        }
+      } catch(e) {}
+      return null;
+    }
+
+    function isSocialUrl(url, platform) {
+      if (!url) return false;
+      const social = ['INSTAGRAM', 'TIKTOK', 'YOUTUBE_SHORT', 'FACEBOOK'];
+      if (social.includes((platform || '').toUpperCase())) return true;
+      return url.includes('instagram.com') || url.includes('tiktok.com') ||
+             url.includes('youtube.com/shorts') || url.includes('facebook.com');
+    }
+
+    function openReelModal(index) {
+      if (!filteredStoreReels || index < 0 || index >= filteredStoreReels.length) return;
+      currentReelIndex = index;
+      const reel = filteredStoreReels[currentReelIndex];
+
+      const modal        = document.getElementById('video-reel-modal');
+      const videoEl      = document.getElementById('reel-active-video');
+      const iframeEl     = document.getElementById('reel-social-iframe');
+      const titleEl      = document.getElementById('reel-modal-title');
+      const captionEl    = document.getElementById('reel-modal-caption');
+      const platformText = document.getElementById('reel-modal-platform-text');
+      const prodCard     = document.getElementById('reel-modal-prod-card');
+      const prodImg      = document.getElementById('reel-modal-prod-img');
+      const prodName     = document.getElementById('reel-modal-prod-name');
+      const prodPrice    = document.getElementById('reel-modal-prod-price');
+      const prodVariants = document.getElementById('reel-modal-prod-variants');
+      const actionLabel  = document.getElementById('reel-modal-action-label');
+
+      // 1. Platform label
+      const platformLabel = reel.platform === 'TIKTOK' ? 'TikTok' :
+        reel.platform === 'YOUTUBE_SHORT' ? 'YouTube Short' :
+        reel.platform === 'FACEBOOK' ? 'Facebook Video' :
+        (reel.platform === 'CLOUDINARY_MP4' || reel.platform === 'DIRECT_URL') ? 'Video' : 'Instagram Reel';
+      if (titleEl)      titleEl.textContent = reel.title || 'Ceylon Letter Co.';
+      if (captionEl)    captionEl.textContent = reel.caption || '';
+      if (platformText) platformText.textContent = platformLabel;
+
+      // 2. Product card with variants
+      const prod = reel.product;
+      _reelCurrentProductId = prod ? prod.id : null;
+      if (prod && prodCard) {
+        prodCard.style.display = 'block';
+        if (prodImg)  { prodImg.src = prod.primaryImage || reel.thumbnailUrl || ''; prodImg.onerror = () => prodImg.style.display='none'; }
+        if (prodName) prodName.textContent = prod.name || 'Jewellery Piece';
+        if (prodPrice) prodPrice.textContent = prod.priceDisplay ||
+          ('Rs. ' + parseFloat(prod.basePrice || 0).toLocaleString('en-LK', { minimumFractionDigits: 2 }));
+        // Variants summary
+        if (prodVariants) {
+          const variants = prod.taggedVariants || [];
+          if (variants.length > 0) {
+            const colors = [...new Set(variants.filter(v => v.color).map(v => v.color))];
+            const sizes  = [...new Set(variants.filter(v => v.size).map(v => v.size))];
+            let variantText = [];
+            if (colors.length) variantText.push(colors.join(' · '));
+            if (sizes.length)  variantText.push(sizes.join(' · '));
+            prodVariants.textContent = variantText.join('  |  ') || (variants.length + ' variants available');
+          } else {
+            prodVariants.textContent = '';
+          }
+        }
+        if (actionLabel) actionLabel.textContent = reel.ctaText || 'Shop The Look';
+      } else if (prodCard) {
+        prodCard.style.display = 'none';
+        _reelCurrentProductId = null;
+      }
+
+      // 3. Show modal and prevent background scroll
+      modal.classList.add('active');
+      document.body.classList.add('modal-open');
+
+      // 4. Video handling
+      const posterSrc = reel.thumbnailUrl || (prod && prod.primaryImage) || '';
+      const videoUrl  = reel.videoUrl || '';
+      const social    = isSocialUrl(videoUrl, reel.platform);
+      const embedUrl  = social ? buildEmbedUrl(videoUrl, reel.platform) : null;
+
+      if (social && embedUrl) {
+        // ── Social with embed URL → use iframe (autoplay inside iframe) ──
+        if (videoEl) { videoEl.pause(); videoEl.removeAttribute('src'); videoEl.style.display = 'none'; }
+        if (iframeEl) {
+          iframeEl.src = embedUrl;
+          iframeEl.style.display = 'block';
+        }
+      } else if (social && !embedUrl) {
+        // ── Social but can't build embed URL → show thumbnail + watch button ──
+        if (videoEl) { videoEl.pause(); videoEl.removeAttribute('src'); videoEl.style.display = 'none'; }
+        if (iframeEl) { iframeEl.src = ''; iframeEl.style.display = 'none'; }
+        // Show poster as background
+        const videoCol = document.querySelector('.reel-video-column');
+        if (videoCol && posterSrc) videoCol.style.backgroundImage = `url('${posterSrc}')`;
+      } else {
+        // ── Direct MP4 → play in video element ──
+        if (iframeEl) { iframeEl.src = ''; iframeEl.style.display = 'none'; }
+        if (videoEl) {
+          videoEl.style.display = '';
+          let src = videoUrl;
+          if (src && !src.startsWith('http') && !src.startsWith('blob')) {
+            src = window.location.origin + (src.startsWith('/') ? '' : '/') + src;
+          }
+          if (posterSrc) videoEl.setAttribute('poster', posterSrc);
+          videoEl.pause();
+          videoEl.removeAttribute('src');
+          videoEl.load();
+          videoEl.src = src;
+          videoEl.muted = true;
+          isReelMuted = true;
+          const soundBtn = document.getElementById('btn-reel-sound');
+          if (soundBtn) {
+            soundBtn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.414 0-.75-.336-.75-.75V10.5c0-.414.336-.75.75-.75h2.24z"/></svg>';
+          }
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            videoEl.play().catch(e => console.warn('Autoplay blocked:', e));
+          }));
+        }
+      }
+    }
+
+    function closeReelModal() {
+      const modal   = document.getElementById('video-reel-modal');
+      const videoEl = document.getElementById('reel-active-video');
+      const iframe  = document.getElementById('reel-social-iframe');
+      const videoCol = document.querySelector('.reel-video-column');
+      if (videoEl) { videoEl.pause(); videoEl.removeAttribute('src'); videoEl.removeAttribute('poster'); videoEl.style.display = ''; }
+      if (iframe)  { iframe.src = ''; iframe.style.display = 'none'; }
+      if (videoCol) videoCol.style.backgroundImage = '';
+      if (modal) modal.classList.remove('active');
+      document.body.classList.remove('modal-open');
+      _reelCurrentProductId = null;
+    }
+
+    function handleReelOverlayClick(e) {
+      if (e.target.id === 'video-reel-modal') {
+        closeReelModal();
+      }
+    }
+
+    function toggleReelPlayPause() {
+      const video = document.getElementById('reel-active-video');
+      if (!video) return;
+      if (video.paused) video.play();
+      else video.pause();
+    }
+
+    function toggleReelModalSound() {
+      const video = document.getElementById('reel-active-video');
+      if (!video) return;
+      isReelMuted = !isReelMuted;
+      video.muted = isReelMuted;
+      
+      const soundBtn = document.getElementById('btn-reel-sound');
+      if (soundBtn) {
+        if (isReelMuted) {
+          soundBtn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.414 0-.75-.336-.75-.75V10.5c0-.414.336-.75.75-.75h2.24z"/></svg>';
+        } else {
+          soundBtn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.414 0-.75-.336-.75-.75V10.5c0-.414.336-.75.75-.75h2.24z"/></svg>';
+        }
+      }
+    }
+
+    function navReelModal(step) {
+      if (!filteredStoreReels || filteredStoreReels.length === 0) return;
+      let nextIdx = currentReelIndex + step;
+      if (nextIdx < 0) nextIdx = filteredStoreReels.length - 1;
+      if (nextIdx >= filteredStoreReels.length) nextIdx = 0;
+      openReelModal(nextIdx);
+    }
+
+    function handleReelActionClick() {
+      const reel = filteredStoreReels[currentReelIndex];
+      if (reel && reel.product) {
+        closeReelModal();
+        window.location.href = 'product-view.html?id=' + reel.product.id;
+      }
+    }
+
+    // Initialize Reels on Page Load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStoreReels();
+    });
+
+</script>
+</body>
+
+</html>
+

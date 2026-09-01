@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. – Product Detail. Shop now with 1-year warranty and islandwide delivery.">
+  <title id="page-title-meta">Ceylon Letter Co. – Product</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .spec-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .spec-item:nth-child(odd) { border-right: 1px solid var(--border); }
+    .spec-item:last-child, .spec-item:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+    .spec-label { color: var(--text-muted); letter-spacing: 0.04em; }
+    .spec-value { font-weight: 600; color: var(--black); font-family: var(--font-display); }
+
+    .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      padding: 12px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .tab-btn.active { color: var(--black); border-bottom-color: var(--black); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Loading skeleton */
+    .pv-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      flex-direction: column;
+      gap: 16px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .pv-loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--black);
+      border-radius: 50%;
+      animation: pv-spin 0.8s linear infinite;
+    }
+    @keyframes pv-spin { to { transform: rotate(360deg); } }
+
+    /* Not found state */
+    .pv-not-found {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      gap: 16px;
+      text-align: center;
+      padding: 32px;
+    }
+    .pv-not-found h2 { font-family: var(--font-display); font-size: 24px; }
+    .pv-not-found p { color: var(--text-muted); font-size: 14px; max-width: 360px; }
+
+    /* Trust badges row */
+    .pv-trust-row {
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .pv-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .spec-grid {
+        grid-template-columns: 1fr;
+      }
+      .spec-item:nth-child(odd) { border-right: none; }
+      .spec-item:nth-last-child(2):nth-child(odd) { border-bottom: 1px solid var(--border); }
+      .pv-trust-row {
+        gap: 14px;
+        padding: 16px 0;
+      }
+      #breadcrumb {
+        padding: 16px 16px 0 !important;
+        flex-wrap: wrap;
+      }
+    }
+    @media (max-width: 480px) {
+      .pv-trust-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .tab-btn {
+        padding: 10px 14px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar injected by app.js -->
+
+<!-- BREADCRUMB -->
+<div style="max-width:1280px; margin:0 auto; padding:20px 32px 0; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-muted);" id="breadcrumb">
+  <a href="index.html" style="color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--black)'" onmouseout="this.style.color='var(--text-muted)'">Home</a>
+  <span style="color:var(--border);">/</span>
+  <a href="products.html" style="color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--black)'" onmouseout="this.style.color='var(--text-muted)'">Shop</a>
+  <span style="color:var(--border);">/</span>
+  <span style="color:var(--black); font-weight:500;" id="breadcrumb-name">Loading…</span>
+</div>
+
+<!-- LOADING STATE -->
+<div id="pv-loading-state" class="pv-loading">
+  <div class="pv-loading-spinner"></div>
+  <span>Loading product…</span>
+</div>
+
+<!-- NOT FOUND STATE (hidden by default) -->
+<div id="pv-not-found-state" class="pv-not-found" style="display:none;">
+  <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:var(--text-muted)"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+  <h2>Product Not Found</h2>
+  <p>The product you are looking for does not exist or has been removed.</p>
+  <a href="products.html" class="btn btn-primary">Back to Shop</a>
+</div>
+
+<!-- PRODUCT VIEW LAYOUT (hidden until loaded) -->
+<div class="product-view-layout" id="pv-main-content" style="display:none;">
+
+  <!-- GALLERY -->
+  <div class="product-gallery">
+    <div class="product-gallery-main" id="gallery-main">
+      <img src="" alt="Product Image" id="main-img" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+    <div class="product-gallery-thumbs" id="gallery-thumbs">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- PRODUCT INFO -->
+  <div class="product-detail-info">
+
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+      <span class="badge badge-dark" id="pv-stock-badge">In Stock</span>
+    </div>
+
+    <h1 class="product-detail-name" id="pv-name">—</h1>
+
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+      <div class="product-stars" style="font-size:14px;" id="pv-stars">
+          <span class="star star-empty" style="display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+          <span class="star star-empty" style="display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+          <span class="star star-empty" style="display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+          <span class="star star-empty" style="display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+          <span class="star star-empty" style="display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+      </div>
+      <span style="font-size:13px; color:var(--text-muted);" id="pv-reviews-count">(0 reviews)</span>
+    </div>
+
+    <div class="product-detail-price" id="pv-price-block">
+      <!-- Populated by JS -->
+    </div>
+
+    <div id="pv-deposit-badge" style="display:none; margin-top: 8px; margin-bottom: 12px; padding: 10px 14px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 6px; color: #b45309; font-size: 13px; font-weight: 500; align-items: center; gap: 8px;">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+      A Rs. 1000 upfront deposit is required to process this order for COD.
+    </div>
+
+    <p class="product-detail-summary" id="pv-summary" style="font-size:15px; font-weight:500; margin-bottom:12px; color:var(--black);">—</p>
+
+    <!-- COLOR VARIANTS -->
+    <div class="product-options" id="pv-color-section">
+      <span class="option-label">Color — <strong style="color:var(--black);" id="selected-color">—</strong></span>
+      <div class="color-swatches" id="pv-color-swatches">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- SIZE / LENGTH VARIANTS (shown if size exists) -->
+    <div class="product-options" id="pv-size-section" style="display:none;">
+      <span class="option-label" id="pv-size-label">Size / Length — <strong style="color:var(--black);" id="selected-size">—</strong></span>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;" id="pv-size-btns">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- CUSTOMISATION (shown if product is customisable) -->
+    <div class="product-options" id="pv-customisation-section" style="display:none; margin-bottom: 24px; padding: 16px 20px; border: 1px solid #dfd3bd; border-radius: 8px; background-color: #eee4d1; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);">
+      <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-weight: 500; margin-bottom: 16px; color: #4a453d;">Personalize your pendant</h3>
+      
+      <div style="margin-bottom: 12px;">
+        <label for="custom-engraving" style="display:block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #6b6357; margin-bottom: 6px; text-transform: uppercase;">Name or text (Max 10 chars)</label>
+        <input type="text" id="custom-engraving" maxlength="10" placeholder="e.g. Forever" style="width: 100%; padding: 10px 12px; border: 1px solid #dcd1c2; border-radius: 4px; background-color: #fcf9f2; font-size: 13px; color: #4a453d; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#b3a38f'" onblur="this.style.borderColor='#dcd1c2'" oninput="toggleDepositBadge()">
+      </div>
+
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 1 1 120px;">
+          <label for="custom-height" style="display:block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #6b6357; margin-bottom: 6px; text-transform: uppercase;">Height (Optional)</label>
+          <input type="text" id="custom-height" placeholder="e.g. 5cm" style="width: 100%; padding: 10px 12px; border: 1px solid #dcd1c2; border-radius: 4px; background-color: #fcf9f2; font-size: 13px; color: #4a453d; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#b3a38f'" onblur="this.style.borderColor='#dcd1c2'" oninput="toggleDepositBadge()">
+        </div>
+        <div style="flex: 1 1 120px;">
+          <label for="custom-width" style="display:block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #6b6357; margin-bottom: 6px; text-transform: uppercase;">Width (Optional)</label>
+          <input type="text" id="custom-width" placeholder="e.g. 3cm" style="width: 100%; padding: 10px 12px; border: 1px solid #dcd1c2; border-radius: 4px; background-color: #fcf9f2; font-size: 13px; color: #4a453d; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#b3a38f'" onblur="this.style.borderColor='#dcd1c2'" oninput="toggleDepositBadge()">
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <a href="https://wa.me/94764921325" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #25D366; color: white; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; font-family: 'Inter', -apple-system, sans-serif; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#22bf5b'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 14px rgba(37, 211, 102, 0.35)';" onmouseout="this.style.backgroundColor='#25D366'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(37, 211, 102, 0.25)';">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom: 2px;">
+            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+          </svg>
+          <span style="line-height: 1; padding-top: 2px;">Need Extra Customization? Chat with us on WhatsApp</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- QUANTITY -->
+    <div class="product-options">
+      <span class="option-label">Quantity</span>
+      <div class="quantity-selector">
+        <button class="qty-btn" id="qty-minus" onclick="changeQty(-1)" aria-label="Decrease quantity">−</button>
+        <span class="qty-value" id="qty-value" aria-live="polite">1</span>
+        <button class="qty-btn" id="qty-plus" onclick="changeQty(1)" aria-label="Increase quantity">+</button>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="product-actions">
+      <button class="btn btn-primary btn-lg" id="add-to-cart-btn" onclick="addToCartFromPV()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/>
+        </svg>
+        Add to Cart
+      </button>
+      <button class="wishlist-btn" id="wishlist-btn" aria-label="Add to wishlist" onclick="addToWishlistPV()">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- BUY NOW -->
+    <button class="btn btn-outline" style="width:100%; margin-top:12px; justify-content:center;" onclick="buyNowPV()">Buy Now</button>
+
+    <!-- TRUST BADGES -->
+    <div class="pv-trust-row">
+      <a href="javascript:void(0)" onclick="switchToWarrantyTab()" class="pv-trust-item" style="color:inherit; text-decoration:none; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+        <span id="pv-trust-warranty">Warranty Covered</span>
+      </a>
+      <div class="pv-trust-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25"/></svg>
+        <span>Islandwide Delivery</span>
+      </div>
+      <a href="contact.html" class="pv-trust-item" style="color:inherit; text-decoration:none; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+        <span>Easy Exchanges</span>
+      </a>
+    </div>
+
+    <!-- TABS: Description / Specs / Warranty / Reviews -->
+    <div style="margin-top:32px;">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'tab-desc')">Description</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-specs')">Specifications</button>
+        <button class="tab-btn" id="btn-tab-warranty" onclick="switchTab(this,'tab-warranty')">Warranty</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-reviews')">Reviews</button>
+      </div>
+
+      <div class="tab-content active" id="tab-desc">
+        <p style="font-size:14px; color:var(--text-secondary); line-height:1.9;" id="tab-desc-text">—</p>
+      </div>
+
+      <div class="tab-content" id="tab-specs">
+        <div class="spec-grid" id="tab-specs-grid">
+          <!-- Populated by JS from variant data -->
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-warranty">
+        <div style="padding: 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--black);">
+          <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+            <div style="width: 42px; height: 42px; border-radius: 50%; background: rgba(180, 83, 9, 0.1); color: #b45309; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+            </div>
+            <div>
+              <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--black);">Official Product Warranty Protection</h4>
+              <span style="font-size: 13px; font-weight: 600; color: #b45309;">Coverage Period: <strong id="pv-tab-warranty-period">Anti-Tarnish &amp; Quality Warranty</strong></span>
+            </div>
+          </div>
+
+          <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+            Every handcrafted piece is backed by Ceylon Letter Co.'s official anti-tarnish &amp; durability warranty. If you experience any issues, explore our policy or reach our team for immediate claim assistance.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;">
+            <div style="padding: 12px 14px; background: rgba(0,0,0,0.02); border-radius: 6px; border: 1px solid var(--border);">
+              <strong style="font-size: 13px; color: var(--black); display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Anti-Tarnish Guarantee
+              </strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Protected against color fading &amp; rusting under normal wear conditions.</span>
+            </div>
+            <div style="padding: 12px 14px; background: rgba(0,0,0,0.02); border-radius: 6px; border: 1px solid var(--border);">
+              <strong style="font-size: 13px; color: var(--black); display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Free Replacement Claim
+              </strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Fast &amp; easy claim process with direct replacement for verified defects.</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="warranty.html" target="_blank" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12.5px; text-decoration: none;">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+              Read Full Policy &amp; Terms
+            </a>
+            <a href="https://wa.me/94764921325?text=Hello%20Ceylon%20Letter%20Co.%2C%20I%20have%20an%20inquiry%20regarding%20warranty%20for%20my%20order" target="_blank" class="btn btn-sm" style="background: #25D366; color: #ffffff; border: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12.5px; text-decoration: none;" onmouseover="this.style.background='#20ba59'" onmouseout="this.style.background='#25D366'">
+              <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+              WhatsApp Support
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content active" id="tab-desc">
+        <p style="font-size:14px; color:var(--text-secondary); line-height:1.9;" id="tab-desc-text">—</p>
+      </div>
+
+      <div class="tab-content" id="tab-specs">
+        <div class="spec-grid" id="tab-specs-grid">
+          <!-- Populated by JS from variant data -->
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-reviews">
+        <div style="margin-bottom: 32px;">
+          <h3 style="font-family: var(--font-display); font-size: 16px; margin-bottom: 12px;">Write a Review</h3>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--black);">Rating:</span>
+              <div id="star-rating-picker" style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
+                <svg data-rating="1" class="review-star-pick" width="26" height="26" viewBox="0 0 24 24" fill="#eab308" stroke="#eab308" stroke-width="1.5" style="transition: transform 0.15s ease, fill 0.15s ease;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-rating="2" class="review-star-pick" width="26" height="26" viewBox="0 0 24 24" fill="#eab308" stroke="#eab308" stroke-width="1.5" style="transition: transform 0.15s ease, fill 0.15s ease;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-rating="3" class="review-star-pick" width="26" height="26" viewBox="0 0 24 24" fill="#eab308" stroke="#eab308" stroke-width="1.5" style="transition: transform 0.15s ease, fill 0.15s ease;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-rating="4" class="review-star-pick" width="26" height="26" viewBox="0 0 24 24" fill="#eab308" stroke="#eab308" stroke-width="1.5" style="transition: transform 0.15s ease, fill 0.15s ease;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg data-rating="5" class="review-star-pick" width="26" height="26" viewBox="0 0 24 24" fill="#eab308" stroke="#eab308" stroke-width="1.5" style="transition: transform 0.15s ease, fill 0.15s ease;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <span id="star-rating-label" style="font-size: 13px; font-weight: 700; color: #b45309;">5 / 5 Stars (Excellent)</span>
+              <input type="hidden" id="review-rating" value="5">
+            </div>
+            <textarea id="review-comment" rows="3" placeholder="What did you think about this product?" style="padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: var(--font-body); font-size: 14px; resize: vertical; background: var(--surface); color: var(--black);"></textarea>
+            <button class="btn btn-primary" style="align-self: flex-start;" onclick="submitReview()">Submit Review</button>
+          </div>
+        </div>
+        <hr style="border:none; border-top:1px solid var(--border); margin-bottom: 24px;">
+        <div style="display:flex; flex-direction:column; gap:20px;" id="reviews-container">
+          <p style="font-size:14px; color:var(--text-muted);">Loading reviews...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RELATED PRODUCTS -->
+<section class="section" style="border-top:1px solid var(--border);" aria-labelledby="related-heading" id="related-section" style="display:none;">
+  <div class="section-header">
+    <span class="section-eyebrow">You May Also Like</span>
+    <h2 class="section-title" id="related-heading">Related Products</h2>
+  </div>
+  <div class="products-grid" id="related-grid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- Footer injected by app.js -->
+<script>window.deferGlobalLoader = true;</script>
+<script src="js/app.js"></script>
+<script>
+  /* ── State ── */
+  let qty = 1;
+  let currentProduct = null;     // full product object from API
+  let selectedVariantId = null;  // currently selected variant id
+  let selectedVariant = null;    // currently selected variant object
+  let selectedColor = null;
+  let selectedSize = null;
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function optimizeImageUrl(url, width = 800) {
+    if (!url || typeof url !== 'string') return url || '';
+    if (url.includes('cloudinary.com') && url.includes('/upload/')) {
+      if (!url.includes('/f_auto,q_auto')) {
+        return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
+      }
+    }
+    return url;
+  }
+
+  /* ── Init: read ?id= and load product ── */
+  document.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+
+    if (!productId) {
+      // No id → show not found
+      showNotFound();
+      return;
+    }
+
+    try {
+      const res = await fetch(`api/products/${productId}`);
+      const data = await res.json();
+
+      if (!data.success || !data.product) {
+        showNotFound();
+        return;
+      }
+
+      currentProduct = data.product;
+      renderProduct(currentProduct);
+      loadReviews(currentProduct.id);
+      loadRelatedProducts(currentProduct.id, currentProduct.category);
+      initStarRatingPicker();
+
+    } catch (err) {
+      console.error('[ProductView] Failed to load product:', err);
+      showNotFound();
+    } finally {
+      document.body.classList.add('loaded');
+
+      // Auto-submit review draft if redirected from login
+      const isSubmitReview = params.get('submitReview') === 'true';
+      const draftStr = sessionStorage.getItem('Ceylon Letter Co._review_draft');
+      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      
+      if (isSubmitReview && draftStr && isLoggedIn) {
+        try {
+          const res = await fetch('api/reviews', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: draftStr
+          });
+          const data = await res.json();
+          if (data.success) {
+            if (window.AppLoader) {
+               window.AppLoader.showNotification('Review submitted successfully!', 'success');
+            }
+            sessionStorage.removeItem('Ceylon Letter Co._review_draft');
+            setTimeout(() => { loadReviews(productId); }, 500);
+          }
+        } catch (e) {
+          console.error('Failed to auto-submit review draft', e);
+        }
+      }
+    }
+  });
+
+  /* ── Load Reviews ── */
+  async function loadReviews(productId) {
+    const container = document.getElementById('reviews-container');
+    try {
+      const res = await fetch(`api/reviews?productId=${productId}`);
+      const data = await res.json();
+      if (data.success && data.reviews && data.reviews.length > 0) {
+        container.innerHTML = '';
+        let totalRating = 0;
+        data.reviews.forEach(r => {
+          totalRating += r.rating;
+          const starSvg = '<svg style="width:12px;height:12px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>';
+          const stars = `<span class="star" style="display:inline-flex;align-items:center;">${starSvg}</span>`.repeat(r.rating) + `<span class="star-empty" style="display:inline-flex;align-items:center;">${starSvg}</span>`.repeat(5 - r.rating);
+          const commentHtml = r.comment ? `<p style="font-size: 14px; color: var(--text-secondary); margin: 6px 0 0 0;">${escapeHtml(r.comment)}</p>` : '';
+          const html = `
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-weight: 600; font-size: 14px;">${escapeHtml(r.userName)}</span>
+                <span style="color: var(--text-muted); font-size: 12px;">${escapeHtml(r.date)}</span>
+              </div>
+              <div class="product-stars" style="font-size: 12px; margin-bottom: 4px;">
+                ${stars}
+              </div>
+              ${commentHtml}
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', html);
+        });
+
+        // Update overall product stars
+        const avgRating = Math.round(totalRating / data.reviews.length);
+        const starSvg = '<svg style="width:14px;height:14px;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>';
+        const emptyStarSvg = '<svg style="width:14px;height:14px;color:#d1d5db;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>';
+        const starsHtml = `<span class="star" style="display:inline-flex;align-items:center;">${starSvg}</span>`.repeat(avgRating) + `<span class="star star-empty" style="display:inline-flex;align-items:center;">${emptyStarSvg}</span>`.repeat(5 - avgRating);
+        document.getElementById('pv-stars').innerHTML = starsHtml;
+        document.getElementById('pv-reviews-count').innerText = `(${data.reviews.length} review${data.reviews.length > 1 ? 's' : ''})`;
+
+      } else {
+        container.innerHTML = '<p style="font-size:14px; color:var(--text-muted);">No reviews yet for this product.</p>';
+        const emptyStarSvg = '<svg style="width:14px;height:14px;color:#d1d5db;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>';
+        document.getElementById('pv-stars').innerHTML = `<span class="star star-empty" style="display:inline-flex;align-items:center;">${emptyStarSvg}</span>`.repeat(5);
+        document.getElementById('pv-reviews-count').innerText = `(0 reviews)`;
+      }
+    } catch (err) {
+      console.error('Failed to load reviews:', err);
+      container.innerHTML = '<p style="font-size:14px; color:red;">Failed to load reviews.</p>';
+    }
+  }
+
+  /* ── Interactive Star Rating Picker ── */
+  let selectedStarRating = 5;
+  const starLabels = {
+    1: '1 / 5 Star (Poor)',
+    2: '2 / 5 Stars (Fair)',
+    3: '3 / 5 Stars (Good)',
+    4: '4 / 5 Stars (Very Good)',
+    5: '5 / 5 Stars (Excellent)'
+  };
+
+  function updateStarRatingUI(rating) {
+    const stars = document.querySelectorAll('#star-rating-picker .review-star-pick');
+    stars.forEach((s) => {
+      const val = parseInt(s.getAttribute('data-rating'));
+      if (val <= rating) {
+        s.setAttribute('fill', '#eab308');
+        s.setAttribute('stroke', '#eab308');
+        s.style.opacity = '1';
+        s.style.transform = 'scale(1.15)';
+      } else {
+        s.setAttribute('fill', '#e2e8f0');
+        s.setAttribute('stroke', '#cbd5e1');
+        s.style.opacity = '0.6';
+        s.style.transform = 'scale(1.0)';
+      }
+    });
+    const label = document.getElementById('star-rating-label');
+    if (label) label.textContent = starLabels[rating] || `${rating} / 5 Stars`;
+    const input = document.getElementById('review-rating');
+    if (input) input.value = rating;
+  }
+
+  function initStarRatingPicker() {
+    const container = document.getElementById('star-rating-picker');
+    if (!container) return;
+    const stars = container.querySelectorAll('.review-star-pick');
+    stars.forEach(s => {
+      s.addEventListener('mouseenter', () => {
+        const val = parseInt(s.getAttribute('data-rating'));
+        updateStarRatingUI(val);
+      });
+      s.addEventListener('click', () => {
+        selectedStarRating = parseInt(s.getAttribute('data-rating'));
+        updateStarRatingUI(selectedStarRating);
+      });
+    });
+    container.addEventListener('mouseleave', () => {
+      updateStarRatingUI(selectedStarRating);
+    });
+  }
+
+  /* ── Submit Review ── */
+  async function submitReview() {
+    if (!currentProduct) return;
+
+    const ratingVal = parseInt(document.getElementById('review-rating')?.value || selectedStarRating || 5);
+    const comment = (document.getElementById('review-comment')?.value || '').trim();
+
+    if (ratingVal <= 0 && !comment) {
+      window.AppLoader?.showNotification('Please select a star rating or write a review comment.', 'warning');
+      return;
+    }
+
+    const reviewDraft = {
+      productId: currentProduct.id,
+      variantId: selectedVariantId || (currentProduct.variants && currentProduct.variants[0]?.id) || 0,
+      rating: ratingVal > 0 ? ratingVal : 5,
+      comment: comment
+    };
+
+    const isLoggedIn = !!(localStorage.getItem('Ceylon Letter Co._user') || sessionStorage.getItem('Ceylon Letter Co._user'));
+    if (!isLoggedIn) {
+      sessionStorage.setItem('Ceylon Letter Co._review_draft', JSON.stringify(reviewDraft));
+      window.AppLoader?.showNotification('Please sign in to submit your review', 'info');
+      setTimeout(() => {
+        const returnUrl = encodeURIComponent(`product-view.html?id=${currentProduct.id}&submitReview=true`);
+        window.location.href = `login.html?returnUrl=${returnUrl}`;
+      }, 1500);
+      return;
+    }
+
+    try {
+      const res = await fetch('api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewDraft)
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        window.AppLoader?.showNotification('Review submitted successfully!', 'success');
+        document.getElementById('review-comment').value = '';
+        selectedStarRating = 5;
+        updateStarRatingUI(5);
+        sessionStorage.removeItem('Ceylon Letter Co._review_draft');
+        loadReviews(currentProduct.id);
+      } else {
+        window.AppLoader?.showNotification(data.message || 'Failed to submit review', 'error');
+      }
+    } catch (err) {
+      console.error('Submit review error:', err);
+      window.AppLoader?.showNotification('Network error. Please try again.', 'error');
+    }
+  }
+
+  /* ── Buy Now ── */
+  function buyNowPV() {
+    if (!selectedVariant) return;
+
+    const stock = selectedVariant.stock !== undefined ? selectedVariant.stock : 999;
+    if (stock <= 0) {
+      window.AppLoader?.showNotification('This variant is out of stock.', 'error');
+      return;
+    }
+    if (qty > stock) {
+      window.AppLoader?.showNotification(`Only ${stock} items left in stock.`, 'error');
+      return;
+    }
+
+    const imgSrc = (currentProduct.images && currentProduct.images.length > 0)
+      ? currentProduct.images.find(i => i.isPrimary)?.url || currentProduct.images[0].url
+      : '';
+
+    let customHeight = document.getElementById('custom-height')?.value || '';
+    let customWidth = document.getElementById('custom-width')?.value || '';
+    let resizeReq = '';
+    if (customHeight || customWidth) {
+      resizeReq = (customHeight ? `H:${customHeight}` : '') + (customHeight && customWidth ? ', ' : '') + (customWidth ? `W:${customWidth}` : '');
+    }
+
+    let hasCustomization = (document.getElementById('custom-engraving')?.value.trim() !== '') || (resizeReq !== '');
+
+    const buyNowItem = {
+      id: currentProduct.id,
+      variantId: selectedVariantId,
+      name: currentProduct.name,
+      price: selectedVariant ? parseFloat(selectedVariant.price) : 0,
+      quantity: qty,
+      img: imgSrc,
+      color: selectedColor || '',
+      size: selectedSize || '',
+      stock: stock,
+      engravingText: document.getElementById('custom-engraving')?.value || '',
+      customResize: resizeReq,
+      requiresDeposit: hasCustomization // Deposit ONLY if customized
+    };
+
+    sessionStorage.setItem('Ceylon Letter Co._buy_now', JSON.stringify(buyNowItem));
+
+    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    if (!isLoggedIn) {
+      window.AppLoader?.showNotification('Please sign in to proceed with Buy Now', 'info');
+      setTimeout(() => {
+        const returnUrl = encodeURIComponent('checkout.html?buyNow=true');
+        window.location.href = `login.html?returnUrl=${returnUrl}`;
+      }, 1500);
+    } else {
+      window.location.href = 'checkout.html?buyNow=true';
+    }
+  }
+
+  function toggleDepositBadge() {
+    let customEngraving = document.getElementById('custom-engraving')?.value.trim() || '';
+    let customHeight = document.getElementById('custom-height')?.value.trim() || '';
+    let customWidth = document.getElementById('custom-width')?.value.trim() || '';
+    
+    let isCustomized = (customEngraving !== '') || (customHeight !== '') || (customWidth !== '');
+    document.getElementById('pv-deposit-badge').style.display = isCustomized ? 'flex' : 'none';
+  }
+
+  /* ── Helper: Format text with bullets ── */
+  function formatTextToHTML(text) {
+    if (!text) return '';
+    let normalizedText = text.replace(/\\n/g, '\n');
+    let safeText = normalizedText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    
+    const kfRegex = /Key\s+Features:?/i;
+    const match = safeText.match(kfRegex);
+    
+    if (match) {
+      const idx = safeText.indexOf(match[0]);
+      const before = safeText.substring(0, idx);
+      const after = safeText.substring(idx + match[0].length);
+      
+      let html = processParagraphs(before);
+      html += `<div style="font-weight: 600; color: var(--black); margin-top: 24px; margin-bottom: 12px; font-size: 16px;">Key Features</div>`;
+      html += `<ul style="margin-left: 24px; list-style-type: disc; color: var(--text-secondary); margin-bottom: 24px; padding-left: 20px;">`;
+      
+      const lines = after.split(/\n/);
+      lines.forEach(line => {
+        let trimmed = line.trim();
+        if (trimmed) {
+           trimmed = trimmed.replace(/^[\*\-]\s*/, '');
+           html += `<li style="margin-bottom: 8px; display: list-item;">${trimmed}</li>`;
+        }
+      });
+      html += '</ul>';
+      return html;
+    }
+    
+    return processParagraphs(safeText);
+    
+    function processParagraphs(str) {
+      if (!str.trim()) return '';
+      const chunks = str.trim().split(/\n\s*\n/);
+      return chunks.map(chunk => {
+        if (chunk.match(/(?:^|\n)[\*\-]\s+/)) {
+          const lines = chunk.split('\n');
+          let html = `<ul style="margin-left: 24px; list-style-type: disc; margin-top: 8px; margin-bottom: 16px; color: var(--text-secondary); padding-left: 20px;">`;
+          lines.forEach(line => {
+             let trimmed = line.trim();
+             if (trimmed.match(/^[\*\-]\s+/)) {
+                 html += `<li style="margin-bottom: 6px; display: list-item;">${trimmed.replace(/^[\*\-]\s+/, '')}</li>`;
+             } else if (trimmed) {
+                 html += `<li style="margin-bottom: 6px; display: list-item; list-style-type: none;">${trimmed}</li>`;
+             }
+          });
+          html += '</ul>';
+          return html;
+        } else {
+          return `<p style="margin-bottom: 16px;">${chunk.replace(/\n/g, '<br>')}</p>`;
+        }
+      }).join('');
+    }
+  }
+
+  /* ── Render product into the page ── */
+  function renderProduct(p) {
+    // Page title & breadcrumb
+    document.title = `Ceylon Letter Co. – ${p.name}`;
+    document.getElementById('page-title-meta').textContent = `Ceylon Letter Co. – ${p.name}`;
+    document.getElementById('breadcrumb-name').textContent = p.name;
+
+    // Name & description
+    document.getElementById('pv-name').textContent = p.name;
+    document.getElementById('pv-summary').textContent = p.summary || '';
+    document.getElementById('pv-summary').style.display = p.summary ? 'block' : 'none';
+    
+    const descHTML = formatTextToHTML(p.description || p.name);
+    document.getElementById('tab-desc-text').innerHTML = descHTML;
+
+    // Select first variant as default
+    const firstVariant = p.variants && p.variants.length > 0 ? p.variants[0] : null;
+    if (firstVariant) {
+      selectedVariantId = firstVariant.id;
+      selectedVariant = firstVariant;
+    }
+
+    // SKU removed as per user request
+
+    // Price block
+    renderPriceBlock(firstVariant);
+
+    // Hide deposit badge initially. It will appear only if customization fields are filled.
+    document.getElementById('pv-deposit-badge').style.display = 'none';
+
+    // Specs tab — build from variant data
+    buildSpecsGrid(p, firstVariant);
+
+    // Gallery images
+    buildGallery(p.images);
+
+    // Color swatches (one per variant with distinct color)
+    buildColorSwatches(p.variants);
+
+    // Size/Length buttons
+    buildSizeButtons(p.variants);
+    
+    // Initialize variant selection UI linking
+    handleVariantSelection(null, null);
+
+    // Customisation visibility
+    document.getElementById('pv-customisation-section').style.display = p.isCustomisable ? 'block' : 'none';
+
+    // Dynamic Warranty Period Data Binding
+    const wPeriod = (p.warrantyPeriod && p.warrantyPeriod.trim() !== '') ? p.warrantyPeriod.trim() : 'Anti-Tarnish Warranty';
+    const trustWarrantyEl = document.getElementById('pv-trust-warranty');
+    if (trustWarrantyEl) trustWarrantyEl.textContent = wPeriod;
+    
+    const tabWarrantyPeriodEl = document.getElementById('pv-tab-warranty-period');
+    if (tabWarrantyPeriodEl) tabWarrantyPeriodEl.textContent = wPeriod;
+
+    // Show main content, hide loader
+    document.getElementById('pv-loading-state').style.display = 'none';
+    document.getElementById('pv-main-content').style.display = '';
+  }
+
+  /* ── Price block ── */
+  function renderPriceBlock(variant) {
+    const block = document.getElementById('pv-price-block');
+    if (!variant) { block.innerHTML = '<span>Price unavailable</span>'; return; }
+
+    const price = parseFloat(variant.price || 0).toFixed(2);
+    const compareAt = variant.compareAtPrice ? parseFloat(variant.compareAtPrice).toFixed(2) : null;
+
+    let html = `Rs. ${price}`;
+    if (compareAt && parseFloat(compareAt) > parseFloat(price)) {
+      const savings = Math.round((1 - parseFloat(price) / parseFloat(compareAt)) * 100);
+      html += ` <span class="old-price">Rs. ${compareAt}</span>`;
+      html += ` <span style="font-size:15px;font-weight:700;color:#d93838;margin-left:8px;letter-spacing:0.06em;">SAVE ${savings}%</span>`;
+    }
+    block.innerHTML = html;
+  }
+
+  /* ── Gallery ── */
+  function buildGallery(images) {
+    const mainImg = document.getElementById('main-img');
+    const thumbsWrap = document.getElementById('gallery-thumbs');
+    thumbsWrap.innerHTML = '';
+
+    if (!images || images.length === 0) {
+      // No images uploaded — show a placeholder
+      mainImg.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&q=85';
+      mainImg.alt = 'Product Image';
+      return;
+    }
+
+    // Find primary image or use first
+    const primary = images.find(i => i.isPrimary) || images[0];
+    mainImg.src = optimizeImageUrl(primary.url, 800);
+    mainImg.decoding = 'async';
+    mainImg.alt = currentProduct.name;
+
+    images.forEach((img, idx) => {
+      const thumb = document.createElement('div');
+      thumb.className = 'gallery-thumb' + (img.id === primary.id ? ' active' : '');
+      thumb.onclick = function() { switchImage(this, img.url); };
+      thumb.innerHTML = `<img src="${optimizeImageUrl(img.url, 160)}" alt="View ${idx + 1}" loading="lazy" decoding="async">`;
+      thumbsWrap.appendChild(thumb);
+    });
+  }
+
+  /* ── Color swatches & Storage ── */
+  const COLOR_MAP = {
+    'yellow gold': 'linear-gradient(135deg, #f5d060, #d4a017, #f5d060)',
+    '22k yellow gold': 'linear-gradient(135deg, #f5d060, #d4a017, #f5d060)',
+    '18k yellow gold': 'linear-gradient(135deg, #f5d060, #d4a017, #f5d060)',
+    'white gold': '#F5F5DC', '18k white gold': '#F5F5DC',
+    'rose gold': 'linear-gradient(135deg, #f0b8b8, #B76E79, #f0b8b8)',
+    '18k rose gold': 'linear-gradient(135deg, #f0b8b8, #B76E79, #f0b8b8)',
+    'platinum': '#E5E4E2',
+    'silver': 'linear-gradient(135deg, #e8e8e8, #a8a8a8, #d8d8d8)',
+    'gold': 'linear-gradient(135deg, #f5d060, #d4a017, #f5d060)',
+    'black gold': '#36454F',
+    'black': '#1a1a1a', 'space black': '#1a1a1a', 'white': '#f5f5f5',
+    'sand': '#c5c0b0', 'midnight blue': '#3b4a6b',
+    'blue': '#3b82f6', 'red': '#ef4444', 'green': '#22c55e',
+    'pink': '#f9a8d4', 'purple': '#a855f7',
+    'gray': '#9ca3af', 'grey': '#9ca3af', 'orange': '#f97316'
+  };
+
+  function buildColorSwatches(variants) {
+    const swatchesWrap = document.getElementById('pv-color-swatches');
+    swatchesWrap.innerHTML = '';
+    const colorSection = document.getElementById('pv-color-section');
+
+    if (!variants || variants.length === 0) { colorSection.style.display = 'none'; return; }
+
+    const seen = new Set();
+    variants.forEach(v => {
+      const color = (v.color || '').trim();
+      if (!color || seen.has(color.toLowerCase())) return;
+      seen.add(color.toLowerCase());
+
+      const bg = COLOR_MAP[color.toLowerCase()] || '#888888';
+      const swatch = document.createElement('div');
+      swatch.className = 'color-swatch';
+      swatch.style.background = bg;
+      
+      // If it's a solid dark hex color, match border
+      if (bg.startsWith('#') && !bg.match(/^#f/i)) {
+        swatch.style.borderColor = bg;
+      }
+      
+      swatch.title = color;
+      swatch.setAttribute('data-color', color);
+      swatch.onclick = function() { handleVariantSelection(color, null); };
+
+      swatchesWrap.appendChild(swatch);
+    });
+
+    if (seen.size === 0) colorSection.style.display = 'none';
+  }
+
+  function buildSizeButtons(variants) {
+    const section = document.getElementById('pv-size-section');
+    const btnsWrap = document.getElementById('pv-size-btns');
+    const sizeLabel = document.getElementById('pv-size-label');
+    btnsWrap.innerHTML = '';
+
+    if (!variants) { section.style.display = 'none'; return; }
+    const withSize = variants.filter(v => v.size && v.size.trim() !== '');
+    if (withSize.length === 0) { section.style.display = 'none'; return; }
+
+    section.style.display = '';
+    const seen = new Set();
+    let isLength = false;
+
+    withSize.forEach((v) => {
+      const sz = (v.size || '').trim();
+      if (!sz || seen.has(sz)) return;
+      seen.add(sz);
+      if (sz.toLowerCase().includes('inch')) isLength = true;
+
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-outline btn-sm size-btn';
+      btn.setAttribute('data-size', sz);
+      btn.textContent = sz;
+      btn.onclick = () => { handleVariantSelection(null, sz); };
+      btnsWrap.appendChild(btn);
+    });
+
+    if (sizeLabel) {
+      sizeLabel.innerHTML = `${isLength ? 'Length' : 'Size'} — <strong style="color:var(--black);" id="selected-size">${selectedSize || '—'}</strong>`;
+    }
+  }
+
+  function handleVariantSelection(newColor, newSize) {
+    const variants = currentProduct.variants || [];
+    if (variants.length === 0) return;
+
+    if (newColor) selectedColor = newColor;
+    if (newSize) selectedSize = newSize;
+
+    // First try exact match
+    let match = variants.find(v => 
+      (!selectedColor || (v.color || '').trim() === selectedColor) &&
+      (!selectedSize || (v.size || '').trim() === selectedSize)
+    );
+
+    // If no exact match, fallback to just the new selection
+    if (!match) {
+      if (newColor) {
+        match = variants.find(v => (v.color || '').trim() === newColor);
+      } else if (newSize) {
+        match = variants.find(v => (v.size || '').trim() === newSize);
+      }
+    }
+
+    if (!match) match = variants[0];
+
+    selectedVariant = match;
+    selectedVariantId = match.id;
+    selectedColor = (match.color || '').trim();
+    selectedSize = (match.size || '').trim();
+
+    // Update Color Swatches UI
+    document.querySelectorAll('.color-swatch').forEach(s => {
+      if (s.getAttribute('data-color') === selectedColor) s.classList.add('active');
+      else s.classList.remove('active');
+    });
+    if (selectedColor) document.getElementById('selected-color').textContent = selectedColor;
+
+    // Update Size Buttons UI
+    document.querySelectorAll('.size-btn').forEach(b => {
+      if (b.getAttribute('data-size') === selectedSize) {
+        b.style.background = 'var(--black)';
+        b.style.color = 'var(--white)';
+        b.style.borderColor = 'var(--black)';
+      } else {
+        b.style.background = '';
+        b.style.color = '';
+        b.style.borderColor = '';
+      }
+    });
+    if (selectedSize) document.getElementById('selected-size').textContent = selectedSize;
+
+    // Update other product details
+    renderPriceBlock(match);
+    // SKU update removed
+    buildSpecsGrid(currentProduct, match);
+
+    // Update Stock Badge & Button states
+    const stock = match.stock !== undefined ? match.stock : 0;
+    const badge = document.getElementById('pv-stock-badge');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const buyNowBtn = document.querySelector('button[onclick="buyNowPV()"]');
+    
+    if (badge) {
+      if (stock > 0) {
+        badge.textContent = `In Stock (${stock})`;
+        badge.style.background = '#4a9a4a';
+        badge.style.color = 'white';
+      } else {
+        badge.textContent = 'Out of Stock';
+        badge.style.background = '#ef4444';
+        badge.style.color = 'white';
+      }
+    }
+    
+    if (addToCartBtn) {
+      if (stock > 0) {
+        addToCartBtn.disabled = false;
+        addToCartBtn.style.opacity = '1';
+        addToCartBtn.style.pointerEvents = 'auto';
+      } else {
+        addToCartBtn.disabled = true;
+        addToCartBtn.style.opacity = '0.5';
+        addToCartBtn.style.pointerEvents = 'none';
+      }
+    }
+    
+    if (buyNowBtn) {
+      if (stock > 0) {
+        buyNowBtn.disabled = false;
+        buyNowBtn.style.opacity = '1';
+        buyNowBtn.style.pointerEvents = 'auto';
+      } else {
+        buyNowBtn.disabled = true;
+        buyNowBtn.style.opacity = '0.5';
+        buyNowBtn.style.pointerEvents = 'none';
+      }
+    }
+
+    // Reset quantity if it exceeds new variant stock
+    if (stock > 0 && qty > stock) {
+      qty = stock;
+    } else if (stock === 0) {
+      qty = 1;
+    }
+    const qtyVal = document.getElementById('qty-value');
+    if (qtyVal) qtyVal.textContent = qty;
+  }
+
+  /* ── Specs grid ── */
+  function buildSpecsGrid(p, variant) {
+    const grid = document.getElementById('tab-specs-grid');
+    grid.innerHTML = '';
+
+    const specs = [];
+    if (p.brand) specs.push({ label: 'Brand', value: p.brand });
+    if (p.category) specs.push({ label: 'Category', value: p.category });
+    if (variant) {
+      if (variant.color) specs.push({ label: 'Color', value: variant.color });
+      if (variant.size) {
+        const isLen = variant.size.toLowerCase().includes('inch');
+        specs.push({ label: isLen ? 'Length' : 'Size', value: variant.size });
+      }
+      if (variant.sku) specs.push({ label: 'SKU', value: variant.sku });
+      if (variant.price) specs.push({ label: 'Price', value: `Rs. ${parseFloat(variant.price).toFixed(2)}` });
+    }
+
+    if (specs.length === 0) {
+      grid.innerHTML = '<div style="padding:16px;color:var(--text-muted);font-size:13px;">No specifications available.</div>';
+      return;
+    }
+
+    specs.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'spec-item';
+      item.innerHTML = `<span class="spec-label">${s.label}</span><span class="spec-value">${s.value}</span>`;
+      grid.appendChild(item);
+    });
+  }
+
+  /* ── Load related products ── */
+  async function loadRelatedProducts(currentId, category) {
+    try {
+      const res = await fetch('api/products');
+      const data = await res.json();
+      if (!data.success || !data.products) return;
+
+      const related = data.products
+        .filter(p => p.id !== currentId && p.category === category)
+        .slice(0, 4);
+
+      if (related.length === 0) return;
+
+      const grid = document.getElementById('related-grid');
+      const section = document.getElementById('related-section');
+      grid.innerHTML = '';
+
+      related.forEach(p => {
+        const rawImg = p.primaryImage || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80';
+        const imgSrc = optimizeImageUrl(rawImg, 400);
+        const price = parseFloat(p.price || 0).toFixed(2);
+        const article = document.createElement('article');
+        article.className = 'product-card';
+        article.onclick = () => window.location = `product-view.html?id=${p.id}`;
+        const hasMultipleVariants = (p.variants && p.variants.length > 1) || (p.colors && p.colors.length > 1) || (p.sizes && p.sizes.length > 1);
+        const btnHtml = hasMultipleVariants
+          ? `<button class="product-quick-add" onclick="event.stopPropagation(); window.location='product-view.html?id=${p.id}'">Select Options</button>`
+          : `<button class="product-quick-add" onclick="event.stopPropagation(); addToCart({id:${p.id}, variantId:${p.variantId || 0}, name:'${p.name.replace(/'/g,"\\'")}', price:${parseFloat(p.price||0)}, img:'${imgSrc}'})">Quick Add</button>`;
+
+        article.innerHTML = `
+          <div class="product-image-wrap">
+            <img src="${imgSrc}" alt="${p.name}" loading="lazy" decoding="async" style="object-fit:cover; width:100%; height:100%;">
+            ${btnHtml}
+          </div>
+          <div class="product-info">
+            <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:4px;">${p.brand || 'Ceylon Letter Co.'}</p>
+            <p class="product-name">${p.name}</p>
+            <div class="product-price"><span class="price-new">Rs. ${price}</span></div>
+          </div>
+        `;
+        grid.appendChild(article);
+      });
+
+      section.style.display = '';
+    } catch (err) {
+      console.error('[ProductView] Related products failed:', err);
+    }
+  }
+
+  /* ── Helpers ── */
+  function showNotFound() {
+    document.getElementById('pv-loading-state').style.display = 'none';
+    document.getElementById('pv-not-found-state').style.display = '';
+    document.getElementById('pv-main-content').style.display = 'none';
+    document.getElementById('breadcrumb-name').textContent = 'Not Found';
+  }
+
+    function changeQty(delta) {
+      const stock = selectedVariant && selectedVariant.stock !== undefined ? selectedVariant.stock : 999;
+      const targetQty = qty + delta;
+      
+      if (delta > 0 && targetQty > 10) {
+        window.AppLoader?.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email ceylonletterco@gmail.com', 'warning');
+        return;
+      }
+      
+      if (delta > 0 && targetQty > stock) {
+        window.AppLoader?.showNotification(`Only ${stock} items left in stock.`, 'warning');
+        return;
+      }
+      qty = Math.max(1, targetQty);
+      document.getElementById('qty-value').textContent = qty;
+    }
+
+  function switchImage(thumb, src) {
+    document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+    document.getElementById('main-img').src = optimizeImageUrl(src, 800);
+  }
+
+  function selectColor(swatch, colorName) {
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+    swatch.classList.add('active');
+    document.getElementById('selected-color').textContent = colorName;
+  }
+
+  function switchTab(btn, tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function switchToWarrantyTab() {
+    const btn = document.getElementById('btn-tab-warranty');
+    if (btn) switchTab(btn, 'tab-warranty');
+    const tabEl = document.getElementById('btn-tab-warranty');
+    if (tabEl) tabEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function addToCartFromPV() {
+    if (!currentProduct) return;
+    const imgSrc = (currentProduct.images && currentProduct.images.length > 0)
+      ? currentProduct.images.find(i => i.isPrimary)?.url || currentProduct.images[0].url
+      : '';
+      
+    let customHeight = document.getElementById('custom-height')?.value || '';
+    let customWidth = document.getElementById('custom-width')?.value || '';
+    let resizeReq = '';
+    if (customHeight || customWidth) {
+      resizeReq = (customHeight ? `H:${customHeight}` : '') + (customHeight && customWidth ? ', ' : '') + (customWidth ? `W:${customWidth}` : '');
+    }
+
+    let hasCustomization = (document.getElementById('custom-engraving')?.value.trim() !== '') || (resizeReq !== '');
+
+    window.AppLoader?.addToCart({
+      id: currentProduct.id,
+      variantId: selectedVariant ? selectedVariant.id : 0,
+      name: currentProduct.name,
+      price: selectedVariant ? parseFloat(selectedVariant.price) : 0,
+      quantity: qty,
+      img: imgSrc,
+      engravingText: document.getElementById('custom-engraving')?.value || '',
+      customResize: resizeReq,
+      requiresDeposit: hasCustomization // Deposit ONLY if customized
+    });
+  }
+
+  function addToWishlistPV() {
+    if (!currentProduct) return;
+    const imgSrc = (currentProduct.images && currentProduct.images.length > 0)
+      ? currentProduct.images.find(i => i.isPrimary)?.url || currentProduct.images[0].url
+      : '';
+    window.AppLoader?.addToWishlist({
+      id: currentProduct.id,
+      name: currentProduct.name,
+      price: selectedVariant ? parseFloat(selectedVariant.price) : 0,
+      img: imgSrc
+    });
+  }
+
+  /* ── Gallery Zoom (In-Place Magnifier & Pan) ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    const galleryMain = document.getElementById('gallery-main');
+    const mainImg = document.getElementById('main-img');
+    if (!galleryMain || !mainImg) return;
+
+    let isZoomed = false;
+
+    function handleMove(e) {
+      if (!isZoomed) return;
+      const rect = galleryMain.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const x = ((clientX - rect.left) / rect.width) * 100;
+      const y = ((clientY - rect.top) / rect.height) * 100;
+
+      const boundedX = Math.max(0, Math.min(100, x));
+      const boundedY = Math.max(0, Math.min(100, y));
+
+      mainImg.style.transformOrigin = `${boundedX}% ${boundedY}%`;
+    }
+
+    // Toggle zoom on click/tap
+    galleryMain.addEventListener('click', e => {
+      isZoomed = !isZoomed;
+      if (isZoomed) {
+        galleryMain.classList.add('zoomed');
+        mainImg.style.transform = 'scale(2.5)';
+        handleMove(e); // set initial zoom position instantly
+      } else {
+        resetZoom();
+      }
+    });
+
+    // Reset zoom helper
+    function resetZoom() {
+      isZoomed = false;
+      galleryMain.classList.remove('zoomed');
+      mainImg.style.transform = 'scale(1)';
+      mainImg.style.transformOrigin = 'center center';
+    }
+
+    // Panning on mousemove or drag/touchmove
+    galleryMain.addEventListener('mousemove', handleMove);
+    galleryMain.addEventListener('touchmove', e => {
+      if (isZoomed) {
+        e.preventDefault(); // prevent background page scroll while panning
+        handleMove(e);
+      }
+    }, { passive: false });
+
+    // Reset zoom when mouse leaves
+    galleryMain.addEventListener('mouseleave', () => {
+      if (isZoomed) {
+        resetZoom();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
+
+
+

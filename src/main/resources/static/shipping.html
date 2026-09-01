@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. Shipping Info – Rates, delivery zones, and timelines for shipping across Sri Lanka.">
+  <title>Ceylon Letter Co. – Shipping Information</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    .shipping-layout {
+      max-width: 900px;
+      margin: 60px auto 100px auto;
+      padding: 0 var(--sp-8);
+    }
+
+    .shipping-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .shipping-header h1 {
+      font-size: var(--text-3xl);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--sp-3);
+    }
+
+    /* Table Styles */
+    .shipping-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 60px;
+      background: var(--bg-primary);
+    }
+
+    .shipping-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .shipping-table th {
+      background: var(--bg-secondary);
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      color: var(--black);
+    }
+
+    .shipping-table td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+
+    .shipping-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .price-tag {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    /* Process Timeline Styles */
+    .process-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sp-6);
+      position: relative;
+    }
+
+    .process-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .process-step {
+      width: 32px;
+      height: 32px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      margin: 0 auto 20px auto;
+    }
+
+    .process-name {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--sp-2);
+      color: var(--black);
+    }
+
+    .process-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .shipping-info-block {
+      background: var(--bg-primary);
+      border-left: 3px solid var(--black);
+      padding: 24px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-top: 48px;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .process-grid {
+        grid-template-columns: 1fr;
+        gap: var(--sp-4);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div class="shipping-layout">
+    <div class="shipping-header reveal">
+      <h1>Shipping & Delivery</h1>
+      <p style="color:var(--text-secondary);">Islandwide and international shipping information.</p>
+    </div>
+
+    <section class="reveal" style="margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Shipping Information</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 8px;">We deliver islandwide and internationally using Sri Lanka Post and trusted courier services.</p>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 16px; margin-bottom: 8px; display:inline-flex; align-items:center; gap:6px;">
+        <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Sri Lanka Delivery
+      </h3>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>Colombo: 2 – 4 working days</li>
+        <li>Outside Colombo: 4 – 8 working days</li>
+      </ul>
+
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 16px; margin-bottom: 8px; display:inline-flex; align-items:center; gap:6px;">
+        <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+        International Shipping
+      </h3>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>Available to selected countries worldwide</li>
+        <li>Delivery time varies based on destination and customs clearance</li>
+      </ul>
+
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 16px; margin-bottom: 8px; display:inline-flex; align-items:center; gap:6px;">
+        <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Delivery Fee
+      </h3>
+      <p style="color: var(--text-secondary); margin-bottom: 8px;">Rs. 350 (Sri Lanka)</p>
+
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 16px; margin-bottom: 8px; display:inline-flex; align-items:center; gap:6px;">
+        <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Notes
+      </h3>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>Orders are processed within 24–48 hours</li>
+        <li>Tracking details will be provided after dispatch</li>
+      </ul>
+    </section>
+
+    <section class="reveal" style="margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Shipping Info (Detail View)</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 8px;">Orders are carefully packed and shipped after confirmation.</p>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li><strong>Processing Time:</strong> 24 – 48 hours before dispatch</li>
+        <li><strong>Delivery Time:</strong> Sri Lanka: 2 – 8 working days | International: 7 – 21 working days</li>
+        <li><strong>Tracking:</strong> Provided via WhatsApp, SMS, or website system</li>
+      </ul>
+    </section>
+
+    <section class="reveal" style="margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Packaging Information</h2>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>All orders are carefully packed to ensure product safety during delivery.</li>
+        <li>We use secure packaging to protect jewellery from damage, scratches, or bending during transit.</li>
+        <li>Gift packaging may be provided depending on product type.</li>
+      </ul>
+    </section>
+
+    <section class="reveal" style="margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Customer Support Response Time</h2>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>Our customer support team responds within 24 hours on working days.</li>
+        <li>For urgent inquiries, please contact us via WhatsApp or phone.</li>
+      </ul>
+    </section>
+
+    <section class="reveal" style="margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Order Confirmation Process</h2>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>After placing an order, customers may be contacted via phone or WhatsApp for confirmation if needed.</li>
+        <li>Orders are only processed after successful confirmation (if required).</li>
+        <li>Please ensure correct contact details are provided during checkout.</li>
+      </ul>
+    </section>
+
+    <section class="reveal" style="margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">International Customs & Duties</h2>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>For international orders, customers are responsible for any customs duties, taxes, or import charges imposed by their country.</li>
+        <li>Delivery delays may occur due to customs clearance processes, which are outside our control.</li>
+      </ul>
+    </section>
+
+    <section class="reveal" style="margin-bottom: 40px;">
+      <h2 style="font-family: var(--font-display); font-size: var(--text-md); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Lost or Delayed Shipments</h2>
+      <ul style="padding-left: 20px; list-style-type: square; color: var(--text-secondary); line-height: 1.7;">
+        <li>If your parcel is delayed or not received within the expected delivery time, please contact our support team.</li>
+        <li>We will coordinate with the courier service to investigate the issue.</li>
+        <li>Resolution time depends on courier investigation results.</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+</body>
+
+</html>
+

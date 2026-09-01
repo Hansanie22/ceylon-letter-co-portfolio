@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. – Interactive Support Center. Track orders, process returns, or chat live.">
+  <title>Ceylon Letter Co. – Interactive Support Hub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    /* Support Page Layout */
+    .support-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px var(--sp-6) 80px;
+    }
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      margin-top: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .support-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    /* Chat Card styling */
+    .chat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+    }
+
+    .chat-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--gray-50);
+    }
+
+    .chat-agent-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .agent-avatar-wrap {
+      position: relative;
+    }
+
+    .agent-avatar {
+      width: 44px;
+      height: 44px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      transition: background var(--transition-base), transform var(--transition-base);
+    }
+
+    .agent-avatar.agent-live {
+      background: #2a7a40;
+    }
+
+    .online-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      background: #2a7a40;
+      border: 2px solid var(--white);
+      border-radius: 50%;
+    }
+
+    .agent-status {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #2a7a40;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    /* Chat Stream styling */
+    .chat-stream {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: #fafafa;
+      scroll-behavior: smooth;
+    }
+
+    .chat-bubble-wrap {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      animation: bubble-fade-in 0.3s ease-out forwards;
+    }
+
+    @keyframes bubble-fade-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-bubble-wrap.sent {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .chat-bubble-wrap.received {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .chat-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .chat-text {
+      padding: 12px 18px;
+      font-size: 14px;
+      line-height: 1.6;
+      font-family: var(--font-body);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .sent .chat-text {
+      background: var(--black);
+      color: var(--white);
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    .received .chat-text {
+      background: var(--white);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: 16px 16px 16px 4px;
+    }
+
+    /* System / Notice Message */
+    .system-notice {
+      align-self: center;
+      background: var(--gray-100);
+      border: 1px dashed var(--gray-300);
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      margin: 10px 0;
+      text-align: center;
+      animation: bubble-fade-in 0.4s ease-out forwards;
+    }
+
+    /* Quick action Chips */
+    .chat-chips-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 0 24px;
+      margin-bottom: 12px;
+    }
+
+    .action-chip {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-xs);
+      transition: all var(--transition-fast);
+      animation: bubble-fade-in 0.3s ease-out forwards;
+    }
+
+    .action-chip:hover {
+      border-color: var(--black);
+      background: var(--gray-50);
+      transform: translateY(-1px);
+    }
+
+    .action-chip:active {
+      transform: translateY(0);
+    }
+
+    /* Typing Indicator */
+    .chat-typing {
+      align-self: flex-start;
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 12px 18px;
+      border-radius: 16px 16px 16px 4px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      margin-left: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      animation: typing-bounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* Input area */
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 12px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .chat-input:focus {
+      border-color: var(--black);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+    }
+
+    .chat-send-btn {
+      padding: 0 24px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      border-radius: var(--radius-md);
+    }
+
+    /* Interactive Visual Components in Chat */
+    .tracking-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-top: 8px;
+      width: 100%;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tracking-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 14px;
+      position: relative;
+    }
+
+    .tracking-steps::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: var(--border);
+      z-index: 1;
+    }
+
+    .tracking-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-marker {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .tracking-step.done .step-marker {
+      border-color: #2a7a40;
+      background: #2a7a40;
+      color: var(--white);
+    }
+
+    .tracking-step.active .step-marker {
+      border-color: #2a7a40;
+      background: var(--white);
+      color: #2a7a40;
+      box-shadow: 0 0 0 4px rgba(42, 122, 64, 0.15);
+      animation: pulse-ring 1.8s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0px rgba(42, 122, 64, 0.3); }
+      70% { box-shadow: 0 0 0 6px rgba(42, 122, 64, 0); }
+      100% { box-shadow: 0 0 0 0px rgba(42, 122, 64, 0); }
+    }
+
+    .step-details h6 {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0 0 2px 0;
+      color: var(--text-primary);
+    }
+
+    .tracking-step.done .step-details h6 {
+      color: #2a7a40;
+    }
+
+    .step-details p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Rating Widget */
+    .rating-container {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stars-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .rating-star {
+      font-size: 26px;
+      color: var(--gray-300);
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .rating-star:hover {
+      transform: scale(1.15);
+    }
+
+    .rating-star.selected {
+      color: #ffd700;
+      text-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+    }
+
+    /* Sidebar info styling */
+    .info-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: sticky;
+      top: 100px;
+    }
+
+    .sidebar-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1.5px solid var(--black);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* FAQ accordion styling */
+    .faq-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-accordion details {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color var(--transition-fast);
+    }
+
+    .faq-accordion details[open] {
+      border-color: var(--black);
+    }
+
+    .faq-accordion summary {
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-body);
+      background: var(--white);
+      user-select: none;
+    }
+
+    .faq-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-accordion summary::after {
+      content: '+';
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: transform var(--transition-fast);
+    }
+
+    .faq-accordion details[open] summary::after {
+      content: '−';
+      transform: rotate(90deg);
+    }
+
+    .faq-content {
+      padding: 0 18px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      background: var(--white);
+    }
+
+    /* Contact details */
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--black);
+    }
+
+    .contact-item h5 {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .contact-item p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .contact-item a {
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div class="support-wrapper">
+    
+    <!-- BREADCRUMB -->
+    <div style="margin-bottom:20px; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-muted);">
+      <a href="index.html" style="color:var(--text-muted); text-decoration:none;">Home</a>
+      <span>/</span>
+      <span style="color:var(--black); font-weight:500;">Support Hub</span>
+    </div>
+
+    <h1 style="font-family:var(--font-display); font-size:32px; font-weight:700; margin-bottom:6px; letter-spacing:-0.01em;">Support Hub</h1>
+    <p style="font-size:14px; color:var(--text-secondary); margin:0;">Find answers to your questions, track shipping, or communicate with our support specialists instantly.</p>
+
+    <!-- MAIN GRID CONTAINER -->
+    <div class="support-grid">
+      
+      <!-- LEFT: CHAT CARD -->
+      <div class="chat-card">
+        
+        <!-- Chat Header -->
+        <div class="chat-header">
+          <div class="chat-agent-info">
+            <div class="agent-avatar-wrap">
+              <div class="agent-avatar" id="agent-avatar-icon">C</div>
+              <div class="online-indicator"></div>
+            </div>
+            <div>
+              <h4 id="agent-title-text" style="font-family:var(--font-display); font-size:15px; font-weight:600; margin:0;">Ceylon Letter Co. Support Bot</h4>
+              <span class="agent-status" id="agent-status-label">Online Assistance</span>
+            </div>
+          </div>
+          <div id="ticket-number-tag" style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); font-weight:600;">
+            Ticket: #CLC-2026-8942
+          </div>
+        </div>
+
+        <!-- Chat History Stream -->
+        <div class="chat-stream" id="chat-stream">
+          <!-- Welcome Bubble -->
+          <div class="chat-bubble-wrap received">
+            <span class="chat-meta">Ceylon Letter Co. Assistant — Just now</span>
+            <div class="chat-text">Hello! Welcome to Ceylon Letter Co. Customer Support.<br><br>I can help you track orders, check refunds, answer FAQs, or connect you to a live support representative. What would you like to do?</div>
+          </div>
+        </div>
+
+        <!-- Action Chips Area -->
+        <div class="chat-chips-area" id="chat-chips-container">
+          <!-- Dynamically populated chips -->
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="chat-typing" id="chat-typing">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+
+        <!-- Input form -->
+        <div class="chat-input-area">
+          <!-- Subject Selector -->
+          <div id="subject-selector-container" style="margin-bottom: 12px; display: none;">
+            <label for="chat-subject" style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.05em;">Select Subject:</label>
+            <select id="chat-subject" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-md); font-family: var(--font-body); font-size: 13px; outline: none; background-color: var(--white); cursor: pointer; transition: border-color 0.2s;">
+              <option value="General Support">General Support</option>
+              <option value="Order Tracking">Order Tracking & Delivery</option>
+              <option value="Refund & Returns">Refund & Returns</option>
+              <option value="Product Inquiry">Product Inquiry</option>
+              <option value="Payment Issue">Payment Issue</option>
+            </select>
+          </div>
+          <!-- Chat form -->
+          <form class="chat-form" id="chat-form" onsubmit="handleFormSubmit(event)" novalidate>
+            <input type="text" class="chat-input" id="chat-input" placeholder="Type your message here..." autocomplete="off" required aria-label="Support message input">
+            <button type="submit" class="btn btn-primary chat-send-btn">Send</button>
+          </form>
+          <!-- Closed Ticket Action Panel -->
+          <div id="closed-chat-action" style="display: none; text-align: center; padding: 10px 0;">
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">This conversation has been closed by support.</p>
+            <button type="button" class="btn btn-primary" onclick="initiateNewTicket()" style="width: 100%; justify-content: center;">Start New Conversation</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: HELP SIDEBAR -->
+      <div class="info-sidebar">
+        
+        <!-- Contact Cards -->
+        <div class="sidebar-card">
+          <h3>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.73.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            Contact Channels
+          </h3>
+          <div class="contact-list">
+            
+            <div class="contact-item">
+              <div class="contact-icon">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h5>Support Hours</h5>
+                <p>Monday – Saturday<br>9:00 AM – 6:00 PM (IST)</p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-icon">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 7l9 6 9-6"/>
+                </svg>
+              </div>
+              <div>
+                <h5>Email Support</h5>
+                <p>Reply in 12-24 hours<br><a href="mailto:ceylonletterco@gmail.com">ceylonletterco@gmail.com</a></p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-icon">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.802-5.14-4.118-6.944-6.944l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+              </div>
+              <div>
+                <h5>Hotline Support</h5>
+                <p>Urgent inquiries during office hours<br><a href="tel:+94764921325">+94 76 492 1325</a></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Sidebar FAQs -->
+        <div class="sidebar-card">
+          <h3>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="flex-shrink:0;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Popular FAQs
+          </h3>
+          <div class="faq-accordion">
+            <details>
+              <summary>How long does delivery take?</summary>
+              <div class="faq-content">
+                Standard delivery takes 2 to 3 business days within Colombo and suburbs, and 3 to 5 business days for outstation areas.
+              </div>
+            </details>
+            <details>
+              <summary>What is the return policy?</summary>
+              <div class="faq-content">
+                We accept returns on all unused products in their original packaging within 30 days of purchase. Warranty claims are processed separately.
+              </div>
+            </details>
+            <details>
+              <summary>Can I modify my delivery address?</summary>
+              <div class="faq-content">
+                Addresses can be modified within 2 hours of placing an order. Please use our Support Chat to speak to an agent immediately for updates.
+              </div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer injected by app.js -->
+    <script src="js/app.js"></script>
+  <script>
+    const stream = document.getElementById('chat-stream');
+    const input = document.getElementById('chat-input');
+    const typing = document.getElementById('chat-typing');
+    const chipsContainer = document.getElementById('chat-chips-container');
+    
+    const avatarIcon = document.getElementById('agent-avatar-icon');
+    const titleText = document.getElementById('agent-title-text');
+    const statusLabel = document.getElementById('agent-status-label');
+    const ticketTag = document.getElementById('ticket-number-tag');
+
+    let chatPollInterval = null;
+
+    // Lightweight synthesised Sound Effects for premium user experience
+    function playChime(isSent = false) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        if (isSent) {
+          osc.frequency.setValueAtTime(480, ctx.currentTime);
+          osc.frequency.setValueAtTime(600, ctx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.06, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        } else {
+          osc.frequency.setValueAtTime(600, ctx.currentTime);
+          osc.frequency.setValueAtTime(750, ctx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.06, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.3);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        }
+      } catch (e) {
+        // Browser blocked audio context, ignore silently
+      }
+    }
+
+    function scrollBottom() {
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    // Append Chat Bubble
+    function appendBubble(sender, text, isUser = false, timestamp = null) {
+      const timeStr = timestamp ? new Date(timestamp.replace(' ', 'T')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble-wrap ${isUser ? 'sent' : 'received'}`;
+      
+      const meta = document.createElement('span');
+      meta.className = 'chat-meta';
+      meta.innerHTML = `${sender} &mdash; ${timeStr}`;
+      
+      const content = document.createElement('div');
+      content.className = 'chat-text';
+      content.innerHTML = text;
+
+      bubble.appendChild(meta);
+      bubble.appendChild(content);
+      stream.appendChild(bubble);
+      scrollBottom();
+    }
+
+    let isCreatingNew = false;
+    let currentTicketId = null;
+    const renderedMessageIds = new Set();
+
+    async function loadSupportTicket() {
+      if (isCreatingNew) return;
+      try {
+        const res = await fetch('api/support', { credentials: 'same-origin', cache: 'no-store' });
+        if (res.status === 401) {
+          statusLabel.innerHTML = 'Offline';
+          statusLabel.style.color = 'var(--text-muted)';
+          document.getElementById('chat-input').disabled = true;
+          document.querySelector('.chat-send-btn').disabled = true;
+          document.getElementById('chat-input').placeholder = "Login to use live chat";
+          document.getElementById('subject-selector-container').style.display = 'none';
+          
+          stream.innerHTML = '';
+          appendBubble('System', 'Please <a href="login.html" style="text-decoration:underline; font-weight:600;">log in</a> to use our live chat support.<br><br>Alternatively, you can contact us instantly on WhatsApp: <br><a href="https://wa.me/94764921325" target="_blank" style="text-decoration:underline; font-weight:600; color:#2a7a40;">+94 76 492 1325</a>', false);
+          return;
+        }
+        const data = await res.json();
+        
+        const isAtBottom = stream.scrollHeight - stream.scrollTop === stream.clientHeight;
+
+        if (data.success && data.ticket) {
+          ticketTag.innerHTML = `Ticket: #${data.ticket.id}`;
+          
+          if (data.ticket.id !== currentTicketId) {
+             // Reset rendered messages for new ticket
+             currentTicketId = data.ticket.id;
+             renderedMessageIds.clear();
+             const welcomeBubble = stream.querySelector('.received');
+             stream.innerHTML = '';
+             if (welcomeBubble) stream.appendChild(welcomeBubble);
+          }
+
+          if (data.ticket.status === 'CLOSED') {
+            statusLabel.innerHTML = 'Ticket Closed';
+            statusLabel.style.color = 'var(--text-muted)';
+            document.getElementById('chat-input').disabled = true;
+            document.querySelector('.chat-send-btn').disabled = true;
+            document.getElementById('chat-input').placeholder = "This ticket is closed.";
+            
+            document.getElementById('subject-selector-container').style.display = 'none';
+            document.getElementById('chat-form').style.display = 'none';
+            document.getElementById('closed-chat-action').style.display = 'block';
+            
+            if (chatPollInterval) {
+              clearInterval(chatPollInterval);
+              chatPollInterval = null;
+            }
+          } else {
+            statusLabel.innerHTML = 'Live Support';
+            statusLabel.style.color = '#2a7a40';
+            document.getElementById('chat-input').disabled = false;
+            document.querySelector('.chat-send-btn').disabled = false;
+            document.getElementById('chat-input').placeholder = "Type your message here...";
+            
+            document.getElementById('subject-selector-container').style.display = 'none';
+            document.getElementById('chat-form').style.display = 'flex';
+            document.getElementById('closed-chat-action').style.display = 'none';
+            
+            // Resume poll if not active
+            if (!chatPollInterval) {
+              chatPollInterval = setInterval(loadSupportTicket, 3000);
+            }
+          }
+
+          if (data.messages && data.messages.length > 0) {
+             let hasNewIncoming = false;
+             data.messages.forEach(m => {
+                const messageId = Number(m.id);
+                if (!renderedMessageIds.has(messageId)) {
+                   const isUser = m.senderType === 'USER';
+                   const senderName = isUser ? 'You' : 'Support Officer';
+                   appendBubble(senderName, m.messageText, isUser, m.sentAt);
+                   renderedMessageIds.add(messageId);
+                   if (!isUser) {
+                      hasNewIncoming = true;
+                   }
+                }
+             });
+             if (hasNewIncoming) {
+                playChime(false);
+             }
+          }
+        } else {
+          ticketTag.innerHTML = `No active ticket`;
+          statusLabel.innerHTML = 'New Conversation';
+          statusLabel.style.color = 'var(--text-muted)';
+          
+          document.getElementById('subject-selector-container').style.display = 'block';
+          document.getElementById('chat-form').style.display = 'flex';
+          document.getElementById('closed-chat-action').style.display = 'none';
+          document.getElementById('chat-input').placeholder = "Type first message to start chat...";
+          document.getElementById('chat-input').disabled = false;
+          document.querySelector('.chat-send-btn').disabled = false;
+
+          currentTicketId = null;
+          renderedMessageIds.clear();
+        }
+        
+        if (isAtBottom) scrollBottom();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    let isSending = false;
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      if (isSending) return;
+      
+      const text = input.value.trim();
+      if (!text) return;
+      
+      isSending = true;
+      input.value = '';
+      playChime(true);
+
+      const submitBtn = document.querySelector('.chat-send-btn');
+      input.disabled = true;
+      submitBtn.disabled = true;
+
+      const payload = { message: text };
+      const subjectEl = document.getElementById('chat-subject');
+      if (subjectEl && document.getElementById('subject-selector-container').style.display !== 'none') {
+         payload.subject = subjectEl.value;
+      }
+
+      try {
+        const res = await fetch('api/support', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+           isCreatingNew = false;
+           if (chatPollInterval) clearInterval(chatPollInterval);
+           await loadSupportTicket();
+           chatPollInterval = setInterval(loadSupportTicket, 3000);
+        } else {
+           const errBanner = document.getElementById('chat-error-banner');
+           if (errBanner) {
+             errBanner.textContent = 'Failed to send message: ' + (data.message || 'Unknown error');
+             errBanner.style.display = 'block';
+             setTimeout(() => { errBanner.style.display = 'none'; }, 4000);
+           } else if (window.AppLoader?.showNotification) {
+             window.AppLoader.showNotification('Failed to send message: ' + data.message, 'error');
+           }
+        }
+      } catch (err) {
+        console.error('Send error:', err);
+      } finally {
+        isSending = false;
+        input.disabled = false;
+        submitBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function initiateNewTicket() {
+      isCreatingNew = true;
+      currentTicketId = null;
+      renderedMessageIds.clear();
+
+      // Clear chat window except welcome message
+      const welcomeBubble = stream.querySelector('.received');
+      stream.innerHTML = '';
+      if (welcomeBubble) stream.appendChild(welcomeBubble);
+
+      ticketTag.innerHTML = `New Ticket`;
+      statusLabel.innerHTML = 'New Conversation';
+      statusLabel.style.color = 'var(--text-muted)';
+      
+      document.getElementById('subject-selector-container').style.display = 'block';
+      document.getElementById('chat-form').style.display = 'flex';
+      document.getElementById('closed-chat-action').style.display = 'none';
+      
+      document.getElementById('chat-input').placeholder = "Type first message to start chat...";
+      document.getElementById('chat-input').disabled = false;
+      document.querySelector('.chat-send-btn').disabled = false;
+      document.getElementById('chat-input').focus();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Clear chips as they are no longer needed for live chat
+      chipsContainer.innerHTML = '';
+      loadSupportTicket();
+      chatPollInterval = setInterval(loadSupportTicket, 3000);
+    });
+  </script>
+</body>
+</html>
+
+
+

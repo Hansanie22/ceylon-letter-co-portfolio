@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. – Order confirmed. Thank you for your purchase!">
+  <title>Ceylon Letter Co. – Order Confirmed</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div style="max-width:640px; margin:80px auto; padding:0 32px; text-align:center;">
+
+    <!-- Success Icon -->
+    <div
+      style="width:80px; height:80px; background:var(--black); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 32px; animation: popIn 0.5s ease forwards;">
+      <svg width="36" height="36" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      </svg>
+    </div>
+
+    <h1
+      style="font-family:var(--font-display); font-size:36px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:12px;">
+      Order Confirmed!</h1>
+    <p style="font-size:15px; color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">Thank you for your
+      order. We've received your order and will start processing it right away.</p>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:40px;">A confirmation has been sent to <strong
+        style="color:var(--black);" id="confirm-email">john@example.com</strong></p>
+
+    <!-- Order Info Card -->
+    <div
+      style="background:var(--gray-50); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:32px; text-align:left;">
+      <div
+        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+        <span
+          style="font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;">Order
+          Details</span>
+        <span
+          style="font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--black);" id="order-id-badge">#CLC-00246</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; justify-content:space-between; font-size:13px; gap:16px;">
+          <span style="color:var(--text-muted); flex-shrink:0;">Order Date</span>
+          <span style="font-weight:500; color:var(--black); text-align:right; word-break:break-word;" id="order-date">June 18, 2026</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:13px; gap:16px;">
+          <span style="color:var(--text-muted); flex-shrink:0;">Payment</span>
+          <span style="font-weight:500; color:var(--black); text-align:right; word-break:break-word;" id="payment-method">Visa •••• 4242</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:13px; gap:16px;">
+          <span style="color:var(--text-muted); flex-shrink:0;">Shipping to</span>
+          <span style="font-weight:500; color:var(--black); text-align:right; word-break:break-word;" id="shipping-address">Colombo, Sri Lanka</span>
+        </div>
+        <div
+          style="display:flex; justify-content:space-between; font-size:13px; padding-top:12px; border-top:1px solid var(--border);">
+          <span style="font-weight:700; color:var(--black); font-family:var(--font-display);">Total Paid</span>
+          <span style="font-weight:700; color:var(--black); font-family:var(--font-display);" id="total-amount">Rs. 536.76</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items List -->
+    <div id="order-items-container" style="display:flex; flex-direction:column; gap:16px; margin-bottom:32px; text-align:left;">
+    </div>
+
+    <!-- Estimated Delivery -->
+    <div
+      style="display:flex; align-items:center; gap:12px; background:var(--gray-50); border:1px solid var(--border); border-radius:12px; padding:18px 24px; margin-bottom:40px;">
+      <svg width="24" height="24" fill="none" stroke="var(--black)" stroke-width="1.5" viewBox="0 0 24 24"
+        style="flex-shrink:0;" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" />
+      </svg>
+      <div style="text-align:left;">
+        <p
+          style="font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:2px;">
+          Estimated Delivery</p>
+        <p style="font-size:14px; font-weight:600; color:var(--black); margin:0; font-family:var(--font-display);" id="delivery-date">June
+          21 – 23, 2026</p>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="account.html" class="btn btn-outline">Track My Order</a>
+      <a href="products.html" class="btn btn-primary">Continue Shopping</a>
+    </div>
+
+  </div>
+
+  <style>
+    @keyframes popIn {
+      0% {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+
+      60% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Enforce login immediately on load
+      if (window.AppLoader && !window.AppLoader.requireLogin('order-confirm')) {
+        return; // Redirecting to login
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      let orderId = params.get('orderId');
+
+      try {
+        if (!orderId) {
+          // If no orderId in query, fetch user's orders and pick the latest one
+          const resList = await fetch('api/orders', { credentials: 'same-origin', cache: 'no-store' });
+          if (resList.ok) {
+            const dataList = await resList.json();
+            if (dataList.success && Array.isArray(dataList.orders) && dataList.orders.length > 0) {
+              orderId = dataList.orders[0].id;
+            }
+          }
+        }
+
+        if (!orderId) {
+          window.AppLoader?.showNotification('No order found. Redirecting to home...', 'warning');
+          setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+          return;
+        }
+
+        // Fetch order details
+        const res = await fetch(`api/orders/${orderId}`, { credentials: 'same-origin', cache: 'no-store' });
+        if (!res.ok) {
+          window.AppLoader?.showNotification('Failed to load order details.', 'error');
+          return;
+        }
+
+        const data = await res.json();
+        if (data.success) {
+          // Update Email
+          const emailEl = document.getElementById('confirm-email');
+          if (emailEl && data.email) emailEl.textContent = data.email;
+
+          // Update Order ID
+          const orderIdBadge = document.getElementById('order-id-badge');
+          if (orderIdBadge) orderIdBadge.textContent = `#CLC-${String(data.id).padStart(5, '0')}`;
+
+          // Update Order Date
+          const orderDateEl = document.getElementById('order-date');
+          if (orderDateEl && data.date) orderDateEl.textContent = data.date;
+
+          // Update Payment Method
+          const paymentMethodEl = document.getElementById('payment-method');
+          if (paymentMethodEl) {
+            let methodText = 'Card Payment';
+            if (data.paymentMethod === 'COD') methodText = 'Cash on Delivery';
+            else if (data.paymentMethod === 'BANK_TRANSFER') methodText = 'Bank Transfer';
+            else if (data.paymentMethod === 'COD_WITH_BANK_DEPOSIT') methodText = 'COD (Bank Transfer Deposit)';
+            else if (data.paymentMethod === 'COD_WITH_DEPOSIT') methodText = 'COD (Card Deposit)';
+            else if (data.paymentMethod === 'CARD_DEPOSIT') methodText = 'Card Deposit';
+            else if (data.paymentMethod === 'BANK_TRANSFER_DEPOSIT') methodText = 'Bank Transfer Deposit';
+            
+            if (data.paymentStatus) {
+              methodText += ` (${data.paymentStatus})`;
+            }
+            paymentMethodEl.textContent = methodText;
+          }
+
+          // Update Shipping Address
+          const shippingAddressEl = document.getElementById('shipping-address');
+          if (shippingAddressEl && data.shippingAddress) {
+            shippingAddressEl.textContent = data.shippingAddress;
+          }
+
+          // Update Total Amount
+          const totalAmountEl = document.getElementById('total-amount');
+          if (totalAmountEl && data.total) {
+            if (data.paymentMethod === 'COD_WITH_BANK_DEPOSIT' || data.paymentMethod === 'COD_WITH_DEPOSIT' || data.paymentMethod === 'CARD_DEPOSIT' || data.paymentMethod === 'BANK_TRANSFER_DEPOSIT') {
+              totalAmountEl.innerHTML = `Rs. ${parseFloat(data.total).toFixed(2)}
+                <br><span style="font-size:14px; color:#b45309; font-weight:500; display:inline-block; margin-top:4px;">Deposit: Rs. 1000.00</span>
+                <br><span style="font-size:14px; color:var(--text-muted); font-weight:400;">Balance Due: Rs. ${(parseFloat(data.total) - 1000).toFixed(2)}</span>`;
+            } else {
+              totalAmountEl.textContent = `Rs. ${parseFloat(data.total).toFixed(2)}`;
+            }
+          }
+
+          // Populate Order Items
+          const itemsContainer = document.getElementById('order-items-container');
+          if (itemsContainer && data.items && data.items.length > 0) {
+            itemsContainer.innerHTML = '';
+            data.items.forEach(item => {
+              const imgUrl = item.imageUrl ? item.imageUrl : 'images/favicon.png';
+              let variantInfo = (item.color || item.size) 
+                ? `<div style="font-size:12px; color:var(--text-muted); margin-top:2px;">${item.color || ''} ${item.size || ''}</div>` 
+                : '';
+              if (item.engravingText) {
+                variantInfo += `<div style="font-size:12px; color:var(--gold); margin-top:2px;">Engraving: ${item.engravingText}</div>`;
+              }
+              if (item.customResize) {
+                variantInfo += `<div style="font-size:12px; color:var(--gold); margin-top:2px;">Resize: ${item.customResize}</div>`;
+              }
+              
+              const itemHtml = `
+                <div style="display:flex; align-items:center; gap:16px; padding:16px; background:var(--white); border:1px solid var(--border); border-radius:12px;">
+                  <div style="width:64px; height:64px; flex-shrink:0; border-radius:8px; overflow:hidden; background:var(--gray-50);">
+                    <img src="${imgUrl}" alt="${item.name}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='images/favicon.png'">
+                  </div>
+                  <div style="flex-grow:1; min-width:0;">
+                    <div style="font-weight:600; color:var(--black); font-size:14px; margin-bottom:2px; word-break:break-word;">${item.name}</div>
+                    ${variantInfo}
+                    <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Qty: ${item.quantity}</div>
+                  </div>
+                  <div style="font-weight:600; color:var(--black); font-size:14px; font-family:var(--font-display);">
+                    Rs. ${(item.price * item.quantity).toFixed(2)}
+                  </div>
+                </div>
+              `;
+              itemsContainer.insertAdjacentHTML('beforeend', itemHtml);
+            });
+          }
+
+          // Calculate and Update Estimated Delivery Date
+          const deliveryDateEl = document.getElementById('delivery-date');
+          if (deliveryDateEl && data.date) {
+            const orderDate = new Date(data.date);
+            if (!isNaN(orderDate.getTime())) {
+              const estStart = new Date(orderDate);
+              estStart.setDate(orderDate.getDate() + 3);
+              const estEnd = new Date(orderDate);
+              estEnd.setDate(orderDate.getDate() + 8);
+
+              const startStr = estStart.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+              const endStr = estEnd.toLocaleDateString('en-US', { day: 'numeric', year: 'numeric' });
+              deliveryDateEl.textContent = `${startStr} – ${endStr}`;
+            }
+          }
+        } else {
+          window.AppLoader?.showNotification(data.message || 'Failed to load order details.', 'error');
+        }
+      } catch (err) {
+        console.error('Error loading order confirmation details:', err);
+        window.AppLoader?.showNotification('Error loading order confirmation details.', 'error');
+      }
+    });
+  </script>
+</body>
+
+</html>
+

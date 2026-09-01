@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    (function () {
+      const stored = localStorage.getItem('Ceylon Letter Co._user') || sessionStorage.getItem('Ceylon Letter Co._user');
+      if (stored) {
+        try {
+          const u = JSON.parse(stored);
+          const isStaff = u && u.role !== 'CUSTOMER';
+          if (isStaff) {
+            window.location.replace('admin.html');
+            return;
+          }
+          // Customer: try to honor returnUrl (same-origin check)
+          const params = new URLSearchParams(window.location.search);
+          const returnUrl = params.get('returnUrl');
+          if (returnUrl) {
+            try {
+              const parsed = new URL(decodeURIComponent(returnUrl), window.location.origin);
+              if (parsed.origin === window.location.origin) {
+                window.location.replace(parsed.href);
+                return;
+              }
+            } catch (_) {}
+          }
+          window.location.replace('account.html');
+        } catch (_) {
+          window.location.replace('account.html');
+        }
+      }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="description" content="Ceylon Letter Co. – Sign in or sign up to your account.">
+  <title>Ceylon Letter Co. – Account Access</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    .auth-page-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 85vh;
+      padding: var(--sp-12) var(--sp-4);
+      background: var(--bg-primary);
+    }
+
+    .auth-container {
+      background-color: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+      width: 850px;
+      max-width: 100%;
+      min-height: 720px;
+      display: flex;
+    }
+
+    .form-container {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      transition: all 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    .sign-in-container {
+      left: 0;
+      width: 50%;
+      z-index: 2;
+    }
+
+    .auth-container.right-panel-active .sign-in-container {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sign-up-container {
+      left: 0;
+      width: 50%;
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .auth-container.right-panel-active .sign-up-container {
+      transform: translateX(100%);
+      opacity: 1;
+      z-index: 5;
+      pointer-events: all;
+    }
+
+    .auth-form {
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 0 50px;
+      height: 100%;
+      text-align: center;
+    }
+
+    .auth-title {
+      font-family: var(--font-display), serif;
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--black);
+      margin-bottom: var(--sp-4);
+      letter-spacing: -0.02em;
+    }
+
+    .auth-form-group {
+      width: 100%;
+      text-align: left;
+      margin-bottom: var(--sp-4);
+    }
+
+    .auth-form-group label {
+      display: block;
+      font-size: var(--text-xs);
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: var(--sp-2);
+    }
+
+    .auth-form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-body), sans-serif;
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition-fast);
+      box-sizing: border-box;
+    }
+
+    .auth-form-group input:focus {
+      border-color: var(--black);
+    }
+
+    .auth-form-actions {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: var(--sp-5);
+    }
+
+    .auth-forgot {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      text-decoration: underline;
+      transition: color var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .auth-forgot:hover {
+      color: var(--black);
+    }
+
+    .auth-submit-btn {
+      width: 100%;
+      padding: 14px;
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.08em;
+      margin-bottom: var(--sp-4);
+    }
+
+    .auth-switch-prompt {
+      display: none;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-top: var(--sp-4);
+    }
+
+    .auth-switch-prompt a {
+      color: var(--black);
+      font-weight: var(--fw-semibold);
+      text-decoration: underline;
+    }
+
+    /* Password strength */
+    .pw-strength-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: var(--gray-200);
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .pw-strength-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .pw-strength-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-align: right;
+      letter-spacing: 0.06em;
+    }
+
+    /* Remember Me row */
+    .auth-remember-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--sp-5);
+    }
+
+    .auth-remember-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .auth-remember-label input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--black);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ── OVERLAY SLIDER ── */
+    .overlay-container {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+      z-index: 100;
+      border-left: 1px solid var(--border);
+    }
+
+    .auth-container.right-panel-active .overlay-container {
+      transform: translateX(-100%);
+      border-left: none;
+      border-right: 1px solid var(--border);
+    }
+
+    .overlay {
+      background: var(--black);
+      color: var(--white);
+      position: relative;
+      left: -100%;
+      height: 100%;
+      width: 200%;
+      transform: translateX(0);
+      transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    .auth-container.right-panel-active .overlay {
+      transform: translateX(50%);
+    }
+
+    .overlay-panel {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 0 60px;
+      text-align: center;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      transform: translateX(0);
+      transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    .overlay-left {
+      transform: translateX(-20%);
+    }
+
+    .auth-container.right-panel-active .overlay-left {
+      transform: translateX(0);
+    }
+
+    .overlay-right {
+      right: 0;
+      transform: translateX(0);
+    }
+
+    .auth-container.right-panel-active .overlay-right {
+      transform: translateX(20%);
+    }
+
+    .overlay-panel h1 {
+      font-family: var(--font-display), serif;
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      margin-bottom: var(--sp-4);
+      letter-spacing: -0.02em;
+      color: var(--white);
+    }
+
+    .overlay-panel p {
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      color: var(--cream-light);
+      margin-bottom: var(--sp-8);
+    }
+
+    .overlay-panel .btn {
+      border-color: var(--white);
+      color: var(--white);
+      padding: 12px 28px;
+    }
+
+    .overlay-panel .btn:hover {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    /* ══════════════════════════════════════
+       FORGOT / RESET PASSWORD MODAL
+    ══════════════════════════════════════ */
+    .fp-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .fp-modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .fp-modal {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+      width: 100%;
+      max-width: 440px;
+      padding: 48px 44px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .fp-modal-overlay.open .fp-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .fp-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--gray-600);
+      transition: all var(--transition-fast);
+    }
+
+    .fp-modal-close:hover {
+      background: var(--gray-200);
+      color: var(--black);
+    }
+
+    .fp-modal-close svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.5;
+    }
+
+    /* Step progress dots */
+    .fp-steps {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: var(--sp-6);
+    }
+
+    .fp-step {
+      height: 3px;
+      border-radius: 2px;
+      flex: 1;
+      background: var(--gray-200);
+      transition: background 0.3s ease;
+    }
+
+    .fp-step.active {
+      background: var(--black);
+    }
+
+    .fp-step.done {
+      background: var(--gray-500);
+    }
+
+    .fp-modal-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--gray-100);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--sp-5);
+    }
+
+    .fp-modal-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--black);
+      stroke-width: 1.5;
+    }
+
+    .fp-success-icon {
+      width: 52px;
+      height: 52px;
+      background: #e8f5e9;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--sp-5);
+    }
+
+    .fp-success-icon svg {
+      width: 24px;
+      height: 24px;
+      color: #2a7a40;
+      stroke-width: 2;
+    }
+
+    .fp-modal-title {
+      font-family: var(--font-display), serif;
+      font-size: 22px;
+      font-weight: var(--fw-bold);
+      color: var(--black);
+      margin-bottom: var(--sp-2);
+      letter-spacing: -0.02em;
+    }
+
+    .fp-modal-desc {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: var(--sp-7);
+    }
+
+    .fp-form-group {
+      width: 100%;
+      margin-bottom: var(--sp-4);
+    }
+
+    .fp-form-group label {
+      display: block;
+      font-size: var(--text-xs);
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: var(--sp-2);
+    }
+
+    .fp-form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-body), sans-serif;
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition-fast);
+      box-sizing: border-box;
+    }
+
+    .fp-form-group input:focus {
+      border-color: var(--black);
+    }
+
+    .fp-submit-btn {
+      width: 100%;
+      padding: 14px;
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.08em;
+      margin-bottom: var(--sp-4);
+    }
+
+    .fp-back-link {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color var(--transition-fast);
+      text-decoration: none;
+      margin-top: var(--sp-2);
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: var(--font-body), sans-serif;
+    }
+
+    .fp-back-link:hover {
+      color: var(--black);
+    }
+
+    .fp-back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Step panels */
+    .fp-step-panel {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .fp-step-panel.active {
+      display: flex;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .auth-container {
+        flex-direction: column;
+        min-height: 700px;
+        width: 100%;
+        max-width: 440px;
+        overflow: hidden;
+        display: block;
+      }
+
+      .overlay-container {
+        display: none;
+      }
+
+      .form-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+      }
+
+      .sign-in-container {
+        transform: translateX(0);
+        opacity: 1;
+        z-index: 2;
+        pointer-events: all;
+      }
+
+      .sign-up-container {
+        transform: translateX(100%);
+        opacity: 1;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .auth-container.right-panel-active .sign-in-container {
+        transform: translateX(-100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .auth-container.right-panel-active .sign-up-container {
+        transform: translateX(0);
+        opacity: 1;
+        z-index: 2;
+        pointer-events: all;
+      }
+
+      .auth-form {
+        padding: var(--sp-6) var(--sp-6);
+      }
+
+      .auth-switch-prompt {
+        display: block;
+      }
+
+      .fp-modal {
+        padding: 36px 28px;
+      }
+    }
+
+    /* ── SOCIAL LOGIN ── */
+    .social-login-container {
+      width: 100%;
+      margin-top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .social-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-weight: var(--fw-semibold);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      transition: background var(--transition-fast), border var(--transition-fast);
+      text-decoration: none;
+      font-family: var(--font-body), sans-serif;
+    }
+    .btn-google {
+      background: var(--white);
+      color: var(--black);
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .btn-google:hover {
+      background: var(--bg-secondary);
+      border-color: var(--gray-400);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .btn-otp {
+      background: var(--white);
+      color: var(--black);
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .btn-otp:hover {
+      background: var(--bg-secondary);
+      border-color: var(--gray-400);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .auth-separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      margin: var(--sp-4) 0;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .auth-separator::before,
+    .auth-separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+    .auth-separator:not(:empty)::before {
+      margin-right: .5em;
+    }
+    .auth-separator:not(:empty)::after {
+      margin-left: .5em;
+    }
+    .social-icon {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+
+<body class="no-loader">
+
+  <!-- Navbar injected by app.js -->
+
+  <!-- Auth Wrapper -->
+  <div class="auth-page-wrapper">
+    <div class="auth-container" id="auth-container">
+
+      <!-- SIGN UP FORM -->
+      <div class="form-container sign-up-container">
+        <form class="auth-form" onsubmit="handleAuthSubmit(event, 'signup')" novalidate>
+          <h1 class="auth-title">Create Account</h1>
+          <div id="signup-alert"
+            style="display:none; margin-bottom: var(--sp-4); padding: 12px 16px; border-radius: var(--radius-md); font-size: var(--text-sm); line-height: 1.5; text-align: left; width: 100%; box-sizing: border-box;">
+          </div>
+          <div class="auth-form-group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" placeholder="John Doe" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" placeholder="john@example.com" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Min. 8 characters" required minlength="8"
+              oninput="checkPasswordStrength(this.value)">
+            <div class="pw-strength-bar">
+              <div class="pw-strength-fill" id="pw-fill"></div>
+            </div>
+            <p class="pw-strength-label" id="pw-label"></p>
+          </div>
+          <button type="submit" class="btn btn-primary auth-submit-btn">Sign Up</button>
+          
+          <div class="auth-separator">Or</div>
+          <div class="social-login-container">
+            <a href="api/oauth/google/login" class="social-btn btn-google">
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="social-icon">
+              Continue with Google
+            </a>
+            <a href="#" class="social-btn btn-otp" onclick="event.preventDefault(); openOtpLogin();">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="social-icon">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              Login with Phone
+            </a>
+          </div>
+
+          <p class="auth-switch-prompt" style="margin-top: var(--sp-5);">
+            Already have an account?
+            <a href="#" onclick="event.preventDefault(); toggleMobilePanel(false)">Sign In</a>
+          </p>
+        </form>
+      </div>
+
+      <!-- SIGN IN FORM -->
+      <div class="form-container sign-in-container">
+        <form class="auth-form" onsubmit="handleAuthSubmit(event, 'signin')" novalidate>
+          <h1 class="auth-title">Welcome Back</h1>
+          <div id="signin-alert"
+            style="display:none; margin-bottom: var(--sp-4); padding: 12px 16px; border-radius: var(--radius-md); font-size: var(--text-sm); line-height: 1.5; text-align: left; width: 100%; box-sizing: border-box;">
+          </div>
+          <div class="auth-form-group">
+            <label for="signin-email">Email Address</label>
+            <input type="email" id="signin-email" placeholder="name@example.com" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="signin-password">Password</label>
+            <input type="password" id="signin-password" placeholder="••••••••" required>
+          </div>
+          <div class="auth-remember-row">
+            <label class="auth-remember-label" for="signin-remember">
+              <input type="checkbox" id="signin-remember">
+              Remember me
+            </label>
+            <a href="#" class="auth-forgot" id="forgot-link"
+              onclick="event.preventDefault(); openForgotPassword()">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary auth-submit-btn">Sign In</button>
+
+          <div class="auth-separator">Or</div>
+          <div class="social-login-container">
+            <a href="api/oauth/google/login" class="social-btn btn-google">
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="social-icon">
+              Continue with Google
+            </a>
+            <a href="#" class="social-btn btn-otp" onclick="event.preventDefault(); openOtpLogin();">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="social-icon">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              Login with Phone
+            </a>
+          </div>
+
+          <div style="margin-top: 24px; background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; font-size: 13px; text-align: left; border: 1px solid #ffeeba; width: 100%; box-sizing: border-box; line-height: 1.5;">
+            <strong>Facing login issues?</strong> Try clearing your browser cache or open this page in an Incognito window.
+          </div>
+
+          <p class="auth-switch-prompt" style="margin-top: var(--sp-5);">
+            New to Ceylon Letter Co.?
+            <a href="#" onclick="event.preventDefault(); toggleMobilePanel(true)">Create Account</a>
+          </p>
+        </form>
+      </div>
+
+      <!-- DUAL OVERLAY PANELS (DESKTOP) -->
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>Already Registered?</h1>
+            <p style="font-family: var(--font-body), sans-serif;">Log in with your existing details to sync your orders, cart, and
+              profile settings.</p>
+            <button class="btn btn-outline" id="signIn" onclick="toggleDesktopPanel(false)">Sign In</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>New to Ceylon Letter Co.?</h1>
+            <p style="font-family: var(--font-body), sans-serif;">Create a personal account today to unlock fast checkout, order
+              tracking, and exclusive discounts.</p>
+            <button class="btn btn-outline" id="signUp" onclick="toggleDesktopPanel(true)">Sign Up</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       FORGOT PASSWORD / RESET PASSWORD MODAL
+  ════════════════════════════════════════════ -->
+  <div class="fp-modal-overlay" id="fp-overlay" onclick="handleOverlayClick(event)" role="dialog" aria-modal="true">
+    <div class="fp-modal">
+
+      <!-- Close -->
+      <button class="fp-modal-close" onclick="closeForgotPassword()" aria-label="Close dialog">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Progress bar (3 steps) -->
+      <div class="fp-steps" aria-hidden="true">
+        <div class="fp-step active" id="fp-dot-1"></div>
+        <div class="fp-step" id="fp-dot-2"></div>
+        <div class="fp-step" id="fp-dot-3"></div>
+      </div>
+
+      <!-- ── STEP 1: Enter Email ── -->
+      <div class="fp-step-panel active" id="fp-panel-1">
+        <div class="fp-modal-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <h2 class="fp-modal-title">Forgot Password?</h2>
+        <p class="fp-modal-desc">No worries! Enter the email linked to your account and we'll send you a reset link.</p>
+        <form style="width:100%;" onsubmit="handleForgotSubmit(event)" novalidate>
+          <div class="fp-form-group">
+            <label for="fp-email">Email Address</label>
+            <input type="email" id="fp-email" placeholder="name@example.com" required autocomplete="email">
+          </div>
+          <button type="submit" class="btn btn-primary fp-submit-btn">Send Reset Link</button>
+        </form>
+        <button class="fp-back-link" onclick="closeForgotPassword()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          Back to Sign In
+        </button>
+      </div>
+
+      <!-- ── STEP 2: Email Sent ── -->
+      <div class="fp-step-panel" id="fp-panel-2">
+        <div class="fp-success-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+        </div>
+        <h2 class="fp-modal-title">Check Your Email</h2>
+        <p class="fp-modal-desc">
+          We've sent a password reset link to<br>
+          <strong id="fp-sent-email" style="color:var(--black);"></strong>.<br>
+          Click the link in the email, or click below to set a new password now.
+        </p>
+        <button class="btn btn-primary fp-submit-btn" onclick="goToStep(3)" style="width:100%;">
+          Enter New Password
+        </button>
+        <p style="font-size:12px; color:var(--text-muted); margin: 0 0 var(--sp-3); width:100%; text-align:center;">
+          Didn't get an email?
+          <a href="#" style="color:var(--black); text-decoration:underline;"
+            onclick="event.preventDefault(); resendResetEmail()">Resend</a>
+        </p>
+        <button class="fp-back-link" onclick="goToStep(1)">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          Use a different email
+        </button>
+      </div>
+
+      <!-- ── STEP 3: Set New Password ── -->
+      <div class="fp-step-panel" id="fp-panel-3">
+        <div class="fp-modal-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+          </svg>
+        </div>
+        <h2 class="fp-modal-title">Set New Password</h2>
+        <p class="fp-modal-desc">Create a strong new password. It must be at least 8 characters.</p>
+        <form style="width:100%;" onsubmit="handleResetSubmit(event)" novalidate>
+          <div class="fp-form-group">
+            <label for="fp-new-password">New Password</label>
+            <input type="password" id="fp-new-password" placeholder="Min. 8 characters" required minlength="8"
+              oninput="checkResetStrength(this.value)">
+            <div class="pw-strength-bar">
+              <div class="pw-strength-fill" id="rp-fill"></div>
+            </div>
+            <p class="pw-strength-label" id="rp-label"></p>
+          </div>
+          <div class="fp-form-group">
+            <label for="fp-confirm-password">Confirm Password</label>
+            <input type="password" id="fp-confirm-password" placeholder="Repeat your new password" required
+              minlength="8" oninput="checkPasswordMatch()">
+            <p class="pw-strength-label" id="pw-match-label"></p>
+          </div>
+          <button type="submit" class="btn btn-primary fp-submit-btn">Reset Password</button>
+        </form>
+        <button class="fp-back-link" onclick="goToStep(2)">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          Back
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       OTP LOGIN MODAL
+  ════════════════════════════════════════════ -->
+  <div class="fp-modal-overlay" id="otp-overlay" onclick="handleOtpOverlayClick(event)" role="dialog" aria-modal="true">
+    <div class="fp-modal">
+      <!-- Close -->
+      <button class="fp-modal-close" onclick="closeOtpLogin()" aria-label="Close dialog">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Progress bar (2 steps) -->
+      <div class="fp-steps" aria-hidden="true">
+        <div class="fp-step active" id="otp-dot-1"></div>
+        <div class="fp-step" id="otp-dot-2"></div>
+      </div>
+
+      <!-- ── STEP 1: Enter Phone Number ── -->
+      <div class="fp-step-panel active" id="otp-panel-1">
+        <div class="fp-modal-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+          </svg>
+        </div>
+        <h2 class="fp-modal-title">Login with Phone</h2>
+        <p class="fp-modal-desc">Enter your phone number to login or create a new account.</p>
+        <form style="width:100%;" onsubmit="handlePhoneCheckSubmit(event)" novalidate>
+          <div class="fp-form-group">
+            <label for="otp-phone">Phone Number</label>
+            <input type="tel" id="otp-phone" placeholder="e.g. 0771234567" required autocomplete="tel">
+          </div>
+          <button type="submit" class="btn btn-primary fp-submit-btn">Continue</button>
+        </form>
+        <button class="fp-back-link" onclick="closeOtpLogin()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+          Back to Sign In
+        </button>
+      </div>
+
+      <!-- ── STEP 2: Login (Enter PIN) ── -->
+      <div class="fp-step-panel" id="otp-panel-2">
+        <div class="fp-modal-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <h2 class="fp-modal-title">Welcome Back!</h2>
+        <p class="fp-modal-desc">Enter your PIN to login to <strong id="otp-sent-phone-login" style="color:var(--black);"></strong>.</p>
+        <form style="width:100%;" onsubmit="handlePhoneLoginSubmit(event)" novalidate>
+          <div class="fp-form-group">
+            <label for="login-pin">Your PIN</label>
+            <input type="password" id="login-pin" placeholder="----" required maxlength="6" pattern="[0-9]{4,6}" style="text-align: center; font-size: 24px; letter-spacing: 8px;">
+          </div>
+          <button type="submit" class="btn btn-primary fp-submit-btn">Login</button>
+        </form>
+        <button class="fp-back-link" onclick="goToOtpStep(1)">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+          Change Phone Number
+        </button>
+      </div>
+
+      <!-- ── STEP 3: Register (Name & PIN) ── -->
+      <div class="fp-step-panel" id="otp-panel-3">
+        <div class="fp-modal-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+          </svg>
+        </div>
+        <h2 class="fp-modal-title">Create Account</h2>
+        <p class="fp-modal-desc">Create a new account for <strong id="otp-sent-phone-register" style="color:var(--black);"></strong>.</p>
+        <form style="width:100%;" onsubmit="handlePhoneRegisterSubmit(event)" novalidate>
+          <div class="fp-form-group">
+            <label for="register-name">Full Name</label>
+            <input type="text" id="register-name" placeholder="John Doe" required>
+          </div>
+          <div class="fp-form-group">
+            <label for="register-pin">Create PIN (4 or 6 digits)</label>
+            <input type="password" id="register-pin" placeholder="----" required maxlength="6" pattern="[0-9]{4,6}" style="text-align: center; font-size: 24px; letter-spacing: 8px;">
+          </div>
+          <button type="submit" class="btn btn-primary fp-submit-btn">Register & Login</button>
+        </form>
+        <button class="fp-back-link" onclick="goToOtpStep(1)">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+          Change Phone Number
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+  <script>
+    const container = document.getElementById('auth-container');
+    const fpOverlay = document.getElementById('fp-overlay');
+
+    /* ── PANEL TOGGLES ── */
+    function toggleDesktopPanel(signUpActive) {
+      container.classList.toggle('right-panel-active', signUpActive);
+    }
+    function toggleMobilePanel(signUpActive) {
+      container.classList.toggle('right-panel-active', signUpActive);
+    }
+
+    /* ── AUTH FORM SUBMIT ── */
+    function handleAuthSubmit(event, action) {
+      event.preventDefault();
+
+      // Clear alert messages
+      const signinAlert = document.getElementById('signin-alert');
+      const signupAlert = document.getElementById('signup-alert');
+      if (signinAlert) { signinAlert.style.display = 'none'; signinAlert.innerHTML = ''; }
+      if (signupAlert) { signupAlert.style.display = 'none'; signupAlert.innerHTML = ''; }
+
+      if (action === 'signup') {
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value;
+
+        // Client-side validations
+        if (!name) {
+          window.AppLoader?.showNotification('Please enter your full name.', 'warning');
+          return;
+        }
+        if (!email) {
+          window.AppLoader?.showNotification('Please enter your email address.', 'warning');
+          return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          window.AppLoader?.showNotification('Please enter a valid email address.', 'error');
+          return;
+        }
+        if (!password) {
+          window.AppLoader?.showNotification('Please enter a password.', 'warning');
+          return;
+        }
+        if (password.length < 8) {
+          window.AppLoader?.showNotification('Password must be at least 8 characters long.', 'error');
+          return;
+        }
+
+        // Backend Endpoint එකට දත්ත JSON විදිහට යැවීම
+        const urlParams = new URLSearchParams(window.location.search);
+        const returnUrl = urlParams.get('returnUrl');
+        
+        fetch('api/auth/signup', {
+          method: 'POST',
+          credentials: 'same-origin', cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: name, email: email, password: password, returnUrl: returnUrl || '' })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              if (data.requiresVerification) {
+                signupAlert.style.display = 'block';
+                signupAlert.style.background = '#e3f2fd';
+                signupAlert.style.border = '1px solid #bbdefb';
+                signupAlert.style.color = '#0c5460';
+                signupAlert.innerHTML = `
+                        <strong>Verification Email Sent!</strong><br>
+                        We have sent a verification link to <strong>${escapeHtml(email)}</strong>. 
+                        Please check your email to verify your account before logging in.<br>
+                        <a href="#" style="text-decoration:underline; font-weight:600; color:#0c5460;" onclick="resendVerification('${escapeHtml(email)}'); return false;">Didn't receive email? Resend.</a>
+                      `;
+                window.AppLoader?.showNotification('Verification email sent!');
+
+                // Clear the signup fields
+                document.getElementById('signup-name').value = '';
+                document.getElementById('signup-email').value = '';
+                document.getElementById('signup-password').value = '';
+                if (document.getElementById('pw-fill')) document.getElementById('pw-fill').style.width = '0%';
+                if (document.getElementById('pw-label')) document.getElementById('pw-label').textContent = '';
+              } else {
+                window.AppLoader?.showNotification('Account created successfully! Welcome to Ceylon Letter Co.');
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('returnUrl');
+                let redirectUrl = 'account.html';
+                if (returnUrl) redirectUrl = decodeURIComponent(returnUrl);
+                setTimeout(() => window.location.href = redirectUrl, 1200);
+              }
+            } else {
+              window.AppLoader?.showNotification(data.message || 'Registration failed.', 'error');
+              signupAlert.style.display = 'block';
+              signupAlert.style.background = '#f8d7da';
+              signupAlert.style.border = '1px solid #f5c6cb';
+              signupAlert.style.color = '#721c24';
+              signupAlert.textContent = data.message || 'Registration failed.';
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            window.AppLoader?.showNotification('Something went wrong. Please try again.', 'error');
+          });
+      } else {
+        // Sign In - Backend API Call
+        const email = document.getElementById('signin-email').value.trim();
+        const password = document.getElementById('signin-password').value;
+
+        // Client-side validations
+        if (!email) {
+          window.AppLoader?.showNotification('Please enter your email address.', 'warning');
+          return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          window.AppLoader?.showNotification('Please enter a valid email address.', 'error');
+          return;
+        }
+        if (!password) {
+          window.AppLoader?.showNotification('Please enter your password.', 'warning');
+          return;
+        }
+
+        fetch('api/auth/login', {
+          method: 'POST',
+          credentials: 'same-origin', cache: 'no-store',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: password })
+        })
+          .then(response => {
+            if (response.status === 403) {
+              return response.json().then(data => {
+                signinAlert.style.display = 'block';
+                signinAlert.style.background = '#fff3cd';
+                signinAlert.style.border = '1px solid #ffeeba';
+                signinAlert.style.color = '#856404';
+                signinAlert.innerHTML = `
+                <strong>Email Not Verified!</strong><br>
+                ${data.message || 'Please verify your email address before logging in.'}<br>
+                <a href="#" style="text-decoration:underline; font-weight:600; color:#856404;" onclick="resendVerification('${escapeHtml(email)}'); return false;">Resend verification email</a>
+              `;
+                window.AppLoader?.showNotification('Verification required.', 'error');
+              });
+            }
+            return response.json().then(data => {
+              if (data.success) {
+                const uObj = {
+                  id: data.id,
+                  name: data.name,
+                  email: data.email,
+                  role: data.role,
+                  isSubscribed: data.isSubscribed
+                };
+                localStorage.setItem('Ceylon Letter Co._user', JSON.stringify(uObj));
+                sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(uObj));
+                // ── Remember Me (SECURITY FIX VULN-02: email only — never store password) ──
+                const rememberChk = document.getElementById('signin-remember');
+                if (rememberChk?.checked) {
+                  sessionStorage.setItem('Ceylon Letter Co._remember_email', email);
+                } else {
+                  sessionStorage.removeItem('Ceylon Letter Co._remember_email');
+                }
+                // Always ensure no legacy password entry exists
+                sessionStorage.removeItem('Ceylon Letter Co._remember_pwd');
+                window.AppLoader?.showNotification('Welcome back, ' + data.name + '!');
+                
+                // Determine redirect URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('returnUrl');
+                const isStaff = data.role !== 'CUSTOMER';
+                let redirectUrl = isStaff ? 'admin.html' : 'account.html';
+
+                if (!isStaff && returnUrl) {
+                  try {
+                    const decoded = decodeURIComponent(returnUrl);
+                    if (!decoded.startsWith('http://') && !decoded.startsWith('https://')) {
+                      redirectUrl = decoded;
+                    } else {
+                      const parsed = new URL(decoded, window.location.origin);
+                      if (parsed.origin === window.location.origin) {
+                        redirectUrl = parsed.pathname + parsed.search + parsed.hash;
+                      }
+                    }
+                  } catch (_) {
+                    redirectUrl = decodeURIComponent(returnUrl);
+                  }
+                }
+
+                if (isStaff) {
+                  window.location.replace('admin.html');
+                } else {
+                  setTimeout(() => window.location.href = redirectUrl, 1200);
+                }
+              } else {
+                window.AppLoader?.showNotification(data.message || 'Login failed. Check your credentials.', 'error');
+                signinAlert.style.display = 'block';
+                signinAlert.style.background = '#f8d7da';
+                signinAlert.style.border = '1px solid #f5c6cb';
+                signinAlert.style.color = '#721c24';
+                signinAlert.textContent = data.message || 'Invalid email or password.';
+              }
+            });
+          })
+          .catch(error => {
+            console.error('Login error:', error);
+            window.AppLoader?.showNotification('Something went wrong. Please try again.', 'error');
+          });
+      }
+    }
+
+    /* ── RESEND VERIFICATION EMAIL ── */
+    function resendVerification(email) {
+      if (!email) return;
+      window.AppLoader?.showNotification('Resending verification email...');
+
+      fetch('api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const signinAlert = document.getElementById('signin-alert');
+          const signupAlert = document.getElementById('signup-alert');
+          const activeAlert = signinAlert.style.display === 'block' ? signinAlert : signupAlert;
+
+          if (data.success) {
+            window.AppLoader?.showNotification('Verification email resent!');
+            if (activeAlert) {
+              activeAlert.style.display = 'block';
+              activeAlert.style.background = '#d4edda';
+              activeAlert.style.border = '1px solid #c3e6cb';
+              activeAlert.style.color = '#155724';
+              activeAlert.innerHTML = `<strong>Verification Resent!</strong> A fresh verification link has been sent to <strong>${escapeHtml(email)}</strong>. Please check your inbox.`;
+            }
+          } else {
+            window.AppLoader?.showNotification(data.message || 'Failed to resend email.', 'error');
+            if (activeAlert) {
+              activeAlert.style.display = 'block';
+              activeAlert.style.background = '#f8d7da';
+              activeAlert.style.border = '1px solid #f5c6cb';
+              activeAlert.style.color = '#721c24';
+              activeAlert.innerHTML = `<strong>Error:</strong> ${data.message || 'Could not resend verification email.'}`;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Resend error:', error);
+          window.AppLoader?.showNotification('Something went wrong. Please try again.', 'error');
+        });
+    }
+
+    /* ── CHECK QUERY PARAMS ON LOAD + REMEMBER ME ── */
+    window.addEventListener('DOMContentLoaded', () => {
+      // ── Restore remembered email (SECURITY FIX VULN-02: password never stored) ──
+      // Remove any legacy plain-text password that may have been stored by an older version
+      sessionStorage.removeItem('Ceylon Letter Co._remember_pwd');
+      const savedEmail = sessionStorage.getItem('Ceylon Letter Co._remember_email');
+      if (savedEmail) {
+        const emailInput = document.getElementById('signin-email');
+        const rememberChk = document.getElementById('signin-remember');
+        if (emailInput) emailInput.value = savedEmail;
+        if (rememberChk) rememberChk.checked = true;
+        // Password field is intentionally left empty — user must type it each time
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const verifyStatus = urlParams.get('emailVerify');
+      const signinAlert = document.getElementById('signin-alert');
+      const returnUrl = urlParams.get('returnUrl');
+
+      if (returnUrl) {
+        document.querySelectorAll('.social-btn.btn-google').forEach(btn => {
+          btn.href = 'api/oauth/google/login?returnUrl=' + encodeURIComponent(returnUrl);
+        });
+      }
+
+      if (verifyStatus && signinAlert) {
+        signinAlert.style.display = 'block';
+        if (verifyStatus === 'verified') {
+          signinAlert.style.background = '#d4edda';
+          signinAlert.style.border = '1px solid #c3e6cb';
+          signinAlert.style.color = '#155724';
+          signinAlert.innerHTML = '<strong>Email Verified!</strong> Your email has been successfully verified. You can now sign in.';
+          window.AppLoader?.showNotification('Email verified! You can now log in.');
+        } else if (verifyStatus === 'expired') {
+          signinAlert.style.background = '#f8d7da';
+          signinAlert.style.border = '1px solid #f5c6cb';
+          signinAlert.style.color = '#721c24';
+          signinAlert.innerHTML = '<strong>Verification Link Expired!</strong> The verification link is no longer valid. Please sign in below to request a new verification email.';
+          window.AppLoader?.showNotification('Verification link expired.', 'error');
+        } else if (verifyStatus === 'invalid') {
+          signinAlert.style.background = '#f8d7da';
+          signinAlert.style.border = '1px solid #f5c6cb';
+          signinAlert.style.color = '#721c24';
+          signinAlert.innerHTML = '<strong>Invalid Link!</strong> The verification link is invalid or corrupted. Please make sure the link matches the email sent to you.';
+          window.AppLoader?.showNotification('Invalid verification link.', 'error');
+        }
+      }
+
+      /* ── Handle ?resetToken= from password-reset email link ── */
+      const resetToken = urlParams.get('resetToken');
+      if (resetToken) {
+        _resetToken = resetToken;
+        // Open the modal directly at Step 3
+        goToStep(3);
+        fpOverlay.classList.add('open');
+        window.AppLoader?.showNotification('Enter your new password to complete the reset.', 'info');
+        // Clean up URL
+        history.replaceState(null, '', window.location.pathname);
+      }
+    });
+
+    /* ── ESCAPE HTML FOR XSS PREVENTION ── */
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    /* ── PASSWORD STRENGTH ── */
+    function getStrengthScore(val) {
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (val.length >= 12) score++;
+      if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      return score;
+    }
+
+    function applyStrength(fillId, labelId, score) {
+      const levels = [
+        { w: '20%', bg: '#ef4444', text: 'Weak' },
+        { w: '40%', bg: '#f97316', text: 'Fair' },
+        { w: '60%', bg: '#eab308', text: 'Good' },
+        { w: '80%', bg: '#22c55e', text: 'Strong' },
+        { w: '100%', bg: '#16a34a', text: 'Very Strong' },
+      ];
+      const lvl = levels[Math.min(score, 4)];
+      const fill = document.getElementById(fillId);
+      const label = document.getElementById(labelId);
+      if (fill) { fill.style.width = lvl.w; fill.style.background = lvl.bg; }
+      if (label) { label.textContent = lvl.text; label.style.color = lvl.bg; }
+    }
+
+    function checkPasswordStrength(val) { applyStrength('pw-fill', 'pw-label', getStrengthScore(val)); }
+    function checkResetStrength(val) { applyStrength('rp-fill', 'rp-label', getStrengthScore(val)); }
+
+    function checkPasswordMatch() {
+      const np = document.getElementById('fp-new-password').value;
+      const cp = document.getElementById('fp-confirm-password').value;
+      const lbl = document.getElementById('pw-match-label');
+      const inp = document.getElementById('fp-confirm-password');
+      if (!cp) { lbl.innerHTML = ''; return; }
+      if (np === cp) {
+        lbl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Passwords match</span>';
+        lbl.style.color = '#10b981';
+        lbl.style.fontWeight = '500';
+        inp.style.borderColor = '#10b981';
+      } else {
+        lbl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Passwords do not match</span>';
+        lbl.style.color = '#ef4444';
+        inp.style.borderColor = '#ef4444';
+      }
+    }
+
+    /* ════════════════════════════════
+       FORGOT / RESET PASSWORD FLOW
+     ════════════════════════════════ */
+
+    // Stores the reset token returned by the server after Step 1
+    let _resetToken = '';
+
+    function openForgotPassword() {
+      goToStep(1);
+      fpOverlay.classList.add('open');
+      setTimeout(() => document.getElementById('fp-email')?.focus(), 350);
+    }
+
+    function closeForgotPassword() {
+      fpOverlay.classList.remove('open');
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === fpOverlay) closeForgotPassword();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeForgotPassword();
+    });
+
+    function goToStep(step) {
+      /* Hide all panels */
+      document.querySelectorAll('.fp-step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('fp-panel-' + step).classList.add('active');
+
+      /* Update step dots */
+      [1, 2, 3].forEach(i => {
+        const dot = document.getElementById('fp-dot-' + i);
+        dot.classList.remove('active', 'done');
+        if (i === step) dot.classList.add('active');
+        if (i < step) dot.classList.add('done');
+      });
+
+      /* Auto-focus first input */
+      const firstInput = document.querySelector('#fp-panel-' + step + ' input');
+      if (firstInput) setTimeout(() => firstInput.focus(), 80);
+    }
+
+    /* ── STEP 1: Send reset email via API ── */
+    function handleForgotSubmit(event) {
+      event.preventDefault();
+      const email = document.getElementById('fp-email').value.trim();
+      const btn = event.submitter || event.target.querySelector('button[type=submit]');
+      const origTxt = btn ? btn.textContent : '';
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      fetch('api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+          if (data.success) {
+            _resetToken = data.token || '';
+            document.getElementById('fp-sent-email').textContent = email;
+            goToStep(2);
+          } else {
+            window.AppLoader?.showNotification(data.message || 'Something went wrong.', 'error');
+          }
+        })
+        .catch(() => {
+          if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+          window.AppLoader?.showNotification('Network error. Please try again.', 'error');
+        });
+    }
+
+    /* ── STEP 2: Resend ── */
+    function resendResetEmail() {
+      const email = document.getElementById('fp-sent-email').textContent.trim();
+      if (!email) { goToStep(1); return; }
+
+      window.AppLoader?.showNotification('Resending reset email…');
+
+      fetch('api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            _resetToken = data.token || '';
+            window.AppLoader?.showNotification('Reset link resent! Check your inbox.');
+          } else {
+            window.AppLoader?.showNotification(data.message || 'Failed to resend.', 'error');
+          }
+        })
+        .catch(() => window.AppLoader?.showNotification('Network error. Please try again.', 'error'));
+    }
+
+    /* ── STEP 3: Apply new password via API ── */
+    function handleResetSubmit(event) {
+      event.preventDefault();
+      const np = document.getElementById('fp-new-password').value;
+      const cp = document.getElementById('fp-confirm-password').value;
+      const btn = event.submitter || event.target.querySelector('button[type=submit]');
+      const origTxt = btn ? btn.textContent : '';
+
+      if (np !== cp) {
+        window.AppLoader?.showNotification('Passwords do not match. Please try again.', 'error');
+        return;
+      }
+      if (np.length < 8) {
+        window.AppLoader?.showNotification('Password must be at least 8 characters.', 'error');
+        return;
+      }
+      if (!_resetToken) {
+        window.AppLoader?.showNotification('Reset token missing. Please start over.', 'error');
+        goToStep(1);
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Resetting…'; }
+
+      fetch('api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: _resetToken, newPassword: np })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+          if (data.success) {
+            // Clean up and show success
+            _resetToken = '';
+            closeForgotPassword();
+            window.AppLoader?.showNotification('Password reset! You can now sign in.', 'success');
+
+            // Clear all reset form fields
+            ['fp-new-password', 'fp-confirm-password', 'fp-email'].forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.value = '';
+            });
+            ['rp-fill', 'pw-fill'].forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.style.width = '0%';
+            });
+            ['rp-label', 'pw-label', 'pw-match-label'].forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.textContent = '';
+            });
+          } else {
+            window.AppLoader?.showNotification(data.message || 'Reset failed. Please try again.', 'error');
+          }
+        })
+        .catch(() => {
+          if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+          window.AppLoader?.showNotification('Network error. Please try again.', 'error');
+        });
+    }
+
+    /* ════════════════════════════════
+       OTP LOGIN FLOW
+     ════════════════════════════════ */
+    const otpOverlay = document.getElementById('otp-overlay');
+
+    function openOtpLogin() {
+      goToOtpStep(1);
+      otpOverlay.classList.add('open');
+      setTimeout(() => document.getElementById('otp-phone')?.focus(), 350);
+    }
+
+    function closeOtpLogin() {
+      otpOverlay.classList.remove('open');
+    }
+
+    function handleOtpOverlayClick(e) {
+      if (e.target === otpOverlay) closeOtpLogin();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeOtpLogin();
+    });
+
+    function goToOtpStep(step) {
+      document.getElementById('otp-panel-1').classList.remove('active');
+      document.getElementById('otp-panel-2').classList.remove('active');
+      document.getElementById('otp-panel-' + step).classList.add('active');
+
+      const dot1 = document.getElementById('otp-dot-1');
+      const dot2 = document.getElementById('otp-dot-2');
+      if(dot1) dot1.classList.remove('active', 'done');
+      if(dot2) dot2.classList.remove('active', 'done');
+
+      if (step === 1) {
+        if(dot1) dot1.classList.add('active');
+      } else {
+        if(dot1) dot1.classList.add('done');
+        if(dot2) dot2.classList.add('active');
+      } 
+
+      const firstInput = document.querySelector('#otp-panel-' + step + ' input');
+      if (firstInput) setTimeout(() => firstInput.focus(), 80);
+    }
+
+    let currentPhone = '';
+
+    function handlePhoneCheckSubmit(event) {
+      event.preventDefault();
+      
+      let phone = document.getElementById('otp-phone').value.trim();
+      const btn = event.submitter || event.target.querySelector('button[type=submit]');
+      const origTxt = btn ? btn.textContent : '';
+
+      if (!phone) {
+        window.AppLoader?.showNotification('Please enter a valid phone number.', 'error');
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Checking…'; }
+      
+      fetch('api/auth/phone/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+        if (data.success) {
+          currentPhone = phone;
+          if (data.exists) {
+            document.getElementById('otp-sent-phone-login').textContent = phone;
+            goToOtpStep(2);
+          } else {
+            document.getElementById('otp-sent-phone-register').textContent = phone;
+            goToOtpStep(3);
+          }
+        } else {
+          window.AppLoader?.showNotification(data.message || 'Error checking phone number.', 'error');
+        }
+      })
+      .catch(() => {
+        if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+        window.AppLoader?.showNotification('Network error.', 'error');
+      });
+    }
+
+    function handlePhoneLoginSubmit(event) {
+      event.preventDefault();
+      const pin = document.getElementById('login-pin').value.trim();
+      const btn = event.submitter || event.target.querySelector('button[type=submit]');
+      const origTxt = btn ? btn.textContent : '';
+
+      if (!pin || pin.length < 4) {
+        window.AppLoader?.showNotification('Please enter a valid PIN.', 'error');
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Logging in…'; }
+
+      fetch('api/auth/phone/login', {
+        method: 'POST',
+        credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: currentPhone, pin: pin })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+        if (data.success) {
+          closeOtpLogin();
+          sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify({
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            role: data.role,
+            isSubscribed: data.isSubscribed
+          }));
+          window.AppLoader?.showNotification('Login successful! Welcome back.');
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const returnUrl = urlParams.get('returnUrl');
+          const isStaff = data.role !== 'CUSTOMER';
+          let redirectUrl = isStaff ? 'admin.html' : 'account.html';
+          
+          if (!isStaff && returnUrl) {
+            try {
+              const parsed = new URL(decodeURIComponent(returnUrl), window.location.origin);
+              if (parsed.origin === window.location.origin) {
+                redirectUrl = parsed.href;
+              }
+            } catch (_) {}
+          }
+
+          if (isStaff) {
+            window.location.replace('admin.html');
+          } else {
+            setTimeout(() => window.location.href = redirectUrl, 1200);
+          }
+        } else {
+          window.AppLoader?.showNotification(data.message || 'Invalid PIN.', 'error');
+        }
+      })
+      .catch(() => {
+        if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+        window.AppLoader?.showNotification('Network error.', 'error');
+      });
+    }
+
+    function handlePhoneRegisterSubmit(event) {
+      event.preventDefault();
+      const fullName = document.getElementById('register-name').value.trim();
+      const pin = document.getElementById('register-pin').value.trim();
+      const btn = event.submitter || event.target.querySelector('button[type=submit]');
+      const origTxt = btn ? btn.textContent : '';
+
+      if (!fullName) {
+        window.AppLoader?.showNotification('Please enter your name.', 'error');
+        return;
+      }
+      if (!pin || pin.length < 4) {
+        window.AppLoader?.showNotification('PIN must be at least 4 digits.', 'error');
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
+
+      fetch('api/auth/phone/register', {
+        method: 'POST',
+        credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: currentPhone, fullName: fullName, pin: pin })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+        if (data.success) {
+          closeOtpLogin();
+          sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify({
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            role: data.role,
+            isSubscribed: data.isSubscribed
+          }));
+          window.AppLoader?.showNotification('Account created successfully!');
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const returnUrl = urlParams.get('returnUrl');
+          const isStaff = data.role !== 'CUSTOMER';
+          let redirectUrl = isStaff ? 'admin.html' : 'account.html';
+          
+          if (!isStaff && returnUrl) {
+            try {
+              const parsed = new URL(decodeURIComponent(returnUrl), window.location.origin);
+              if (parsed.origin === window.location.origin) {
+                redirectUrl = parsed.href;
+              }
+            } catch (_) {}
+          }
+
+          setTimeout(() => window.location.href = redirectUrl, 1200);
+        } else {
+          window.AppLoader?.showNotification(data.message || 'Registration failed.', 'error');
+        }
+      })
+      .catch(() => {
+        if (btn) { btn.disabled = false; btn.textContent = origTxt; }
+        window.AppLoader?.showNotification('Network error.', 'error');
+      });
+    }
+  </script>
+</body>
+
+</html>
+
+
+

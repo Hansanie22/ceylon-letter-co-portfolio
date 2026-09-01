@@ -1,0 +1,255 @@
+--- src/main/java/com/ceylonletterco/service/OrderReportScheduler.java
++++ src/main/java/com/ceylonletterco/service/OrderReportScheduler.java
+@@ -100,8 +100,8 @@
+     }
+ 
+-    // ── 11:00 PM: Send Admin full business daily report ───────────────────────
+-    @Scheduled(cron = "0 0 23 * * ?")
++    // ── 11:59 PM: Send Admin full business daily report ───────────────────────
++    @Scheduled(cron = "0 59 23 * * ?")
+     @Transactional(readOnly = true)
+     public void generateAndSendDailyReport() {
+         LOG.info("Starting Admin Daily Order Report Generation...");
+@@ -129,7 +129,7 @@
+     // EXCEL BUILDERS
+     // ─────────────────────────────────────────────────────────────────────────
+ 
+-    public byte[] buildSalesRepExcel(List<PosOrder> orders, String repName, LocalDate date) throws Exception {
++    private byte[] buildSalesRepExcel(List<PosOrder> orders, String repName, LocalDate date) throws Exception {
+         try (XSSFWorkbook wb = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+             XSSFSheet sheet = wb.createSheet("My Orders - " + date);
+ 
+@@ -136,7 +136,6 @@
+             XSSFCellStyle headerStyle = wb.createCellStyle();
+             XSSFFont headerFont = wb.createFont();
+             headerFont.setBold(true);
+-            headerFont.setFontName("Comfortaa");
+             headerFont.setFontHeightInPoints((short) 14);
+             headerFont.setColor(IndexedColors.WHITE.getIndex());
+             headerStyle.setFont(headerFont);
+@@ -147,8 +146,7 @@
+             XSSFCellStyle totalStyle = wb.createCellStyle();
+             XSSFFont totalFont = wb.createFont();
+             totalFont.setBold(true);
+-            totalFont.setFontName("Comfortaa");
+-            totalFont.setFontHeightInPoints((short) 14);
++            totalFont.setFontHeightInPoints((short) 13);
+             totalStyle.setFont(totalFont);
+             totalStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte)254, (byte)243, (byte)199}, null)); // #fef3c7
+             totalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+@@ -154,8 +152,7 @@
+             // Data row style — alternating
+             XSSFCellStyle dataStyle = wb.createCellStyle();
+             XSSFFont dataFont = wb.createFont();
+-            dataFont.setFontName("Comfortaa");
+-            dataFont.setFontHeightInPoints((short) 14);
++            dataFont.setFontHeightInPoints((short) 12);
+             dataStyle.setFont(dataFont);
+             dataStyle.setBorderBottom(BorderStyle.THIN);
+ 
+@@ -161,5 +158,6 @@
+-            String[] headers = {
+-                    "Order_ID", "Date", "Customer_Name", "Total_Bill", "Payment_Method", "Advance_Paid", "COD_Balance", "Notes"
+-            };
++             String[] headers = {
++                    "Order_ID", "Date", "Customer_Name", "Address", "Phone1", "Phone2",
++                    "Total_Bill", "Payment_Method", "Advance_Paid", "COD_Balance",
++                    "Order_Status", "Custom", "Notes"
++             };
+ 
+@@ -171,7 +169,6 @@
+             Row titleRow = sheet.createRow(0);
+             Cell titleCell = titleRow.createCell(0);
+             titleCell.setCellValue("Daily Sales Report — " + repName + " — " + date);
+             XSSFCellStyle titleStyle = wb.createCellStyle();
+             XSSFFont titleFont = wb.createFont();
+             titleFont.setBold(true);
+-            titleFont.setFontName("Comfortaa");
+-            titleFont.setFontHeightInPoints((short) 18);
++            titleFont.setFontHeightInPoints((short) 16);
+             titleStyle.setFont(titleFont);
+@@ -214,11 +211,16 @@
+                 row.createCell(0).setCellValue("POS-" + String.format("%05d", o.getId()));
+                 row.createCell(1).setCellValue(o.getCreatedAt() != null ? o.getCreatedAt().format(DTF) : "");
+                 row.createCell(2).setCellValue(o.getCustomerName() != null ? o.getCustomerName() : "");
+-                row.createCell(3).setCellValue(o.getTotalAmount().doubleValue());
+-                row.createCell(4).setCellValue(o.getPaymentMethod());
+-                row.createCell(5).setCellValue(o.getAdvancePaid().doubleValue());
+-                row.createCell(6).setCellValue(o.getCodBalance().doubleValue());
+-                row.createCell(7).setCellValue(notes.trim());
++                row.createCell(3).setCellValue(o.getCustomerAddress() != null ? o.getCustomerAddress() : "");
++                row.createCell(4).setCellValue(o.getPhone1() != null ? o.getPhone1() : "");
++                row.createCell(5).setCellValue(o.getPhone2() != null ? o.getPhone2() : "");
++                row.createCell(6).setCellValue(o.getTotalAmount().doubleValue());
++                row.createCell(7).setCellValue(o.getPaymentMethod());
++                row.createCell(8).setCellValue(o.getAdvancePaid().doubleValue());
++                row.createCell(9).setCellValue(o.getCodBalance().doubleValue());
++                row.createCell(10).setCellValue(o.getOrderStatus());
++                row.createCell(11).setCellValue(Boolean.TRUE.equals(o.getIsCustom()) ? "YES" : "NO");
++                row.createCell(12).setCellValue(notes.trim());
+ 
+                 for (int c = 0; c < headers.length; c++) row.getCell(c).setCellStyle(dataStyle);
+@@ -234,9 +236,9 @@
+             // Totals row
+             Row totalRow = sheet.createRow(rowIdx);
+             totalRow.createCell(0).setCellValue("TOTAL (" + orders.size() + " orders)");
+-            totalRow.createCell(3).setCellValue(sumTotal.doubleValue());
+-            totalRow.createCell(5).setCellValue(sumAdvance.doubleValue());
+-            totalRow.createCell(6).setCellValue(sumCod.doubleValue());
++            totalRow.createCell(6).setCellValue(sumTotal.doubleValue());
++            totalRow.createCell(8).setCellValue(sumAdvance.doubleValue());
++            totalRow.createCell(9).setCellValue(sumCod.doubleValue());
+             for (int c = 0; c < headers.length; c++) {
+@@ -244,7 +246,7 @@
+ 
+             // Auto-size
+             for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
+-            sheet.setColumnWidth(7, 10000); // notes wider
++            sheet.setColumnWidth(3, 8000); // address wider
+ 
+             wb.write(out);
+@@ -250,7 +252,7 @@
+         }
+     }
+ 
+-    public byte[] buildAdminExcel(List<Order> webOrders, List<PosOrder> posOrders, LocalDate date) throws Exception {
++    private byte[] buildAdminExcel(List<Order> webOrders, List<PosOrder> posOrders, LocalDate date) throws Exception {
+         try (XSSFWorkbook wb = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+             XSSFSheet sheet = wb.createSheet("Daily Orders");
+ 
+@@ -257,8 +259,7 @@
+             XSSFFont headerFont = wb.createFont();
+             headerFont.setBold(true);
+-            headerFont.setFontName("Comfortaa");
+-            headerFont.setFontHeightInPoints((short) 14);
++            headerFont.setFontHeightInPoints((short) 13);
+             headerFont.setColor(IndexedColors.WHITE.getIndex());
+             headerStyle.setFont(headerFont);
+@@ -265,8 +266,7 @@
+             XSSFCellStyle totalStyle = wb.createCellStyle();
+             XSSFFont totalFont = wb.createFont();
+             totalFont.setBold(true);
+-            totalFont.setFontName("Comfortaa");
+-            totalFont.setFontHeightInPoints((short) 14);
++            totalFont.setFontHeightInPoints((short) 13);
+             totalStyle.setFont(totalFont);
+             totalStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte)219, (byte)234, (byte)254}, null));
+@@ -272,30 +272,13 @@
+-            XSSFCellStyle dataStyle = wb.createCellStyle();
+-            XSSFFont dataFont = wb.createFont();
+-            dataFont.setFontName("Comfortaa");
+-            dataFont.setFontHeightInPoints((short) 14);
+-            dataStyle.setFont(dataFont);
+-            dataStyle.setBorderBottom(BorderStyle.THIN);
+-
+             String[] headers = {
+-                    "Order_ID", "Date", "Customer_Name", "Total_Bill", "Payment_Method", "Advance_Paid", "COD_Balance", "Notes"
++                    "Order_ID", "Source", "Date", "Customer_Name", "Address", "Phone",
++                    "Sales_Rep", "Total_Bill", "Payment_Method", "Advance_Paid", "COD_Balance",
++                    "Order_Status", "Custom", "Notes"
+             };
+ 
+-            Row titleRow = sheet.createRow(0);
+-            Cell titleCell = titleRow.createCell(0);
+-            titleCell.setCellValue("All Business Orders — " + date);
+-            XSSFCellStyle titleStyle = wb.createCellStyle();
+-            XSSFFont titleFont = wb.createFont();
+-            titleFont.setBold(true);
+-            titleFont.setFontName("Comfortaa");
+-            titleFont.setFontHeightInPoints((short) 18);
+-            titleStyle.setFont(titleFont);
+-            titleCell.setCellStyle(titleStyle);
+-            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1));
+-
+-            Row hRow = sheet.createRow(1);
++            Row hRow = sheet.createRow(0);
+             for (int i = 0; i < headers.length; i++) {
+                 Cell c = hRow.createCell(i);
+                 c.setCellValue(headers[i]);
+                 c.setCellStyle(headerStyle);
+             }
+-            hRow.setHeightInPoints(24);
++            hRow.setHeightInPoints(22);
+ 
+             BigDecimal sumTotal = BigDecimal.ZERO;
+             BigDecimal sumAdvance = BigDecimal.ZERO;
+             BigDecimal sumCod = BigDecimal.ZERO;
+-            int rowIdx = 2;
++            int rowIdx = 1;
+ 
+@@ -317,15 +300,19 @@
+ 
+                 Row row = sheet.createRow(rowIdx++);
+                 row.createCell(0).setCellValue("CLC-" + String.format("%05d", o.getId()));
+-                row.createCell(1).setCellValue(o.getCreatedAt() != null ? o.getCreatedAt().format(DTF) : "");
+-                row.createCell(2).setCellValue(customerName);
+-                row.createCell(3).setCellValue(o.getTotalAmount().doubleValue());
+-                row.createCell(4).setCellValue(payMethod);
+-                row.createCell(5).setCellValue(advance.doubleValue());
+-                row.createCell(6).setCellValue(cod.doubleValue());
+-                row.createCell(7).setCellValue("[Web] " + itemsStr.toString().trim());
+-
+-                for (int c = 0; c < headers.length; c++) row.getCell(c).setCellStyle(dataStyle);
++                row.createCell(1).setCellValue("Website");
++                row.createCell(2).setCellValue(o.getCreatedAt() != null ? o.getCreatedAt().format(DTF) : "");
++                row.createCell(3).setCellValue(customerName);
++                row.createCell(4).setCellValue(address);
++                row.createCell(5).setCellValue(phone);
++                row.createCell(6).setCellValue("Website");
++                row.createCell(7).setCellValue(o.getTotalAmount().doubleValue());
++                row.createCell(8).setCellValue(payMethod);
++                row.createCell(9).setCellValue(advance.doubleValue());
++                row.createCell(10).setCellValue(cod.doubleValue());
++                row.createCell(11).setCellValue(o.getOrderStatus());
++                row.createCell(12).setCellValue("NO");
++                row.createCell(13).setCellValue(itemsStr.toString());
+ 
+                 sumTotal = sumTotal.add(o.getTotalAmount());
+@@ -349,15 +336,19 @@
+ 
+                 Row row = sheet.createRow(rowIdx++);
+                 row.createCell(0).setCellValue("POS-" + String.format("%05d", o.getId()));
+-                row.createCell(1).setCellValue(o.getCreatedAt() != null ? o.getCreatedAt().format(DTF) : "");
+-                row.createCell(2).setCellValue(o.getCustomerName() != null ? o.getCustomerName() : "");
+-                row.createCell(3).setCellValue(o.getTotalAmount().doubleValue());
+-                row.createCell(4).setCellValue(o.getPaymentMethod());
+-                row.createCell(5).setCellValue(o.getAdvancePaid().doubleValue());
+-                row.createCell(6).setCellValue(o.getCodBalance().doubleValue());
+-                row.createCell(7).setCellValue("[Rep: " + o.getSalesRep().getFullName() + "] " + itemsStr.toString().trim());
+-
+-                for (int c = 0; c < headers.length; c++) row.getCell(c).setCellStyle(dataStyle);
++                row.createCell(1).setCellValue("POS/WhatsApp");
++                row.createCell(2).setCellValue(o.getCreatedAt() != null ? o.getCreatedAt().format(DTF) : "");
++                row.createCell(3).setCellValue(o.getCustomerName() != null ? o.getCustomerName() : "");
++                row.createCell(4).setCellValue(o.getCustomerAddress() != null ? o.getCustomerAddress() : "");
++                row.createCell(5).setCellValue(o.getPhone1() != null ? o.getPhone1() : "");
++                row.createCell(6).setCellValue(o.getSalesRep().getFullName());
++                row.createCell(7).setCellValue(o.getTotalAmount().doubleValue());
++                row.createCell(8).setCellValue(o.getPaymentMethod());
++                row.createCell(9).setCellValue(o.getAdvancePaid().doubleValue());
++                row.createCell(10).setCellValue(o.getCodBalance().doubleValue());
++                row.createCell(11).setCellValue(o.getOrderStatus());
++                row.createCell(12).setCellValue(Boolean.TRUE.equals(o.getIsCustom()) ? "YES" : "NO");
++                row.createCell(13).setCellValue(itemsStr.toString().trim());
+ 
+                 sumTotal = sumTotal.add(o.getTotalAmount());
+@@ -371,17 +362,17 @@
+             int total = webOrders.size() + posOrders.size();
+             Row totalRow = sheet.createRow(rowIdx);
+             totalRow.createCell(0).setCellValue("TOTAL (" + total + " orders)");
+-            totalRow.createCell(3).setCellValue(sumTotal.doubleValue());
+-            totalRow.createCell(5).setCellValue(sumAdvance.doubleValue());
+-            totalRow.createCell(6).setCellValue(sumCod.doubleValue());
++            totalRow.createCell(7).setCellValue(sumTotal.doubleValue());
++            totalRow.createCell(9).setCellValue(sumAdvance.doubleValue());
++            totalRow.createCell(10).setCellValue(sumCod.doubleValue());
+             for (int c = 0; c < headers.length; c++) {
+                 Cell cell = totalRow.getCell(c);
+                 if (cell == null) cell = totalRow.createCell(c);
+                 cell.setCellStyle(totalStyle);
+             }
+ 
+             for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
+-            sheet.setColumnWidth(7, 10000); // notes
++            sheet.setColumnWidth(4, 8000);
+ 

@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ceylon Letter Co. – Secure Checkout. Complete your order safely.">
+  <title>Ceylon Letter Co. – Checkout</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/footer.css">
+  <script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+
+  <style>
+    .checkout-layout {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 32px;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .checkout-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 32px;
+    }
+
+    .checkout-step {
+      margin-bottom: 40px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-label {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .shipping-method {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .shipping-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .shipping-option:has(input:checked) {
+      border-color: var(--black);
+      background: var(--gray-50);
+    }
+
+    .shipping-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--black);
+      cursor: pointer;
+    }
+
+    .shipping-option label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      margin: 0;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .payment-method {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .payment-option:has(input:checked) {
+      border-color: var(--black);
+      background: var(--bg-secondary);
+    }
+
+    .payment-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--black);
+      cursor: pointer;
+    }
+
+    .payment-option label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      margin: 0;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .checkout-summary {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      position: sticky;
+      top: calc(var(--ticker-height) + var(--nav-height) + 24px);
+    }
+
+    .checkout-summary-title {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .checkout-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .checkout-item-img {
+      width: 56px;
+      height: 56px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .checkout-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .checkout-item-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      font-family: var(--font-display);
+    }
+
+    .checkout-item-qty {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .checkout-item-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .checkout-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .checkout-summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .checkout-layout {
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar injected by app.js -->
+
+  <div class="checkout-layout">
+
+    <!-- CHECKOUT FORM -->
+    <div>
+      <h1 class="checkout-title">Checkout</h1>
+
+      <!-- Step 1: Contact -->
+      <div class="checkout-step">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <span class="step-label">Contact Information</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="first-name">First Name</label>
+            <input type="text" id="first-name" placeholder="John" autocomplete="given-name">
+          </div>
+          <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" id="last-name" placeholder="Doe" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@example.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="+94 76 492 1325" autocomplete="tel">
+        </div>
+      </div>
+
+      <!-- Step 2: Shipping -->
+      <div class="checkout-step">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <span class="step-label">Shipping & Billing</span>
+        </div>
+
+        <!-- Shipping Address Selection -->
+        <div class="form-group" id="shipping-address-selector-group" style="display:none; margin-bottom: 20px;">
+          <label for="shipping-address-select">Select Shipping Address</label>
+          <select id="shipping-address-select" style="margin-bottom: 12px;" onchange="onShippingAddressSelectChange()">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div id="new-shipping-address-fields">
+          <div class="form-group">
+            <label for="address">Street Address</label>
+            <input type="text" id="address" placeholder="123 Main Street" autocomplete="street-address">
+          </div>
+          <div class="form-group">
+            <label for="address2">Apartment, Suite, etc. (optional)</label>
+            <input type="text" id="address2" placeholder="Apt 4B">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" id="city" placeholder="Colombo" autocomplete="address-level2">
+            </div>
+            <div class="form-group">
+              <label for="postal">Postal Code</label>
+              <input type="text" id="postal" placeholder="00100" autocomplete="postal-code">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country" autocomplete="country">
+              <option value="LK">Sri Lanka</option>
+              <option value="US">United States</option>
+              <option value="GB">United Kingdom</option>
+              <option value="AU">Australia</option>
+              <option value="IN">India</option>
+              <option value="SG">Singapore</option>
+            </select>
+          </div>
+          <div class="form-group" style="display:flex; align-items:center; gap:8px; margin-top:12px;">
+            <input type="checkbox" id="save-shipping-to-profile" style="width:16px; height:16px; accent-color:var(--black); cursor:pointer;">
+            <label for="save-shipping-to-profile" style="margin:0; font-size:13px; font-weight:500; cursor:pointer;">Save this address to profile</label>
+          </div>
+        </div>
+
+        <div id="shipping-address-preview" style="display:none; padding:16px; border:1px solid var(--border); border-radius:8px; background:var(--gray-50); margin-bottom:20px;">
+          <p id="shipping-address-preview-text" style="margin:0; font-size:14px; line-height:1.6; color:var(--text-primary);"></p>
+        </div>
+
+        <!-- Billing Address Toggle -->
+        <div style="margin-top:20px; display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="billing-same" checked onchange="toggleBillingAddressSection()" style="width:16px; height:16px; accent-color:var(--black); cursor:pointer;">
+          <label for="billing-same" style="margin:0; font-size:13px; font-weight:500; cursor:pointer;">Billing address is the same as shipping address</label>
+        </div>
+
+        <!-- Separate Billing Address Block -->
+        <div id="billing-address-section" style="display:none; margin-top:24px; border-top:1px dashed var(--border); padding-top:24px;">
+          <label style="font-family:var(--font-display); font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--black); display:block; margin-bottom:16px;">Billing Address</label>
+          
+          <div class="form-group" id="billing-address-selector-group" style="display:none; margin-bottom: 20px;">
+            <label for="billing-address-select">Select Billing Address</label>
+            <select id="billing-address-select" style="margin-bottom: 12px;" onchange="onBillingAddressSelectChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div id="new-billing-address-fields">
+            <div class="form-group">
+              <label for="billing-address">Street Address</label>
+              <input type="text" id="billing-address" placeholder="123 Main Street">
+            </div>
+            <div class="form-group">
+              <label for="billing-address2">Apartment, Suite, etc. (optional)</label>
+              <input type="text" id="billing-address2" placeholder="Apt 4B">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="billing-city">City</label>
+                <input type="text" id="billing-city" placeholder="Colombo">
+              </div>
+              <div class="form-group">
+                <label for="billing-postal">Postal Code</label>
+                <input type="text" id="billing-postal" placeholder="00100">
+              </div>
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px; margin-top:12px;">
+              <input type="checkbox" id="save-billing-to-profile" style="width:16px; height:16px; accent-color:var(--black); cursor:pointer;">
+              <label for="save-billing-to-profile" style="margin:0; font-size:13px; font-weight:500; cursor:pointer;">Save this address to profile</label>
+            </div>
+          </div>
+
+          <div id="billing-address-preview" style="display:none; padding:16px; border:1px solid var(--border); border-radius:8px; background:var(--gray-50); margin-bottom:20px;">
+            <p id="billing-address-preview-text" style="margin:0; font-size:14px; line-height:1.6; color:var(--text-primary);"></p>
+          </div>
+        </div>
+
+        <!-- Shipping Method -->
+        <div style="margin-top:24px;">
+          <label style="margin-bottom:12px;">Shipping Method</label>
+          <div class="shipping-method">
+            <div class="shipping-option" style="cursor: default; border-color: var(--black); background: var(--bg-secondary);">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25"/></svg>
+                <label style="cursor: default;">Flat Delivery Fee (Sri Lanka)</label>
+              </div>
+              <span style="font-size:14px; font-weight:600; color:var(--black);">Rs. 350.00</span>
+            </div>
+          </div>
+        <!-- Order Notes / Special Instructions -->
+        <div style="margin-top:24px;">
+          <label for="web-order-notes" style="font-size:14px; font-weight:600; color:var(--text-primary); display:block; margin-bottom:8px;">Order Note / Special Instructions (Optional)</label>
+          <textarea id="web-order-notes" rows="3" placeholder="Any special notes for delivery, custom text preferences, gift messages, etc..." style="width:100%; border-radius:10px; border:1.5px solid var(--border); padding:12px 14px; font-size:13px; resize:vertical; font-family:inherit; outline:none; background:var(--bg-secondary); box-sizing:border-box;"></textarea>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment -->
+      <div class="checkout-step">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <span class="step-label">Payment</span>
+        </div>
+
+        <!-- Payment Mode Banner (dynamic) -->
+        <div id="payment-mode-banner" style="display:none; margin-bottom:16px; padding:14px 16px; border-radius:10px; font-size:13px; line-height:1.5;"></div>
+
+        <div class="payment-method">
+          <div class="payment-option">
+            <input type="radio" name="payment" id="pay-card" checked>
+            <label for="pay-card" style="display:flex; flex-direction:column;">
+              <span style="font-weight:600;">Credit / Debit Card</span>
+              <span style="font-size:11px; color:var(--text-muted); margin-top:2px;">Powered by PayHere – secure payment gateway</span>
+            </label>
+          </div>
+          <div class="payment-option">
+            <input type="radio" name="payment" id="pay-bank">
+            <label for="pay-bank" style="display:flex; flex-direction:column;">
+              <span style="font-weight:600;">Bank Transfer</span>
+              <span style="font-size:11px; color:var(--text-muted); margin-top:2px;">Upload your bank slip after transfer</span>
+            </label>
+          </div>
+          <div class="payment-option">
+            <input type="radio" name="payment" id="pay-cod">
+            <label for="pay-cod" style="display:flex; flex-direction:column;">
+              <span style="font-weight:600;">Cash on Delivery</span>
+              <span style="font-size:11px; color:var(--text-muted); margin-top:2px;" id="cod-label-sub">Pay when you receive</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="payment-amount-options" style="display:none; margin-top:16px; padding:16px 20px; border:1.5px solid var(--border); border-radius:10px; background:var(--gray-50);">
+            <p style="font-size: 13px; font-weight: 600; margin-bottom: 12px; color:var(--black);">How much would you like to pay now?</p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color:var(--text-secondary);">
+                    <input type="radio" name="payment-amount-method" id="pay-amount-deposit" checked style="accent-color:var(--black);"> Pay Rs. 1,000 Deposit Only
+                </label>
+                <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color:var(--text-secondary);">
+                    <input type="radio" name="payment-amount-method" id="pay-amount-full" style="accent-color:var(--black);"> Pay Full Amount (<span id="pay-amount-full-text"></span>)
+                </label>
+            </div>
+        </div>
+        <div id="cod-deposit-options" style="display:none; margin-top:16px; padding:16px 20px; border:1.5px solid var(--border); border-radius:10px; background:var(--gray-50);">
+            <p style="font-size: 13px; font-weight: 600; margin-bottom: 12px; color:var(--black);">How would you like to pay the Rs. 1000 deposit?</p>
+            <div style="display: flex; gap: 24px;">
+                <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color:var(--text-secondary);">
+                    <input type="radio" name="cod-deposit-method" id="cod-deposit-card" checked style="accent-color:var(--black);"> Credit / Debit Card
+                </label>
+                <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color:var(--text-secondary);">
+                    <input type="radio" name="cod-deposit-method" id="cod-deposit-bank" style="accent-color:var(--black);"> Bank Transfer
+                </label>
+            </div>
+        </div>
+
+        <div
+          style="margin-top:20px; padding:16px 20px; border:1.5px solid var(--border); border-radius:10px; background:var(--gray-50); font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:12px;"
+          id="card-fields">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:var(--black); flex-shrink:0;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+          <span>You will be redirected to the secure <strong>PayHere</strong> payment gateway to safely enter your card details.</span>
+        </div>
+
+        <div
+          style="margin-top:20px; padding:16px 20px; border:1.5px solid var(--border); border-radius:10px; background:var(--gray-50); font-size:13px; color:var(--text-secondary); display:none; flex-direction:column; gap:12px;"
+          id="bank-fields">
+          <div style="color: var(--black);">
+              <strong>Bank Account Details:</strong><br/>
+              Bank: Commercial Bank<br/>
+              Branch: Athurugiriya<br/>
+              Account No: 8023908150<br/>
+              Name: E.E.W.M Neerada Lakvindu Premasinghe
+          </div>
+          <div>
+            <label for="slip-upload" style="font-weight: 600; display: block; margin-bottom: 5px;">Upload Bank Slip</label>
+            <input type="file" id="slip-upload" accept="image/*,application/pdf,.doc,.docx" style="width: 100%; border: 1px solid var(--border); padding: 8px; border-radius: 5px; background: white;" />
+          </div>
+          <span id="bank-transfer-instructions-text" style="font-size: 11px;">Please deposit the total amount to the above account and upload the receipt/slip here. Images and Document files are accepted.</span>
+        </div>
+      </div>
+
+      <!-- Terms & Conditions checkbox -->
+      <div style="margin-top: 24px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 8px;">
+        <input type="checkbox" id="agree-terms" style="width:16px; height:16px; accent-color:var(--black); cursor:pointer; margin-top:3px;">
+        <label for="agree-terms" style="margin:0; font-size:13px; color:var(--text-secondary); cursor:pointer; line-height:1.4;">
+          I agree to the <a href="terms.html" target="_blank" style="color:var(--black); font-weight:600; text-decoration:underline;">Terms of Service</a> and <a href="privacy.html" target="_blank" style="color:var(--black); font-weight:600; text-decoration:underline;">Privacy Policy</a>.
+        </label>
+      </div>
+
+      <!-- Place Order -->
+      <button class="btn btn-primary btn-lg" style="width:100%; justify-content:center;" id="place-order-btn"
+        onclick="placeOrder()">
+        Place Order — Rs. 536.76
+      </button>
+    </div>
+
+    <!-- ORDER SUMMARY SIDEBAR -->
+    <div class="checkout-summary">
+      <h3 class="checkout-summary-title">Your Order (2 items)</h3>
+
+      <div class="checkout-item">
+        <div class="checkout-item-img">
+          <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&q=80" alt="Wireless Headphone">
+        </div>
+        <div>
+          <p class="checkout-item-name">Wireless Headphone</p>
+          <p class="checkout-item-qty">Qty: 1</p>
+        </div>
+        <span class="checkout-item-price">Rs. 199.00</span>
+      </div>
+
+      <div class="checkout-item">
+        <div class="checkout-item-img">
+          <img src="https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=150&q=80" alt="Wireless Earbuds Pro">
+        </div>
+        <div>
+          <p class="checkout-item-name">Wireless Earbuds Pro</p>
+          <p class="checkout-item-qty">Qty: 2</p>
+        </div>
+        <span class="checkout-item-price">Rs. 298.00</span>
+      </div>
+
+      <div style="border-top:1px solid var(--border); margin-top:16px; padding-top:16px;">
+        <div class="summary-row"><span>Subtotal</span><span>Rs. 497.00</span></div>
+        <div class="summary-row"><span>Shipping</span><span style="color:#4a9a4a; font-weight:500;">Rs. 350.00</span></div>
+        <div class="summary-row total"><span>Total</span><span>Rs. 847.00</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer injected by app.js -->
+  <script src="js/app.js"></script>
+  <script>
+    let _checkoutItems = [];
+    let hasStockError = false;
+    let _shippingFee = 350.00; // Flat shipping default fee
+    let _totalCartPrice = 0;
+    let savedAddresses = [];
+
+    // Module-level function so it can be called from renderCheckoutSummary() too
+    function updatePaymentUI() {
+      const requiresDeposit = (_checkoutItems && _checkoutItems.length > 0)
+        ? _checkoutItems.some(item => item.requiresDeposit)
+        : false;
+
+      const payCard = document.getElementById('pay-card');
+      const payBank = document.getElementById('pay-bank');
+      const payCod  = document.getElementById('pay-cod');
+      const cardFields = document.getElementById('card-fields');
+      const bankFields  = document.getElementById('bank-fields');
+      const codDepositOptions = document.getElementById('cod-deposit-options');
+      const paymentAmountOptions = document.getElementById('payment-amount-options');
+      const banner = document.getElementById('payment-mode-banner');
+      const codSubLabel = document.getElementById('cod-label-sub');
+
+      if (!payCard || !payBank || !payCod) return;
+
+      // Update COD sub-label
+      if (codSubLabel) {
+        codSubLabel.textContent = requiresDeposit
+          ? 'Rs. 1,000 deposit now · balance paid on delivery'
+          : 'Pay the full amount when you receive';
+      }
+      
+      const fullAmountSpan = document.getElementById('pay-amount-full-text');
+      if (fullAmountSpan) {
+          const grandTotal = (_totalCartPrice + _shippingFee).toFixed(2);
+          fullAmountSpan.textContent = `Rs. ${grandTotal}`;
+      }
+      
+      // Update Payment Amount Options display
+      if (paymentAmountOptions) {
+          if (requiresDeposit && (payCard.checked || payBank.checked)) {
+              paymentAmountOptions.style.display = 'block';
+          } else {
+              paymentAmountOptions.style.display = 'none';
+          }
+      }
+      
+      const isPayingFullAmount = document.getElementById('pay-amount-full') && document.getElementById('pay-amount-full').checked;
+
+      if (payCard.checked) {
+        cardFields.style.display = 'flex';
+        bankFields.style.display = 'none';
+        codDepositOptions.style.display = 'none';
+        if (banner) {
+          if (requiresDeposit) {
+            if (isPayingFullAmount) {
+              banner.style.display = 'block';
+              banner.style.background = 'rgba(34,197,94,0.07)';
+              banner.style.border = '1px solid rgba(34,197,94,0.3)';
+              banner.style.color = '#166534';
+              banner.innerHTML = `<strong style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:16px;height:16px;vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Full Payment via Card</strong><br>You will be redirected to the secure <strong>PayHere</strong> payment gateway to complete the full payment now. No balance due on delivery.`;
+            } else {
+              banner.style.display = 'block';
+              banner.style.background = 'rgba(234, 179, 8, 0.08)';
+              banner.style.border = '1px solid rgba(234, 179, 8, 0.35)';
+              banner.style.color = '#92400e';
+              banner.innerHTML = `<strong style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:16px;height:16px;vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Rs. 1,000 Deposit Required</strong><br>Your order contains customised items. You will be charged <strong>Rs. 1,000</strong> now via PayHere as an upfront deposit. The remaining balance is due on delivery.`;
+            }
+          } else {
+            banner.style.display = 'block';
+            banner.style.background = 'rgba(34,197,94,0.07)';
+            banner.style.border = '1px solid rgba(34,197,94,0.3)';
+            banner.style.color = '#166534';
+            banner.innerHTML = `<strong style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:16px;height:16px;vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Full Payment via Card</strong><br>You will be redirected to the secure <strong>PayHere</strong> payment gateway to complete the full payment now.`;
+          }
+        }
+      } else if (payBank.checked) {
+        cardFields.style.display = 'none';
+        bankFields.style.display = 'flex';
+        codDepositOptions.style.display = 'none';
+        const instrText = document.getElementById('bank-transfer-instructions-text');
+        if (instrText) {
+          instrText.innerHTML = (requiresDeposit && !isPayingFullAmount)
+            ? 'Please deposit the <strong>Rs. 1,000 deposit</strong> to the account below and upload your slip. Balance is collected on delivery.'
+            : 'Please deposit the <strong>full total amount</strong> to the above account and upload the slip. Your order will be confirmed once the slip is verified.';
+        }
+        if (banner) {
+          banner.style.display = 'block';
+          banner.style.background = 'rgba(59,130,246,0.07)';
+          banner.style.border = '1px solid rgba(59,130,246,0.3)';
+          banner.style.color = '#1e3a5f';
+          banner.innerHTML = (requiresDeposit && !isPayingFullAmount)
+            ? `<strong style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:16px;height:16px;vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg> Bank Transfer (Deposit)</strong><br>Transfer the <strong>Rs. 1,000 deposit</strong> to the account below, then upload your slip. Remaining balance is collected on delivery.`
+            : `<strong style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:16px;height:16px;vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg> Bank Transfer – Full Payment</strong><br>Transfer the full amount to the account below and upload your slip. Your order will be confirmed after slip verification.`;
+        }
+      } else if (payCod.checked) {
+        if (requiresDeposit) {
+          codDepositOptions.style.display = 'block';
+          const codDepositBank = document.getElementById('cod-deposit-bank');
+          if (codDepositBank && codDepositBank.checked) {
+            cardFields.style.display = 'none';
+            bankFields.style.display = 'flex';
+            const instrText = document.getElementById('bank-transfer-instructions-text');
+            if (instrText) instrText.innerHTML = 'Please deposit the <strong>Rs. 1,000 deposit</strong> to the account below and upload your slip. The remaining balance will be collected on delivery.';
+          } else {
+            cardFields.style.display = 'flex';
+            bankFields.style.display = 'none';
+          }
+          if (banner) {
+            banner.style.display = 'block';
+            banner.style.background = 'rgba(234,179,8,0.08)';
+            banner.style.border = '1px solid rgba(234,179,8,0.35)';
+            banner.style.color = '#92400e';
+            banner.innerHTML = `<strong style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:16px;height:16px;vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Customised Order – Rs. 1,000 Deposit Required</strong><br>Your cart contains customised items. A <strong>Rs. 1,000 upfront deposit</strong> is required now. The remaining balance will be paid Cash on Delivery when your order arrives.`;
+          }
+        } else {
+          codDepositOptions.style.display = 'none';
+          cardFields.style.display = 'none';
+          bankFields.style.display = 'none';
+          if (banner) {
+            banner.style.display = 'block';
+            banner.style.background = 'rgba(100,100,100,0.06)';
+            banner.style.border = '1px solid var(--border)';
+            banner.style.color = 'var(--text-secondary)';
+            banner.innerHTML = `<strong style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:16px;height:16px;vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg> Cash on Delivery</strong><br>No payment is required now. You will pay the <strong>full amount in cash</strong> when your order arrives at your doorstep.`;
+          }
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Enforce login immediately on load
+      if (window.AppLoader && !window.AppLoader.requireLogin('checkout')) {
+        return; // Redirecting to login
+      }
+
+      // Pre-fill user information if available from local cache first
+      const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+      if (stored) {
+        try {
+          const u = JSON.parse(stored);
+          if (u) {
+            if (u.name) {
+              const nameParts = u.name.split(' ');
+              const fNameInput = document.getElementById('first-name');
+              const lNameInput = document.getElementById('last-name');
+              if (fNameInput && nameParts[0]) fNameInput.value = nameParts[0];
+              if (lNameInput && nameParts.slice(1).join(' ')) lNameInput.value = nameParts.slice(1).join(' ');
+            }
+            if (u.email) {
+              const emailInput = document.getElementById('email');
+              if (emailInput) emailInput.value = u.email;
+            }
+            if (u.phone) {
+              const phoneInput = document.getElementById('phone');
+              if (phoneInput) phoneInput.value = u.phone;
+            }
+          }
+        } catch (_) {}
+      }
+
+      // Fetch user profile from database to get the latest phone number and details dynamically
+      fetch('api/auth/me', { credentials: 'same-origin', cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            if (data.firstName) {
+              const fNameInput = document.getElementById('first-name');
+              if (fNameInput) fNameInput.value = data.firstName;
+            }
+            if (data.lastName) {
+              const lNameInput = document.getElementById('last-name');
+              if (lNameInput) lNameInput.value = data.lastName;
+            }
+            if (data.email) {
+              const emailInput = document.getElementById('email');
+              if (emailInput) emailInput.value = data.email;
+            }
+            if (data.phone) {
+              const phoneInput = document.getElementById('phone');
+              if (phoneInput) phoneInput.value = data.phone;
+            }
+          }
+        })
+        .catch(err => console.error('Failed to load user info from database:', err));
+
+        // Toggle payment fields based on selection
+        const payCard = document.getElementById('pay-card');
+        const payBank = document.getElementById('pay-bank');
+        const payCod = document.getElementById('pay-cod');
+        const cardFields = document.getElementById('card-fields');
+        const bankFields = document.getElementById('bank-fields');
+
+        // toggleCardFields now delegates to the module-level updatePaymentUI()
+        const toggleCardFields = () => updatePaymentUI();
+
+        if (payCard) payCard.addEventListener('change', toggleCardFields);
+        if (payBank) payBank.addEventListener('change', toggleCardFields);
+        if (payCod) payCod.addEventListener('change', toggleCardFields);
+        
+        document.getElementById('cod-deposit-card').addEventListener('change', toggleCardFields);
+        document.getElementById('cod-deposit-bank').addEventListener('change', toggleCardFields);
+
+      // Support clicking parent option blocks for payment
+      document.querySelectorAll('.payment-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const input = opt.querySelector('input[type="radio"]');
+          if (input) {
+            input.checked = true;
+            toggleCardFields();
+          }
+        });
+      });
+
+
+
+      toggleCardFields(); // Set initial payment fields visibility
+
+      setTimeout(() => {
+        loadCheckoutSummary();
+        loadSavedAddresses();
+      }, 200);
+
+      window.addEventListener('cartUpdated', () => {
+        clearTimeout(window._checkoutRenderTimer);
+        window._checkoutRenderTimer = setTimeout(loadCheckoutSummary, 100);
+      });
+    });
+
+    async function loadSavedAddresses() {
+      try {
+        const res = await fetch('api/addresses', { credentials: 'same-origin', cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.success && Array.isArray(data.addresses) && data.addresses.length > 0) {
+          savedAddresses = data.addresses;
+          populateAddressSelectors();
+        }
+      } catch (err) {
+        console.error('Failed to load saved addresses:', err);
+      }
+    }
+
+    function populateAddressSelectors() {
+      const shipGroup = document.getElementById('shipping-address-selector-group');
+      const billGroup = document.getElementById('billing-address-selector-group');
+      const shipSelect = document.getElementById('shipping-address-select');
+      const billSelect = document.getElementById('billing-address-select');
+
+      if (!shipSelect || !billSelect) return;
+
+      let optionsHtml = '';
+      savedAddresses.forEach(addr => {
+        const label = addr.addressLabel || 'Address';
+        const display = `${label}: ${addr.addressLine1}, ${addr.city}`;
+        optionsHtml += `<option value="${addr.id}">${display}</option>`;
+      });
+      optionsHtml += `<option value="NEW">+ Add New Address</option>`;
+
+      shipSelect.innerHTML = optionsHtml;
+      billSelect.innerHTML = optionsHtml;
+
+      if (shipGroup) shipGroup.style.display = 'block';
+      if (billGroup) billGroup.style.display = 'block';
+
+      onShippingAddressSelectChange();
+      onBillingAddressSelectChange();
+    }
+
+    function onShippingAddressSelectChange() {
+      const select = document.getElementById('shipping-address-select');
+      const preview = document.getElementById('shipping-address-preview');
+      const previewText = document.getElementById('shipping-address-preview-text');
+      const fields = document.getElementById('new-shipping-address-fields');
+
+      if (!select) return;
+
+      const val = select.value;
+      if (val === 'NEW') {
+        if (preview) preview.style.display = 'none';
+        if (fields) fields.style.display = 'block';
+      } else {
+        const addr = savedAddresses.find(a => String(a.id) === String(val));
+        if (addr) {
+          let text = `<strong>${addr.addressLabel || 'Address'}</strong><br/>`;
+          text += addr.addressLine1;
+          if (addr.addressLine2) text += `, ${addr.addressLine2}`;
+          text += `<br/>${addr.city}, ${addr.postalCode}`;
+          
+          if (previewText) previewText.innerHTML = text;
+          if (preview) preview.style.display = 'block';
+          if (fields) fields.style.display = 'none';
+        }
+      }
+    }
+
+    function onBillingAddressSelectChange() {
+      const select = document.getElementById('billing-address-select');
+      const preview = document.getElementById('billing-address-preview');
+      const previewText = document.getElementById('billing-address-preview-text');
+      const fields = document.getElementById('new-billing-address-fields');
+
+      if (!select) return;
+
+      const val = select.value;
+      if (val === 'NEW') {
+        if (preview) preview.style.display = 'none';
+        if (fields) fields.style.display = 'block';
+      } else {
+        const addr = savedAddresses.find(a => String(a.id) === String(val));
+        if (addr) {
+          let text = `<strong>${addr.addressLabel || 'Address'}</strong><br/>`;
+          text += addr.addressLine1;
+          if (addr.addressLine2) text += `, ${addr.addressLine2}`;
+          text += `<br/>${addr.city}, ${addr.postalCode}`;
+
+          if (previewText) previewText.innerHTML = text;
+          if (preview) preview.style.display = 'block';
+          if (fields) fields.style.display = 'none';
+        }
+      }
+    }
+
+    function toggleBillingAddressSection() {
+      const checkbox = document.getElementById('billing-same');
+      const section = document.getElementById('billing-address-section');
+      if (checkbox && section) {
+        section.style.display = checkbox.checked ? 'none' : 'block';
+      }
+    }
+
+    // Ensure clicking the amount options triggers updatePaymentUI
+    document.addEventListener('DOMContentLoaded', () => {
+        const payAmountDeposit = document.getElementById('pay-amount-deposit');
+        const payAmountFull = document.getElementById('pay-amount-full');
+        if(payAmountDeposit) payAmountDeposit.addEventListener('change', updatePaymentUI);
+        if(payAmountFull) payAmountFull.addEventListener('change', updatePaymentUI);
+    });
+
+    // Render Order Summary
+    async function loadCheckoutSummary() {
+      const params = new URLSearchParams(window.location.search);
+      const isBuyNow = params.get('buyNow') === 'true';
+
+      if (isBuyNow) {
+        const stored = sessionStorage.getItem('Ceylon Letter Co._buy_now');
+        if (!stored) {
+          window.AppLoader?.showNotification('No buy now item found. Redirecting to shop...', 'warning');
+          setTimeout(() => { window.location.href = 'products.html'; }, 1500);
+          return;
+        }
+        try {
+          _checkoutItems = [JSON.parse(stored)];
+          renderCheckoutSummary();
+        } catch (_) {
+          window.AppLoader?.showNotification('Failed to read checkout details.', 'error');
+        }
+      } else {
+        try {
+          const res = await fetch('api/cart', { credentials: 'same-origin', cache: 'no-store' });
+          if (!res.ok) {
+            window.location.href = `login.html?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+            return;
+          }
+          const data = await res.json();
+          if (!data.success || !Array.isArray(data.cart) || data.cart.length === 0) {
+            const hasLocalItems = window.AppLoader && window.AppLoader.cart && window.AppLoader.cart.length > 0;
+            if (hasLocalItems) {
+              // Sync is likely in progress, wait for cartUpdated event
+              return;
+            }
+            window.AppLoader?.showNotification('Your cart is empty. Redirecting to cart...', 'warning');
+            setTimeout(() => { window.location.href = 'cart.html'; }, 1500);
+            return;
+          }
+
+          _checkoutItems = data.cart;
+          renderCheckoutSummary();
+        } catch (err) {
+          console.error('Failed to load checkout summary:', err);
+        }
+      }
+    }
+
+    function renderCheckoutSummary() {
+      const summaryDiv = document.querySelector('.checkout-summary');
+      if (!summaryDiv) return;
+
+      let subtotal = 0;
+      let totalItemsCount = 0;
+      hasStockError = false;
+
+      let html = `<h3 class="checkout-summary-title">Your Order (${_checkoutItems.length} item${_checkoutItems.length > 1 ? 's' : ''})</h3>`;
+      
+      _checkoutItems.forEach(item => {
+        const qty = item.quantity || 1;
+        const price = parseFloat(item.price) || 0;
+        const stock = item.stock !== undefined ? item.stock : 999;
+        subtotal += price * qty;
+        totalItemsCount += qty;
+        _totalCartPrice = subtotal;
+
+        let warningHtml = '';
+        if (stock <= 0) {
+          warningHtml = `<p style="color:#ef4444; font-size:11px; font-weight:600; margin-top:4px;">Out of Stock</p>`;
+          hasStockError = true;
+        } else if (qty > stock) {
+          warningHtml = `<p style="color:#ef4444; font-size:11px; font-weight:600; margin-top:4px;">Only ${stock} items left in stock</p>`;
+          hasStockError = true;
+        }
+
+        let variantText = [];
+        if (item.color) variantText.push(item.color);
+        if (item.size) variantText.push(item.size);
+        const variantStr = variantText.join(' / ');
+        
+        let customText = [];
+        if (item.engravingText) customText.push(`Engraving: ${item.engravingText}`);
+        if (item.customResize) customText.push(`Resize: ${item.customResize}`);
+        const customStr = customText.join(' / ');
+
+        html += `
+          <div class="checkout-item">
+            <div class="checkout-item-img">
+              <img src="${item.img || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&q=80'}" alt="${item.name.replace(/"/g, '&quot;')}">
+            </div>
+            <div style="flex-grow:1;">
+              <p class="checkout-item-name" style="margin:0;">${item.name}${item.requiresDeposit ? ` <span style="font-size:10px; background:rgba(234,179,8,0.15); color:#92400e; padding:1px 6px; border-radius:20px; font-weight:600; letter-spacing:0.04em;">CUSTOM</span>` : ''}</p>
+              ${variantStr ? `<p style="font-size:11px; color:var(--text-muted); margin: 2px 0;">${variantStr}</p>` : ''}
+              ${customStr ? `<p style="font-size:11px; color:#92400e; margin: 2px 0; font-style:italic; display:inline-flex; align-items:center; gap:4px;"><svg style="width:12px;height:12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> ${customStr}</p>` : ''}
+              <p class="checkout-item-qty" style="margin:0;">Qty: ${qty}</p>
+              ${warningHtml}
+            </div>
+            <span class="checkout-item-price" style="margin-left:auto;">Rs. ${(price * qty).toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      const total = subtotal + _shippingFee;
+
+      const requiresDeposit = _checkoutItems.some(item => item.requiresDeposit);
+      let depositHtml = '';
+      if (requiresDeposit) {
+        depositHtml = `
+          <div style="margin-top: 12px; padding: 10px 14px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 6px; color: #b45309; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            Since your order contains customised items, a Rs. 1000 upfront deposit is required. If Cash on Delivery is selected, you will be prompted to pay Rs. 1000 now.
+          </div>
+        `;
+        // The instructions text is now managed by toggleCardFields()
+      }
+
+      html += `
+        <div style="border-top:1px solid var(--border); margin-top:16px; padding-top:16px;">
+          <div class="summary-row" style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px;"><span>Subtotal</span><span>Rs. ${subtotal.toFixed(2)}</span></div>
+          <div class="summary-row" style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px;"><span>Shipping</span><span>Rs. ${_shippingFee.toFixed(2)}</span></div>
+          <div class="summary-row total" style="display:flex; justify-content:space-between; font-weight:700; font-size:16px; border-top:1px solid var(--border); padding-top:12px; margin-top:12px; color:var(--black);"><span>Total</span><span>Rs. ${total.toFixed(2)}</span></div>
+        </div>
+        ${depositHtml}
+      `;
+
+      summaryDiv.innerHTML = html;
+      const placeOrderBtn = document.getElementById('place-order-btn');
+      if (placeOrderBtn) {
+        if (requiresDeposit) {
+          placeOrderBtn.textContent = `Place Order — Rs. 1,000 Deposit Now`;
+        } else {
+          placeOrderBtn.textContent = `Place Order — Rs. ${total.toFixed(2)}`;
+        }
+        if (hasStockError) {
+          placeOrderBtn.disabled = true;
+          placeOrderBtn.style.opacity = '0.5';
+          placeOrderBtn.style.pointerEvents = 'none';
+          window.AppLoader?.showNotification('Some items in your cart exceed available stock. Please adjust your cart.', 'error');
+        } else {
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.style.opacity = '1';
+          placeOrderBtn.style.pointerEvents = 'auto';
+        }
+      }
+
+      // Re-evaluate payment UI now that items are loaded
+      updatePaymentUI();
+    }
+
+    async function placeOrder() {
+      if (hasStockError) {
+        window.AppLoader?.showNotification('Cannot place order. Some items in your cart exceed available stock.', 'error');
+        return;
+      }
+
+      // 1. Gather & validate contact inputs
+      const firstName = document.getElementById('first-name').value.trim();
+      const lastName = document.getElementById('last-name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!firstName || !lastName) {
+        window.AppLoader?.showNotification('Please enter your full name.', 'warning');
+        return;
+      }
+      if (!email) {
+        window.AppLoader?.showNotification('Please enter your email address.', 'warning');
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        window.AppLoader?.showNotification('Please enter a valid email address.', 'error');
+        return;
+      }
+      if (!phone) {
+        window.AppLoader?.showNotification('Please enter your phone number.', 'warning');
+        return;
+      }
+      if (phone.length < 9) {
+        window.AppLoader?.showNotification('Please enter a valid phone number.', 'error');
+        return;
+      }
+
+      // Validate terms agreement
+      const agreeTerms = document.getElementById('agree-terms');
+      if (agreeTerms && !agreeTerms.checked) {
+        window.AppLoader?.showNotification('You must agree to the Terms of Service and Privacy Policy to place your order.', 'warning');
+        return;
+      }
+
+      // 2. Resolve Shipping Address
+      let shippingAddressId = null;
+      let shippingAddress = null;
+
+      const shipSelect = document.getElementById('shipping-address-select');
+      const hasSavedShipping = shipSelect && shipSelect.options.length > 0 && shipSelect.value !== 'NEW';
+
+      if (hasSavedShipping) {
+        shippingAddressId = parseInt(shipSelect.value);
+      } else {
+        const address = document.getElementById('address').value.trim();
+        const address2 = document.getElementById('address2').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const postal = document.getElementById('postal').value.trim();
+
+        if (!address) {
+          window.AppLoader?.showNotification('Please enter your shipping street address.', 'warning');
+          return;
+        }
+        if (!city) {
+          window.AppLoader?.showNotification('Please enter your shipping city.', 'warning');
+          return;
+        }
+        if (!postal) {
+          window.AppLoader?.showNotification('Please enter your shipping postal code.', 'warning');
+          return;
+        }
+
+        shippingAddress = {
+          addressLine1: address,
+          addressLine2: address2,
+          city: city,
+          postalCode: postal,
+          saveToProfile: document.getElementById('save-shipping-to-profile').checked,
+          addressLabel: 'Shipping'
+        };
+      }
+
+      // 3. Resolve Billing Address
+      const billingSame = document.getElementById('billing-same').checked;
+      let billingAddressId = null;
+      let billingAddress = null;
+
+      if (!billingSame) {
+        const billSelect = document.getElementById('billing-address-select');
+        const hasSavedBilling = billSelect && billSelect.options.length > 0 && billSelect.value !== 'NEW';
+
+        if (hasSavedBilling) {
+          billingAddressId = parseInt(billSelect.value);
+        } else {
+          const billAddress = document.getElementById('billing-address').value.trim();
+          const billAddress2 = document.getElementById('billing-address2').value.trim();
+          const billCity = document.getElementById('billing-city').value.trim();
+          const billPostal = document.getElementById('billing-postal').value.trim();
+
+          if (!billAddress) {
+            window.AppLoader?.showNotification('Please enter your billing street address.', 'warning');
+            return;
+          }
+          if (!billCity) {
+            window.AppLoader?.showNotification('Please enter your billing city.', 'warning');
+            return;
+          }
+          if (!billPostal) {
+            window.AppLoader?.showNotification('Please enter your billing postal code.', 'warning');
+            return;
+          }
+
+          billingAddress = {
+            addressLine1: billAddress,
+            addressLine2: billAddress2,
+            city: billCity,
+            postalCode: billPostal,
+            saveToProfile: document.getElementById('save-billing-to-profile').checked,
+            addressLabel: 'Billing'
+          };
+        }
+      }
+
+      // ── Deposit Payment Validation ──────────────────────────────────────────
+      const requiresDepositCheck = _checkoutItems && _checkoutItems.some(item => item.requiresDeposit);
+
+      const btn = document.getElementById('place-order-btn');
+
+      if (requiresDepositCheck) {
+        const payCodSelected = document.getElementById('pay-cod').checked;
+        const payCardSelected = document.getElementById('pay-card').checked;
+        const payBankSelected = document.getElementById('pay-bank').checked;
+
+        if (payCodSelected) {
+          // Deposit method box must be visible — check the deposit method is properly chosen
+          const depositOptions = document.getElementById('cod-deposit-options');
+          if (!depositOptions || depositOptions.style.display === 'none') {
+            // Force show and inform
+            window.AppLoader?.showNotification('Your order contains customised items that require a Rs. 1000 deposit. Please choose how you would like to pay the deposit.', 'warning');
+            if (depositOptions) depositOptions.style.display = 'block';
+            return;
+          }
+
+          const codDepositCard = document.getElementById('cod-deposit-card');
+          const codDepositBank = document.getElementById('cod-deposit-bank');
+
+          if (codDepositBank && codDepositBank.checked) {
+            // Bank deposit selected — slip must be uploaded before we disable the button
+            const slipInput = document.getElementById('slip-upload');
+            if (!slipInput || !slipInput.files || slipInput.files.length === 0) {
+              window.AppLoader?.showNotification('Your order requires a Rs. 1000 deposit. Please upload your bank transfer slip for the Rs. 1000 deposit to continue.', 'warning');
+              // Scroll to bank fields
+              const bankFields = document.getElementById('bank-fields');
+              if (bankFields) bankFields.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              return;
+            }
+          } else if (codDepositCard && codDepositCard.checked) {
+            // Card deposit selected — inform user Rs. 1000 will be charged via PayHere now
+            // (no extra file needed, PayHere handles it — just inform)
+            // No blocking validation needed, PayHere will handle the charge
+          } else {
+            // Neither chosen — shouldn't happen but guard
+            window.AppLoader?.showNotification('Please select how you would like to pay the Rs. 1000 deposit (Card or Bank Transfer).', 'warning');
+            return;
+          }
+        } else if (payBankSelected) {
+          // Full bank transfer — slip must be uploaded
+          const slipInput = document.getElementById('slip-upload');
+          if (!slipInput || !slipInput.files || slipInput.files.length === 0) {
+            window.AppLoader?.showNotification('Please upload your bank transfer slip. You may transfer either the full amount or the Rs. 1000 deposit.', 'warning');
+            const bankFields = document.getElementById('bank-fields');
+            if (bankFields) bankFields.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+          }
+        }
+        // payCardSelected — PayHere will handle deposit amount, no extra validation needed
+      }
+      // ─────────────────────────────────────────────────────────────────────────
+
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+      btn.style.opacity = '0.7';
+
+      // Build payload
+      const buildOrderPayload = (slipUrl = null) => {
+        const isBuyNow = new URLSearchParams(window.location.search).get('buyNow') === 'true';
+        const requiresDeposit = _checkoutItems.some(item => item.requiresDeposit);
+        
+        let paymentType = 'CARD';
+        const isPayingFullAmount = document.getElementById('pay-amount-full') && document.getElementById('pay-amount-full').checked;
+        
+        if (document.getElementById('pay-cod').checked) {
+            if (requiresDeposit) {
+                if (document.getElementById('cod-deposit-bank').checked) {
+                    paymentType = 'COD_WITH_BANK_DEPOSIT';
+                } else {
+                    paymentType = 'COD_WITH_DEPOSIT';
+                }
+            } else {
+                paymentType = 'COD';
+            }
+        } else if (document.getElementById('pay-bank').checked) {
+            paymentType = (requiresDeposit && !isPayingFullAmount) ? 'BANK_TRANSFER_DEPOSIT' : 'BANK_TRANSFER';
+        } else {
+            paymentType = (requiresDeposit && !isPayingFullAmount) ? 'CARD_DEPOSIT' : 'CARD';
+        }
+        
+        return {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phone: phone,
+          shippingAddressId: shippingAddressId,
+          shippingAddress: shippingAddress,
+          billingAddressSameAsShipping: billingSame,
+          billingAddressId: billingAddressId,
+          billingAddress: billingAddress,
+          country: document.getElementById('country').value,
+          shippingMethod: 'STANDARD',
+          paymentMethod: paymentType,
+          slipImageUrl: slipUrl,
+          customNotes: (document.getElementById('web-order-notes')?.value || '').trim(),
+          isBuyNow: isBuyNow,
+          items: _checkoutItems.map(item => ({
+            variantId: item.variantId,
+            quantity: item.quantity,
+            engravingText: item.engravingText || '',
+            customResize: item.customResize || ''
+          }))
+        };
+      };
+
+      let slipUrl = null;
+      if (document.getElementById('pay-bank').checked || (document.getElementById('pay-cod').checked && _checkoutItems.some(item => item.requiresDeposit) && document.getElementById('cod-deposit-bank').checked)) {
+          const slipInput = document.getElementById('slip-upload');
+          if (!slipInput.files || slipInput.files.length === 0) {
+              window.AppLoader?.showNotification('Please upload your bank slip.', 'warning');
+              btn.disabled = false;
+              btn.textContent = 'Place Order';
+              btn.style.opacity = '1';
+              return;
+          }
+          
+          // SECURITY FIX VULN-12: validate file type and size before uploading
+          const slipFile = slipInput.files[0];
+          const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+          const maxSizeBytes = 5 * 1024 * 1024; // 5 MB limit
+
+          if (!allowedTypes.includes(slipFile.type) && !slipFile.name.toLowerCase().endsWith('.pdf') && !slipFile.name.toLowerCase().endsWith('.doc') && !slipFile.name.toLowerCase().endsWith('.docx')) {
+              window.AppLoader?.showNotification('Invalid slip format. Please upload an image, PDF, or Document.', 'error');
+              btn.disabled = false;
+              btn.textContent = 'Place Order';
+              btn.style.opacity = '1';
+              return;
+          }
+          if (slipFile.size > maxSizeBytes) {
+              window.AppLoader?.showNotification('File is too large. Maximum allowed size is 5 MB.', 'error');
+              btn.disabled = false;
+              btn.textContent = 'Place Order';
+              btn.style.opacity = '1';
+              return;
+          }
+
+          const formData = new FormData();
+          formData.append("slip", slipFile);
+          
+          try {
+              const uploadRes = await fetch('api/upload', {
+                  method: 'POST',
+                  credentials: 'same-origin', cache: 'no-store',
+                  body: formData
+              });
+              const uploadData = await uploadRes.json();
+              if (!uploadData.success) {
+                  window.AppLoader?.showNotification('Failed to upload slip: ' + uploadData.message, 'error');
+                  btn.disabled = false;
+                  btn.textContent = 'Place Order';
+                  btn.style.opacity = '1';
+                  return;
+              }
+              slipUrl = uploadData.url;
+          } catch (err) {
+              console.error(err);
+              window.AppLoader?.showNotification('Error uploading slip.', 'error');
+              btn.disabled = false;
+              btn.textContent = 'Place Order';
+              btn.style.opacity = '1';
+              return;
+          }
+      }
+
+      const orderData = buildOrderPayload(slipUrl);
+
+      try {
+        const res = await fetch('api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          if (res.status === 401) {
+            sessionStorage.removeItem('Ceylon Letter Co._user');
+            window.AppLoader?.showNotification('Your session has expired. Redirecting to login...', 'error');
+            setTimeout(() => {
+              window.location.href = `login.html?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+            }, 1500);
+            return;
+          }
+          window.AppLoader?.showNotification(data.message || 'Failed to place order.', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Place Order';
+          btn.style.opacity = '1';
+          return;
+        }
+
+        // Save phone to local user info cache only if they didn't have one previously
+        const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+        if (stored) {
+          try {
+            const u = JSON.parse(stored);
+            if (u && (!u.phone || u.phone.trim() === '')) {
+              u.phone = phone;
+              sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(u));
+            }
+          } catch (_) {}
+        }
+
+        const isBuyNow = new URLSearchParams(window.location.search).get('buyNow') === 'true';
+        if (orderData.paymentMethod === 'COD') {
+          window.AppLoader?.showNotification('Order placed successfully (Cash on Delivery)!', 'success');
+          if (!isBuyNow) {
+            window.AppLoader?.clearCart();
+          } else {
+            sessionStorage.removeItem('Ceylon Letter Co._buy_now');
+          }
+          setTimeout(() => {
+            window.location.href = 'order-confirm.html?orderId=' + data.orderId;
+          }, 1500);
+        } else if (orderData.paymentMethod.startsWith('BANK_TRANSFER') || orderData.paymentMethod === 'COD_WITH_BANK_DEPOSIT') {
+          window.AppLoader?.showNotification('Order placed successfully! Bank slip uploaded.', 'success');
+          if (!isBuyNow) {
+            window.AppLoader?.clearCart();
+          } else {
+            sessionStorage.removeItem('Ceylon Letter Co._buy_now');
+          }
+          setTimeout(() => {
+            window.location.href = 'order-confirm.html?orderId=' + data.orderId;
+          }, 1500);
+        } else {
+          window.AppLoader?.showNotification('Order registered. Opening PayHere gateway...', 'success');
+
+          const payment = {
+            // SECURITY FIX VULN-10: sandbox=false for production payments.
+          // Set to true ONLY during local/sandbox testing.
+          "sandbox": false,
+            "merchant_id": data.merchantId,
+            "return_url": window.location.origin + "/Ceylon Letter Co.EE-web/order-confirm.html?orderId=" + data.orderId,
+            "cancel_url": window.location.href,
+            "notify_url": window.location.origin + "/Ceylon Letter Co.EE-web/api/orders/pay-success",
+            "order_id": String(data.orderId),
+            "items": _checkoutItems.map(item => item.name).join(', '),
+            "amount": data.payhereAmount || data.amount,
+            "currency": data.currency,
+            "hash": data.hash,
+            "first_name": data.firstName,
+            "last_name": data.lastName,
+            "email": data.email,
+            "phone": data.phone,
+            "address": data.address,
+            "city": data.city,
+            "country": data.country
+          };
+
+          payhere.onCompleted = async function(orderId) {
+            window.AppLoader?.showNotification('Payment approved! Creating order...', 'success');
+            try {
+              const confirmRes = await fetch('api/orders/pay-success', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId: data.orderId, isBuyNow: isBuyNow })
+              });
+              const confirmData = await confirmRes.json();
+              if (confirmData.success) {
+                if (!isBuyNow) {
+                   window.AppLoader?.clearCart();
+                } else {
+                  sessionStorage.removeItem('Ceylon Letter Co._buy_now');
+                }
+                setTimeout(() => {
+                  window.location.href = 'order-confirm.html?orderId=' + data.orderId;
+                }, 1000);
+              } else {
+                window.AppLoader?.showNotification(confirmData.message || 'Verification failed.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Place Order';
+                btn.style.opacity = '1';
+              }
+            } catch (err) {
+              console.error(err);
+              window.AppLoader?.showNotification('Error confirming payment.', 'error');
+              btn.disabled = false;
+              btn.textContent = 'Place Order';
+              btn.style.opacity = '1';
+            }
+          };
+
+          payhere.onDismissed = function() {
+            window.AppLoader?.showNotification('Payment cancelled by user.', 'warning');
+            btn.disabled = false;
+            btn.textContent = 'Place Order';
+            btn.style.opacity = '1';
+          };
+
+          payhere.onError = function(error) {
+            window.AppLoader?.showNotification('Payment gateway error: ' + error, 'error');
+            btn.disabled = false;
+            btn.textContent = 'Place Order';
+            btn.style.opacity = '1';
+          };
+
+          payhere.startPayment(payment);
+        }
+      } catch (err) {
+        console.error(err);
+        window.AppLoader?.showNotification('Network error. Failed to place order.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Place Order';
+        btn.style.opacity = '1';
+      }
+    }
+  </script>
+</body>
+
+</html>
+
+
+
