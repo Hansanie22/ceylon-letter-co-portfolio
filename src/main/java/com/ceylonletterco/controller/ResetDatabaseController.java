@@ -4,6 +4,7 @@ import com.ceylonletterco.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,32 @@ public class ResetDatabaseController {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private com.ceylonletterco.service.DataSeeder dataSeeder;
+
+    @GetMapping("/api/seed-database")
+    @Transactional
+    public String seedDatabase() {
+        try {
+            dataSeeder.seedAllData();
+            return "Database successfully populated with dummy products, categories, variants, images, hero slides, and admin!";
+        } catch (Exception e) {
+            return "Failed to seed database: " + e.getMessage();
+        }
+    }
+
+    @GetMapping("/api/nuke-and-seed")
+    @Transactional
+    public String nukeAndSeed() {
+        nukeDatabase();
+        try {
+            dataSeeder.seedAllData();
+            return "Database nuked and freshly populated with all portfolio dummy data!";
+        } catch (Exception e) {
+            return "Nuked, but failed to seed: " + e.getMessage();
+        }
+    }
 
     @GetMapping("/api/nuke-database-confirm")
     @Transactional
@@ -24,7 +51,8 @@ public class ResetDatabaseController {
                 "support_messages", "support_tickets", "notifications", "wishlist_items",
                 "order_items", "payments", "orders", "addresses", "cart_items",
                 "inventory", "product_images", "product_variants", "products",
-                "categories", "reviews", "discount_subscriptions", "users", "hero_slide"
+                "categories", "reviews", "discount_subscriptions", "users", "hero_slide",
+                "store_videos", "store_video_variants", "business_expenses", "audit_logs"
             };
             
             for (String table : tables) {
