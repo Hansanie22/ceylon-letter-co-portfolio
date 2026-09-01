@@ -1,0 +1,10 @@
+target/
+.git/
+.gitignore
+.DS_Store
+*.log
+logs/
+temp.js
+TestEmail.java
+.vscode/
+.idea/
