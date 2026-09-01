@@ -9,6 +9,13 @@ target/
 .env.*.local
 *.env
 
+### Internal & Deployment Scripts ###
+deploy_to_vps.sh
+merge_pos.py
+*.sh
+*.py
+*.sql
+
 ### STS ###
 .apt_generated
 .classpath
@@ -44,3 +51,4 @@ Thumbs.db
 logs/
 temp.js
 TestEmail.java
+system.properties
