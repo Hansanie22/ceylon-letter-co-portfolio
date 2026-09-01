@@ -21,5 +21,5 @@ EXPOSE 8080
 # Copy the built jar from builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
-# Run the Spring Boot application
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+# Run the Spring Boot application with dynamic PORT binding and memory optimization for Render
+ENTRYPOINT ["sh", "-c", "java -Xms128m -Xmx384m -Dserver.port=${PORT:-8080} -Dserver.address=0.0.0.0 -Djava.security.egd=file:/dev/./urandom -jar app.jar"]
