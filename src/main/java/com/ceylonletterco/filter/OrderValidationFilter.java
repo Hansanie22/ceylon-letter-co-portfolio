@@ -1,4 +1,4 @@
-package com.ceylonletterco.filter;
+package com.auracraft.filter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,6 +1,6 @@
-package com.ceylonletterco.repository;
+package com.auracraft.repository;
 
-import com.ceylonletterco.entity.StoreVideo;
+import com.auracraft.entity.StoreVideo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

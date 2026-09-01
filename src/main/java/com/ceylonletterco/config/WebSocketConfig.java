@@ -1,6 +1,6 @@
-package com.ceylonletterco.config;
+package com.auracraft.config;
 
-import com.ceylonletterco.websocket.NotificationEndpoint;
+import com.auracraft.websocket.NotificationEndpoint;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;

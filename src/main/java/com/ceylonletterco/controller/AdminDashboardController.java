@@ -1,4 +1,4 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -73,7 +73,7 @@ public class AdminDashboardController {
 
 
     private boolean isAdminOrStaff(HttpServletRequest request) {
-        com.ceylonletterco.entity.User user = (com.ceylonletterco.entity.User) request.getSession().getAttribute("loggedInUser");
+        com.auracraft.entity.User user = (com.auracraft.entity.User) request.getSession().getAttribute("loggedInUser");
         return user != null && user.getRole() != null && !"CUSTOMER".equalsIgnoreCase(user.getRole());
     }
 }

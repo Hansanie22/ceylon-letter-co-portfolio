@@ -1,4 +1,4 @@
-package com.ceylonletterco.config;
+package com.auracraft.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ public class AsyncConfig {
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(20);
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("CeylonLetterCo-Async-");
+        executor.setThreadNamePrefix("AuraCraft-Async-");
         executor.initialize();
         return executor;
     }

@@ -1,8 +1,8 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.Order;
-import com.ceylonletterco.entity.Payment;
-import com.ceylonletterco.entity.PosOrder;
+import com.auracraft.entity.Order;
+import com.auracraft.entity.Payment;
+import com.auracraft.entity.PosOrder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;

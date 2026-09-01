@@ -1,5 +1,5 @@
 /**
- * CEYLON LETTER CO. — Page Loader Animation
+ * AURACRAFT STUDIO — Page Loader Animation
  * Runs on first visit per session. Shows branded intro with logo flyout to navbar.
  */
 
@@ -241,9 +241,9 @@
     <div id="clc-float-layer" style="position:absolute;inset:0;pointer-events:none;z-index:5;"></div>
 
     <!-- Logo SVG drawing -->
-    <svg id="clc-logo-svg" viewBox="0 0 1200 140" aria-label="Ceylon Letter Co.">
+    <svg id="clc-logo-svg" viewBox="0 0 1200 140" aria-label="AuraCraft Studio">
       <text id="clc-logo-text" x="50%" y="70%" text-anchor="middle" dominant-baseline="middle">
-        Ceylon Letter Co.
+        AuraCraft Studio
       </text>
     </svg>
 
@@ -410,7 +410,7 @@
     // Create the flying logo element
     const fly = document.createElement('div');
     fly.id = 'clc-logo-fly';
-    fly.innerHTML = `<span class="fly-name">Ceylon Letter Co.</span><span class="fly-sub">Fine Jewellery</span>`;
+    fly.innerHTML = `<span class="fly-name">AuraCraft Studio</span><span class="fly-sub">Fine Jewellery</span>`;
     document.body.appendChild(fly);
 
     // Position: center of screen initially

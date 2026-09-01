@@ -1,4 +1,4 @@
-package com.ceylonletterco;
+package com.auracraft;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

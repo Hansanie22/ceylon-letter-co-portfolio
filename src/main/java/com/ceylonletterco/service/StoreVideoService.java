@@ -1,8 +1,8 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.Product;
-import com.ceylonletterco.entity.StoreVideo;
-import com.ceylonletterco.repository.StoreVideoRepository;
+import com.auracraft.entity.Product;
+import com.auracraft.entity.StoreVideo;
+import com.auracraft.repository.StoreVideoRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ public class StoreVideoService {
                                    String videoUrl, String thumbnailUrl, Integer productId, List<Integer> taggedVariantIds,
                                    String customerName, Integer rating, String ctaText, Integer displayOrder) {
         StoreVideo video = new StoreVideo();
-        video.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : "Ceylon Letter Co Piece");
+        video.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : "AuraCraft Studio Piece");
         video.setCaption(caption != null ? caption.trim() : "");
         video.setVideoCategory(category != null && !category.trim().isEmpty() ? category.trim().toUpperCase() : "SHOP_THE_LOOK");
         video.setPlatform(platform != null && !platform.trim().isEmpty() ? platform.trim().toUpperCase() : "INSTAGRAM");
@@ -69,9 +69,9 @@ public class StoreVideoService {
         }
 
         if (taggedVariantIds != null && !taggedVariantIds.isEmpty()) {
-            java.util.Set<com.ceylonletterco.entity.ProductVariant> variants = new java.util.HashSet<>();
+            java.util.Set<com.auracraft.entity.ProductVariant> variants = new java.util.HashSet<>();
             for (Integer vid : taggedVariantIds) {
-                com.ceylonletterco.entity.ProductVariant pv = entityManager.find(com.ceylonletterco.entity.ProductVariant.class, vid);
+                com.auracraft.entity.ProductVariant pv = entityManager.find(com.auracraft.entity.ProductVariant.class, vid);
                 if (pv != null) variants.add(pv);
             }
             video.setTaggedVariants(variants);
@@ -119,9 +119,9 @@ public class StoreVideoService {
         }
 
         if (taggedVariantIds != null) {
-            java.util.Set<com.ceylonletterco.entity.ProductVariant> variants = new java.util.HashSet<>();
+            java.util.Set<com.auracraft.entity.ProductVariant> variants = new java.util.HashSet<>();
             for (Integer vid : taggedVariantIds) {
-                com.ceylonletterco.entity.ProductVariant pv = entityManager.find(com.ceylonletterco.entity.ProductVariant.class, vid);
+                com.auracraft.entity.ProductVariant pv = entityManager.find(com.auracraft.entity.ProductVariant.class, vid);
                 if (pv != null) variants.add(pv);
             }
             video.setTaggedVariants(variants);

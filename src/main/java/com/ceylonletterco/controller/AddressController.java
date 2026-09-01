@@ -1,7 +1,7 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.Address;
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.Address;
+import com.auracraft.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

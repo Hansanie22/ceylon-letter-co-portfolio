@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.*;
+import com.auracraft.entity.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -28,7 +28,7 @@ public class PackingController {
     private EntityManager em;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     private User getStaffUser(HttpServletRequest request) {
         HttpSession s = request.getSession(false);

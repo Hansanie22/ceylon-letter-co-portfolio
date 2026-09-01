@@ -1,6 +1,6 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.*;
+import com.auracraft.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.mindrot.jbcrypt.BCrypt;
@@ -37,7 +37,7 @@ public class DataSeeder {
                     .getSingleResult();
 
             if (productCount == 0) {
-                LOG.info("⚡ Empty database detected. Seeding Ceylon Letter Co dummy portfolio data...");
+                LOG.info("⚡ Empty database detected. Seeding AuraCraft Studio dummy portfolio data...");
                 seedAllData();
                 LOG.info("✅ Database successfully seeded with portfolio data & images!");
             } else {
@@ -75,7 +75,7 @@ public class DataSeeder {
                 "RNG-AURELIA-01",
                 new BigDecimal("125000.00"),
                 ringsCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "18K Solid Gold with certified 0.75ct brilliant-cut center stone.",
                 "Unisex",
                 true,
@@ -100,7 +100,7 @@ public class DataSeeder {
                 "RNG-HELIOS-02",
                 new BigDecimal("68000.00"),
                 ringsCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "14K Solid Gold with customizable flat face engraving.",
                 "Unisex",
                 true,
@@ -123,7 +123,7 @@ public class DataSeeder {
                 "NCK-CELESTE-01",
                 new BigDecimal("42000.00"),
                 necklacesCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "Genuine Baroque Freshwater Pearl with 18k gold bail and chain.",
                 "Women",
                 false,
@@ -146,7 +146,7 @@ public class DataSeeder {
                 "NCK-SERP-02",
                 new BigDecimal("85000.00"),
                 necklacesCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "14K Italian Solid Gold Chain (3.5mm width).",
                 "Unisex",
                 false,
@@ -169,7 +169,7 @@ public class DataSeeder {
                 "BRC-ETERN-01",
                 new BigDecimal("185000.00"),
                 braceletsCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "18K Gold with 2.50ct Total Diamond Weight (VS-SI Clarity).",
                 "Women",
                 false,
@@ -191,7 +191,7 @@ public class DataSeeder {
                 "BRC-AURA-02",
                 new BigDecimal("54000.00"),
                 braceletsCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "18K Gold Plated Vermeil over Solid Sterling Silver.",
                 "Women",
                 false,
@@ -213,7 +213,7 @@ public class DataSeeder {
                 "EAR-LUMI-01",
                 new BigDecimal("38000.00"),
                 earringsCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "Natural Baroque Pearls with 14K Gold Hoops.",
                 "Women",
                 false,
@@ -235,7 +235,7 @@ public class DataSeeder {
                 "KPS-WAX-01",
                 new BigDecimal("12500.00"),
                 keepsakesCat,
-                "Ceylon Letter Co.",
+                "AuraCraft Studio",
                 "Custom Engraved Brass Die with Premium Rosewood Handle & Wax Kit.",
                 "Unisex",
                 true,
@@ -260,13 +260,13 @@ public class DataSeeder {
     private void createOrUpdateAdmin() {
         try {
             List<User> existing = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", "ceylonletterco@gmail.com")
+                    .setParameter("email", "admin@auracraft.com")
                     .getResultList();
             if (existing.isEmpty()) {
                 User admin = new User();
-                admin.setEmail("ceylonletterco@gmail.com");
+                admin.setEmail("admin@auracraft.com");
                 admin.setPassword(BCrypt.hashpw("1234", BCrypt.gensalt(12)));
-                admin.setFullName("Ceylon Letter Co Admin");
+                admin.setFullName("AuraCraft Studio Admin");
                 admin.setRole("ADMIN");
                 admin.setEmailVerified(true);
                 admin.setPhone("+94771234567");
@@ -385,7 +385,7 @@ public class DataSeeder {
             s1.setTag("THE HEIRLOOM COLLECTION");
             s1.setMediaType("IMAGE");
             s1.setMediaUrl("https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&q=85");
-            s1.setAltText("Ceylon Letter Co Fine Jewellery Collection");
+            s1.setAltText("AuraCraft Studio Fine Jewellery Collection");
             s1.setDisplayOrder(1);
             s1.setActive(true);
             em.persist(s1);

@@ -1,9 +1,9 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.SupportMessage;
-import com.ceylonletterco.entity.SupportTicket;
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.websocket.NotificationEndpoint;
+import com.auracraft.entity.SupportMessage;
+import com.auracraft.entity.SupportTicket;
+import com.auracraft.entity.User;
+import com.auracraft.websocket.NotificationEndpoint;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -29,10 +29,10 @@ public class SupportController {
     private EntityManager em;
     
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
     
     private final ObjectMapper mapper = new ObjectMapper();
 

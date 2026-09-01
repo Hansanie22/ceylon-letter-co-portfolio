@@ -1,4 +1,4 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -72,7 +72,7 @@ public class DatabaseInitListener {
                     VALUES 
                     (
                         'Signature Letter M in 18K Solid Gold',
-                        'Real-life shine and model styling of our bestselling bespoke letter pendant. #CeylonLetterCo #LuxuryJewellery',
+                        'Real-life shine and model styling of our bestselling bespoke letter pendant. #AuraCraft #LuxuryJewellery',
                         'SHOP_THE_LOOK',
                         'INSTAGRAM',
                         'https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-woman-putting-on-a-gold-ring-41221-large.mp4',

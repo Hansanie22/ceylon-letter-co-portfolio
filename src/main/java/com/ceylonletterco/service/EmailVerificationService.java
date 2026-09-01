@@ -1,6 +1,6 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,7 +22,7 @@ public class EmailVerificationService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${app.mail.noreply.from:ceylonletterco@gmail.com}")
+    @Value("${app.mail.noreply.from:admin@auracraft.com}")
     private String fromAddress;
 
     private void setSafeFrom(MimeMessageHelper helper, String rawFrom) {
@@ -30,15 +30,15 @@ public class EmailVerificationService {
             if (rawFrom != null && rawFrom.contains("<") && rawFrom.contains(">")) {
                 String email = rawFrom.substring(rawFrom.indexOf("<") + 1, rawFrom.indexOf(">")).trim();
                 String name = rawFrom.substring(0, rawFrom.indexOf("<")).trim();
-                if (name.isEmpty()) name = "Ceylon Letter Co.";
+                if (name.isEmpty()) name = "AuraCraft Studio";
                 helper.setFrom(email, name);
             } else if (rawFrom != null && !rawFrom.isBlank()) {
-                helper.setFrom(rawFrom.trim(), "Ceylon Letter Co.");
+                helper.setFrom(rawFrom.trim(), "AuraCraft Studio");
             } else {
-                helper.setFrom("ceylonletterco@gmail.com", "Ceylon Letter Co.");
+                helper.setFrom("admin@auracraft.com", "AuraCraft Studio");
             }
         } catch (Exception e) {
-            try { helper.setFrom("ceylonletterco@gmail.com"); } catch (Exception ignored) {}
+            try { helper.setFrom("admin@auracraft.com"); } catch (Exception ignored) {}
         }
     }
 
@@ -53,11 +53,11 @@ public class EmailVerificationService {
                     + (returnUrl != null && !returnUrl.isEmpty() ? "&returnUrl=" + returnUrl : "");
 
             String plainText = "Hi " + user.getFullName() + ",\n\n"
-                    + "Thank you for signing up at Ceylon Letter Co.\n"
+                    + "Thank you for signing up at AuraCraft Studio\n"
                     + "Please confirm your email address by opening the link below:\n\n"
                     + verifyUrl + "\n\n"
                     + "This link expires in 24 hours. If you did not create an account, please ignore this email.\n\n"
-                    + "Best regards,\nCeylon Letter Co. Team";
+                    + "Best regards,\nAuraCraft Studio Team";
 
             String html = """
                 <!DOCTYPE html>
@@ -69,18 +69,18 @@ public class EmailVerificationService {
                 <body style="font-family:'Inter', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif; background:#F8F9FA; padding:40px 20px; margin:0; -webkit-font-smoothing:antialiased;">
                 <!-- Anti-Spam Preheader preview text -->
                 <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
-                  Welcome to Ceylon Letter Co.! Please confirm your email address to complete registration.
+                  Welcome to AuraCraft Studio! Please confirm your email address to complete registration.
                 </div>
                 <div style="max-width:600px; margin:0 auto; background:#FFFFFF; border:1px solid #EBE4D8; border-radius:8px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
                   <div style="background:#1B1918; padding:36px 20px; text-align:center;">
-                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:24px; font-weight:600; margin:0; letter-spacing: 3px; text-transform:uppercase;">CEYLON LETTER CO.</h1>
+                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:24px; font-weight:600; margin:0; letter-spacing: 3px; text-transform:uppercase;">AURACRAFT STUDIO</h1>
                     <p style="color:#9A9490; font-size:11px; letter-spacing: 2px; margin:6px 0 0 0; text-transform:uppercase;">Account Verification</p>
                   </div>
                   <div style="padding:36px 40px 24px 40px;">
                     <h2 style="color:#2A2622; font-family:'Cormorant Garamond', Georgia, serif; font-size:22px; font-weight:700; margin-top:0;">Confirm Your Email Address</h2>
                     <p style="color:#5A5550; font-size:15px; margin-bottom:18px;">Hi %s,</p>
                     <p style="color:#5A5550; font-size:14px; margin-bottom:28px; line-height:1.6;">
-                       Thank you for signing up at <strong style="color:#2A2622;">Ceylon Letter Co.</strong> 
+                       Thank you for signing up at <strong style="color:#2A2622;">AuraCraft Studio</strong> 
                        Please click the button below to confirm your email address and activate your account.
                     </p>
                     <div style="text-align:center; margin-top:32px; margin-bottom:32px;">
@@ -91,11 +91,11 @@ public class EmailVerificationService {
                        <a href="%s" style="color:#8B734B; word-break:break-all; font-size:12px;">%s</a>
                     </p>
                     <p style="margin-top:32px; font-size:12px; color:#9A9490; text-align:left; border-top:1px solid #F5E6D0; padding-top:20px; line-height:1.5;">
-                      This link expires in 24 hours. If you did not create an account with Ceylon Letter Co., you can safely ignore this email.
+                      This link expires in 24 hours. If you did not create an account with AuraCraft Studio, you can safely ignore this email.
                     </p>
                   </div>
                   <div style="background:#1B1918; padding:24px 20px; text-align:center;">
-                    <p style="color:#9A9490; font-size:12px; margin:0 0 6px 0;">&copy; 2026 Ceylon Letter Co. All rights reserved.</p>
+                    <p style="color:#9A9490; font-size:12px; margin:0 0 6px 0;">&copy; 2026 AuraCraft Studio All rights reserved.</p>
                     <p style="color:#7A7470; font-size:11px; margin:0;">This is an automated transactional message &ndash; please do not reply.</p>
                   </div>
                 </div></body></html>
@@ -104,9 +104,9 @@ public class EmailVerificationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             setSafeFrom(helper, fromAddress);
-            helper.setReplyTo("ceylonletterco@gmail.com", "Ceylon Letter Co. Support");
+            helper.setReplyTo("admin@auracraft.com", "AuraCraft Studio Support");
             helper.setTo(user.getEmail());
-            helper.setSubject("Confirm your email address - Ceylon Letter Co.");
+            helper.setSubject("Confirm your email address - AuraCraft Studio");
             helper.setText(plainText, html);
             
             message.setHeader("Auto-Submitted", "auto-generated");
@@ -128,11 +128,11 @@ public class EmailVerificationService {
             String resetUrl = baseUrl + "/reset-password.html?token=" + token;
             
             String plainText = "Hi " + user.getFullName() + ",\n\n"
-                    + "We received a request to reset your password for your Ceylon Letter Co. account.\n"
+                    + "We received a request to reset your password for your AuraCraft Studio account.\n"
                     + "Please open the link below to set a new password:\n\n"
                     + resetUrl + "\n\n"
                     + "This link expires in 1 hour. If you did not request a password reset, please ignore this email.\n\n"
-                    + "Best regards,\nCeylon Letter Co. Team";
+                    + "Best regards,\nAuraCraft Studio Team";
 
             String html = """
                 <!DOCTYPE html>
@@ -143,18 +143,18 @@ public class EmailVerificationService {
                 </head>
                 <body style="font-family:'Inter', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif; background:#F8F9FA; padding:40px 20px; margin:0; -webkit-font-smoothing:antialiased;">
                 <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
-                  Reset your Ceylon Letter Co. password.
+                  Reset your AuraCraft Studio password.
                 </div>
                 <div style="max-width:600px; margin:0 auto; background:#FFFFFF; border:1px solid #EBE4D8; border-radius:8px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
                   <div style="background:#1B1918; padding:36px 20px; text-align:center;">
-                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:24px; font-weight:600; margin:0; letter-spacing: 3px; text-transform:uppercase;">CEYLON LETTER CO.</h1>
+                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:24px; font-weight:600; margin:0; letter-spacing: 3px; text-transform:uppercase;">AURACRAFT STUDIO</h1>
                     <p style="color:#9A9490; font-size:11px; letter-spacing: 2px; margin:6px 0 0 0; text-transform:uppercase;">Password Reset</p>
                   </div>
                   <div style="padding:36px 40px 24px 40px;">
                     <h2 style="color:#2A2622; font-family:'Cormorant Garamond', Georgia, serif; font-size:22px; font-weight:700; margin-top:0;">Reset Your Password</h2>
                     <p style="color:#5A5550; font-size:15px; margin-bottom:18px;">Hi %s,</p>
                     <p style="color:#5A5550; font-size:14px; margin-bottom:28px; line-height:1.6;">
-                      We received a request to reset your password for your Ceylon Letter Co. account. Click the button below to set a new password:
+                      We received a request to reset your password for your AuraCraft Studio account. Click the button below to set a new password:
                     </p>
                     <div style="text-align:center; margin-top:32px; margin-bottom:32px;">
                       <a href="%s" target="_blank" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:14px 32px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px; border:1px solid #C9A96E;">Reset Password</a>
@@ -164,7 +164,7 @@ public class EmailVerificationService {
                     </p>
                   </div>
                   <div style="background:#1B1918; padding:24px 20px; text-align:center;">
-                    <p style="color:#9A9490; font-size:12px; margin:0 0 6px 0;">&copy; 2026 Ceylon Letter Co. All rights reserved.</p>
+                    <p style="color:#9A9490; font-size:12px; margin:0 0 6px 0;">&copy; 2026 AuraCraft Studio All rights reserved.</p>
                     <p style="color:#7A7470; font-size:11px; margin:0;">This is an automated transactional message &ndash; please do not reply.</p>
                   </div>
                 </div></body></html>
@@ -173,9 +173,9 @@ public class EmailVerificationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             setSafeFrom(helper, fromAddress);
-            helper.setReplyTo("ceylonletterco@gmail.com", "Ceylon Letter Co. Support");
+            helper.setReplyTo("admin@auracraft.com", "AuraCraft Studio Support");
             helper.setTo(user.getEmail());
-            helper.setSubject("Reset your password - Ceylon Letter Co.");
+            helper.setSubject("Reset your password - AuraCraft Studio");
             helper.setText(plainText, html);
 
             message.setHeader("Auto-Submitted", "auto-generated");
@@ -193,20 +193,20 @@ public class EmailVerificationService {
 
     @Async("taskExecutor")
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public void sendOrderConfirmation(com.ceylonletterco.entity.Order order) {
+    public void sendOrderConfirmation(com.auracraft.entity.Order order) {
         try {
             // Re-attach order or find it
-            order = em.find(com.ceylonletterco.entity.Order.class, order.getId());
+            order = em.find(com.auracraft.entity.Order.class, order.getId());
             if (order == null) return;
 
-            java.util.List<com.ceylonletterco.entity.OrderItem> items = em.createQuery(
+            java.util.List<com.auracraft.entity.OrderItem> items = em.createQuery(
                 "SELECT oi FROM OrderItem oi JOIN FETCH oi.productVariant v JOIN FETCH v.product WHERE oi.order.id = :oid", 
-                com.ceylonletterco.entity.OrderItem.class)
+                com.auracraft.entity.OrderItem.class)
                 .setParameter("oid", order.getId()).getResultList();
 
-            java.util.List<com.ceylonletterco.entity.Payment> pmts = em.createQuery(
+            java.util.List<com.auracraft.entity.Payment> pmts = em.createQuery(
                 "SELECT p FROM Payment p WHERE p.order = :ord ORDER BY p.id DESC", 
-                com.ceylonletterco.entity.Payment.class)
+                com.auracraft.entity.Payment.class)
                 .setParameter("ord", order).getResultList();
             
             String paymentMethod = pmts.isEmpty() ? "COD" : pmts.get(0).getPaymentMethod();
@@ -215,13 +215,13 @@ public class EmailVerificationService {
             itemsHtml.append("<table style='width:100%; border-collapse: collapse; margin-top: 20px; font-size:14px; color:#2A2622;'>");
             
             java.math.BigDecimal subtotal = java.math.BigDecimal.ZERO;
-            for (com.ceylonletterco.entity.OrderItem item : items) {
+            for (com.auracraft.entity.OrderItem item : items) {
                 java.util.List<String> imgUrls = em.createQuery(
                     "SELECT i.imageUrl FROM ProductImage i WHERE i.product.id = :pid ORDER BY i.isPrimary DESC, i.id ASC", 
                     String.class).setParameter("pid", item.getProductVariant().getProduct().getId()).setMaxResults(1).getResultList();
-                String imgUrl = imgUrls.isEmpty() ? "https://ceylonletterco.com/images/favicon.png" : imgUrls.get(0);
+                String imgUrl = imgUrls.isEmpty() ? "https://auracraft.com/images/favicon.png" : imgUrls.get(0);
                 if (imgUrl.startsWith("images/")) {
-                    imgUrl = "https://ceylonletterco.com/" + imgUrl;
+                    imgUrl = "https://auracraft.com/" + imgUrl;
                 }
 
                 String variantDetails = "";
@@ -272,7 +272,7 @@ public class EmailVerificationService {
                 <div style="max-width:600px; margin:0 auto; background:#FFFFFF; border:1px solid #EBE4D8;">
                   <!-- HEADER -->
                   <div style="background:#1B1918; padding:40px 20px; text-align:center;">
-                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">CEYLON LETTER CO.</h1>
+                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">AURACRAFT STUDIO</h1>
                     <p style="color:#9A9490; font-size:11px; letter-spacing: 2px; margin:8px 0 0 0; text-transform:uppercase;">ORDER CONFIRMATION</p>
                   </div>
                   
@@ -280,7 +280,7 @@ public class EmailVerificationService {
                     <h2 style="color:#2A2622; font-family:'Cormorant Garamond', Georgia, serif; font-size:20px; font-weight:700; margin-top:0;">ORDER PLACED SUCCESSFULLY!</h2>
                     <p style="color:#5A5550; font-size:14px; margin-bottom:20px;">Hi %s,</p>
                     <p style="color:#5A5550; font-size:14px; margin-bottom:30px; line-height:1.6;">
-                      Thank you for shopping at Ceylon Letter Co.. Your order has been registered and is being processed. Here are your order details:
+                      Thank you for shopping at AuraCraft Studio. Your order has been registered and is being processed. Here are your order details:
                     </p>
                     
                     <!-- SUMMARY BOX -->
@@ -314,13 +314,13 @@ public class EmailVerificationService {
                     </table>
                     
                     <div style="text-align:center; margin-top:40px; margin-bottom:20px;">
-                      <a href="https://ceylonletterco.com/account.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">View Your Order</a>
+                      <a href="https://auracraft.com/account.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">View Your Order</a>
                     </div>
                   </div>
                   
                   <!-- FOOTER -->
                   <div style="background:#1B1918; padding:30px 20px; text-align:center;">
-                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 Ceylon Letter Co.. All rights reserved.</p>
+                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 AuraCraft Studio. All rights reserved.</p>
                     <p style="color:#7A7470; font-size:11px; margin:0;">This is an automated message &ndash; please do not reply.</p>
                   </div>
                 </div>
@@ -339,7 +339,7 @@ public class EmailVerificationService {
                 );
 
             String targetEmail = order.getUser() != null ? order.getUser().getEmail() : null;
-            if (targetEmail == null || targetEmail.isBlank() || targetEmail.contains("@phone.ceylonletterco.com")) {
+            if (targetEmail == null || targetEmail.isBlank() || targetEmail.contains("@phone.auracraft.com")) {
                 org.slf4j.LoggerFactory.getLogger(EmailVerificationService.class).info("[EmailVerificationService] Skipped order confirmation email for order #" + order.getId() + " - User has no email registered.");
                 return;
             }
@@ -347,9 +347,9 @@ public class EmailVerificationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             setSafeFrom(helper, fromAddress);
-            helper.setReplyTo("ceylonletterco@gmail.com", "Ceylon Letter Co. Support");
+            helper.setReplyTo("admin@auracraft.com", "AuraCraft Studio Support");
             helper.setTo(targetEmail);
-            helper.setSubject("Your Ceylon Letter Co Order #CLC-" + String.format("%05d", order.getId()));
+            helper.setSubject("Your AuraCraft Studio Order #CLC-" + String.format("%05d", order.getId()));
             helper.setText(html, true);
             
             message.setHeader("Auto-Submitted", "auto-generated");
@@ -362,13 +362,13 @@ public class EmailVerificationService {
     }
 
     @Async("taskExecutor")
-    public void sendOrderStatusUpdate(com.ceylonletterco.entity.Order order, String oldStatus) {
+    public void sendOrderStatusUpdate(com.auracraft.entity.Order order, String oldStatus) {
         try {
             String html = """
                 <html><body style="font-family:'Inter', Arial, sans-serif; background:#F8F9FA; padding:40px 20px; margin:0;">
                 <div style="max-width:600px; margin:0 auto; background:#FFFFFF; border:1px solid #EBE4D8;">
                   <div style="background:#1B1918; padding:40px 20px; text-align:center;">
-                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">CEYLON LETTER CO.</h1>
+                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">AURACRAFT STUDIO</h1>
                     <p style="color:#9A9490; font-size:11px; letter-spacing: 2px; margin:8px 0 0 0; text-transform:uppercase;">ORDER UPDATE</p>
                   </div>
                   <div style="padding:40px 40px 20px 40px;">
@@ -380,11 +380,11 @@ public class EmailVerificationService {
                       <strong style="color:#C9A96E; font-size:16px;">%s</strong>.
                     </p>
                     <div style="text-align:center; margin-top:40px; margin-bottom:20px;">
-                      <a href="https://ceylonletterco.com/account.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">VIEW YOUR ORDER</a>
+                      <a href="https://auracraft.com/account.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">VIEW YOUR ORDER</a>
                     </div>
                   </div>
                   <div style="background:#1B1918; padding:30px 20px; text-align:center;">
-                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 Ceylon Letter Co.. All rights reserved.</p>
+                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 AuraCraft Studio. All rights reserved.</p>
                     <p style="color:#7A7470; font-size:11px; margin:0;">This is an automated message &ndash; please do not reply.</p>
                   </div>
                 </div></body></html>
@@ -393,7 +393,7 @@ public class EmailVerificationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             setSafeFrom(helper, fromAddress);
-            helper.setReplyTo("ceylonletterco@gmail.com", "Ceylon Letter Co. Support");
+            helper.setReplyTo("admin@auracraft.com", "AuraCraft Studio Support");
             helper.setTo(order.getUser().getEmail());
             helper.setSubject("Order Status Update #CLC-" + String.format("%05d", order.getId()));
             helper.setText(html, true);
@@ -408,7 +408,7 @@ public class EmailVerificationService {
     }
 
     @Async("taskExecutor")
-    public void sendPaymentStatusUpdate(com.ceylonletterco.entity.Order order, String oldStatus) {
+    public void sendPaymentStatusUpdate(com.auracraft.entity.Order order, String oldStatus) {
         try {
             String title = "Payment Status Updated";
             String messageHtml = "";
@@ -452,7 +452,7 @@ public class EmailVerificationService {
                 <html><body style="font-family:'Inter', Arial, sans-serif; background:#F8F9FA; padding:40px 20px; margin:0;">
                 <div style="max-width:600px; margin:0 auto; background:#FFFFFF; border:1px solid #EBE4D8;">
                   <div style="background:#1B1918; padding:40px 20px; text-align:center;">
-                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">CEYLON LETTER CO.</h1>
+                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">AURACRAFT STUDIO</h1>
                     <p style="color:#9A9490; font-size:11px; letter-spacing: 2px; margin:8px 0 0 0; text-transform:uppercase;">PAYMENT UPDATE</p>
                   </div>
                   <div style="padding:40px 40px 20px 40px;">
@@ -460,11 +460,11 @@ public class EmailVerificationService {
                     <p style="color:#5A5550; font-size:14px; margin-bottom:20px;">Hi %s,</p>
                     %s
                     <div style="text-align:center; margin-top:40px; margin-bottom:20px;">
-                      <a href="https://ceylonletterco.com/account.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">VIEW YOUR ORDER</a>
+                      <a href="https://auracraft.com/account.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">VIEW YOUR ORDER</a>
                     </div>
                   </div>
                   <div style="background:#1B1918; padding:30px 20px; text-align:center;">
-                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 Ceylon Letter Co.. All rights reserved.</p>
+                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 AuraCraft Studio. All rights reserved.</p>
                     <p style="color:#7A7470; font-size:11px; margin:0;">This is an automated message &ndash; please do not reply.</p>
                   </div>
                 </div></body></html>
@@ -473,7 +473,7 @@ public class EmailVerificationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             setSafeFrom(helper, fromAddress);
-            helper.setReplyTo("ceylonletterco@gmail.com", "Ceylon Letter Co. Support");
+            helper.setReplyTo("admin@auracraft.com", "AuraCraft Studio Support");
             helper.setTo(order.getUser().getEmail());
             helper.setSubject(title + " - #CLC-" + String.format("%05d", order.getId()));
             helper.setText(html, true);
@@ -494,21 +494,21 @@ public class EmailVerificationService {
                 <html><body style="font-family:'Inter', Arial, sans-serif; background:#F8F9FA; padding:40px 20px; margin:0;">
                 <div style="max-width:600px; margin:0 auto; background:#FFFFFF; border:1px solid #EBE4D8;">
                   <div style="background:#1B1918; padding:40px 20px; text-align:center;">
-                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">CEYLON LETTER CO.</h1>
+                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">AURACRAFT STUDIO</h1>
                     <p style="color:#9A9490; font-size:11px; letter-spacing: 2px; margin:8px 0 0 0; text-transform:uppercase;">NEWSLETTER</p>
                   </div>
                   <div style="padding:40px 40px 20px 40px;">
-                    <h2 style="color:#2A2622; font-family:'Cormorant Garamond', Georgia, serif; font-size:20px; font-weight:700; margin-top:0;">WELCOME TO CEYLON LETTER CO.</h2>
+                    <h2 style="color:#2A2622; font-family:'Cormorant Garamond', Georgia, serif; font-size:20px; font-weight:700; margin-top:0;">WELCOME TO AURACRAFT STUDIO</h2>
                     <p style="color:#5A5550; font-size:14px; margin-bottom:20px;">Hi there,</p>
                     <p style="color:#5A5550; font-size:14px; line-height:1.6; margin-bottom:30px;">
                       Thank you for subscribing to our newsletter! You'll now be the first to know about our latest collections, exclusive offers, and special discounts.
                     </p>
                     <div style="text-align:center; margin-top:40px; margin-bottom:20px;">
-                      <a href="https://ceylonletterco.com/store.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">SHOP NOW</a>
+                      <a href="https://auracraft.com/store.html" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">SHOP NOW</a>
                     </div>
                   </div>
                   <div style="background:#1B1918; padding:30px 20px; text-align:center;">
-                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 Ceylon Letter Co.. All rights reserved.</p>
+                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 AuraCraft Studio. All rights reserved.</p>
                     <p style="color:#7A7470; font-size:11px; margin:0;">If you wish to unsubscribe, you can do so at any time on our website.</p>
                   </div>
                 </div></body></html>
@@ -517,9 +517,9 @@ public class EmailVerificationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             setSafeFrom(helper, fromAddress);
-            helper.setReplyTo("ceylonletterco@gmail.com", "Ceylon Letter Co. Support");
+            helper.setReplyTo("admin@auracraft.com", "AuraCraft Studio Support");
             helper.setTo(email);
-            helper.setSubject("Welcome to Ceylon Letter Co. Exclusive Discounts!");
+            helper.setSubject("Welcome to AuraCraft Studio Exclusive Discounts!");
             helper.setText(html, true);
 
             message.setHeader("Auto-Submitted", "auto-generated");
@@ -533,39 +533,39 @@ public class EmailVerificationService {
 
     @Async("taskExecutor")
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public void sendNewProductBroadcast(com.ceylonletterco.entity.Product product, String imgUrl) {
+    public void sendNewProductBroadcast(com.auracraft.entity.Product product, String imgUrl) {
         broadcastToSubscribers("New Arrival: " + product.getName(), "We're excited to introduce a brand new addition to our collection!", product, imgUrl);
     }
 
     @Async("taskExecutor")
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public void sendRestockBroadcast(com.ceylonletterco.entity.Product product, com.ceylonletterco.entity.ProductVariant variant, String imgUrl) {
+    public void sendRestockBroadcast(com.auracraft.entity.Product product, com.auracraft.entity.ProductVariant variant, String imgUrl) {
         String subtitle = "Great news! The " + product.getName() + (variant.getMetalColor() != null ? " (" + variant.getMetalColor() + ")" : "") + " is back in stock.";
         broadcastToSubscribers("Back in Stock: " + product.getName(), subtitle, product, imgUrl);
     }
 
     @Async("taskExecutor")
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public void sendDiscountBroadcast(com.ceylonletterco.entity.Product product, String imgUrl) {
+    public void sendDiscountBroadcast(com.auracraft.entity.Product product, String imgUrl) {
         broadcastToSubscribers("Special Discount on " + product.getName(), "Don't miss out on this exclusive offer. Shop now while stocks last!", product, imgUrl);
     }
 
-    private void broadcastToSubscribers(String title, String subtitle, com.ceylonletterco.entity.Product product, String imgUrl) {
+    private void broadcastToSubscribers(String title, String subtitle, com.auracraft.entity.Product product, String imgUrl) {
         try {
             java.util.List<String> emails = em.createNativeQuery("SELECT email FROM discount_subscribers").getResultList();
             if (emails.isEmpty()) return;
 
             if (imgUrl != null && imgUrl.startsWith("images/")) {
-                imgUrl = "https://ceylonletterco.com/" + imgUrl;
+                imgUrl = "https://auracraft.com/" + imgUrl;
             } else if (imgUrl == null) {
-                imgUrl = "https://ceylonletterco.com/images/favicon.png";
+                imgUrl = "https://auracraft.com/images/favicon.png";
             }
 
             String html = """
                 <html><body style="font-family:'Inter', Arial, sans-serif; background:#F8F9FA; padding:40px 20px; margin:0;">
                 <div style="max-width:600px; margin:0 auto; background:#FFFFFF; border:1px solid #EBE4D8;">
                   <div style="background:#1B1918; padding:40px 20px; text-align:center;">
-                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">CEYLON LETTER CO.</h1>
+                    <h1 style="color:#C9A96E; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:600; margin:0; letter-spacing: 4px; text-transform:uppercase;">AURACRAFT STUDIO</h1>
                     <p style="color:#9A9490; font-size:11px; letter-spacing: 2px; margin:8px 0 0 0; text-transform:uppercase;">ANNOUNCEMENT</p>
                   </div>
                   <div style="padding:40px 40px 20px 40px;">
@@ -577,12 +577,12 @@ public class EmailVerificationService {
                       <img src="%s" alt="Product Image" style="width:100%%; max-width:400px; height:auto; border-radius:8px; margin-bottom:30px; border:1px solid #EBE4D8;" />
                     </div>
                     <div style="text-align:center; margin-top:10px; margin-bottom:20px;">
-                      <a href="https://ceylonletterco.com/product-view.html?id=%d" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">SHOP NOW</a>
+                      <a href="https://auracraft.com/product-view.html?id=%d" style="display:inline-block; background:#1B1918; color:#C9A96E; text-decoration:none; padding:12px 24px; font-size:14px; font-weight:600; letter-spacing:1px; border-radius:4px;">SHOP NOW</a>
                     </div>
                   </div>
                   <div style="background:#1B1918; padding:30px 20px; text-align:center;">
-                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 Ceylon Letter Co.. All rights reserved.</p>
-                    <p style="color:#7A7470; font-size:11px; margin:0;">You are receiving this because you subscribed to Ceylon Letter Co. exclusive discounts.</p>
+                    <p style="color:#9A9490; font-size:12px; margin:0 0 8px 0;">&copy; 2026 AuraCraft Studio. All rights reserved.</p>
+                    <p style="color:#7A7470; font-size:11px; margin:0;">You are receiving this because you subscribed to AuraCraft Studio exclusive discounts.</p>
                   </div>
                 </div></body></html>
                 """.formatted(title, subtitle, imgUrl, product.getId());
@@ -592,7 +592,7 @@ public class EmailVerificationService {
                     MimeMessage message = mailSender.createMimeMessage();
                     MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
                     setSafeFrom(helper, fromAddress);
-                    helper.setReplyTo("ceylonletterco@gmail.com", "Ceylon Letter Co. Support");
+                    helper.setReplyTo("admin@auracraft.com", "AuraCraft Studio Support");
                     helper.setTo(email);
                     helper.setSubject(title);
                     helper.setText(html, true);

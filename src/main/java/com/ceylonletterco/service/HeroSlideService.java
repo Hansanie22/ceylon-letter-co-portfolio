@@ -1,7 +1,7 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.HeroSlide;
-import com.ceylonletterco.repository.HeroSlideRepository;
+import com.auracraft.entity.HeroSlide;
+import com.auracraft.repository.HeroSlideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

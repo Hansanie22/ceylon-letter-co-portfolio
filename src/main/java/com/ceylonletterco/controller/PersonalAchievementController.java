@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.*;
+import com.auracraft.entity.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -342,7 +342,7 @@ public class PersonalAchievementController {
 
                 for (int c = 0; c < headers.length; c++) {
                     Cell cell = titleRow.createCell(c);
-                    if (c == 0) cell.setCellValue("CEYLON LETTER CO. — SALES PERFORMANCE REPORT");
+                    if (c == 0) cell.setCellValue("AURACRAFT STUDIO — SALES PERFORMANCE REPORT");
                     cell.setCellStyle(titleStyle);
                 }
                 sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(0, 0, 0, headers.length - 1));

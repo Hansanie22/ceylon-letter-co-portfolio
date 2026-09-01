@@ -1,9 +1,9 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.CartItem;
-import com.ceylonletterco.entity.ProductVariant;
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.service.CartService;
+import com.auracraft.entity.CartItem;
+import com.auracraft.entity.ProductVariant;
+import com.auracraft.entity.User;
+import com.auracraft.service.CartService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

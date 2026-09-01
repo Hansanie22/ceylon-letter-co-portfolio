@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -32,7 +32,7 @@ public class AdminController {
     private EntityManager em;
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     private boolean isAdmin(HttpServletRequest request, StringBuilder out) {
         HttpSession session = request.getSession(false);

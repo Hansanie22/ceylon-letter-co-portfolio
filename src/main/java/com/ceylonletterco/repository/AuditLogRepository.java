@@ -1,6 +1,6 @@
-package com.ceylonletterco.repository;
+package com.auracraft.repository;
 
-import com.ceylonletterco.entity.AuditLog;
+import com.auracraft.entity.AuditLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

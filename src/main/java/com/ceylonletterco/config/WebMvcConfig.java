@@ -1,4 +1,4 @@
-package com.ceylonletterco.config;
+package com.auracraft.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -14,8 +14,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("forward:/index.html");
         
         // Handle legacy context path requests gracefully
-        registry.addRedirectViewController("/CeylonLetterCo", "/index.html");
-        registry.addRedirectViewController("/CeylonLetterCo/", "/index.html");
+        registry.addRedirectViewController("/AuraCraft", "/index.html");
+        registry.addRedirectViewController("/AuraCraft/", "/index.html");
     }
 
     @Override

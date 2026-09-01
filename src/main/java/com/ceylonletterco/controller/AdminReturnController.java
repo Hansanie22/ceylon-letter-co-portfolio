@@ -1,4 +1,4 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +19,10 @@ public class AdminReturnController {
     private EntityManager em;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     private boolean isStaffOrRep(HttpServletRequest request) {
         jakarta.servlet.http.HttpSession session = request.getSession(false);
@@ -40,19 +40,19 @@ public class AdminReturnController {
         }
 
         // Fetch Web Returns & Return Requests
-        List<com.ceylonletterco.entity.Order> webReturns = em.createQuery(
+        List<com.auracraft.entity.Order> webReturns = em.createQuery(
                 "SELECT o FROM Order o WHERE o.orderStatus IN ('RETURNED', 'RETURN_REQUESTED', 'RETURN_APPROVED', 'RETURN_REJECTED') ORDER BY o.createdAt DESC",
-                com.ceylonletterco.entity.Order.class).getResultList();
+                com.auracraft.entity.Order.class).getResultList();
         
         // Fetch POS Returns & Return Requests
-        List<com.ceylonletterco.entity.PosOrder> posReturns = em.createQuery(
+        List<com.auracraft.entity.PosOrder> posReturns = em.createQuery(
                 "SELECT po FROM PosOrder po WHERE po.orderStatus IN ('RETURNED', 'RETURN_REQUESTED', 'RETURN_APPROVED', 'RETURN_REJECTED') ORDER BY po.createdAt DESC",
-                com.ceylonletterco.entity.PosOrder.class).getResultList();
+                com.auracraft.entity.PosOrder.class).getResultList();
         
         StringBuilder arr = new StringBuilder("[");
         boolean first = true;
         
-        for (com.ceylonletterco.entity.Order r : webReturns) {
+        for (com.auracraft.entity.Order r : webReturns) {
             if (!first) arr.append(",");
             first = false;
             String fullName = r.getUser() != null ? r.getUser().getFullName() : (r.getShippingAddress() != null ? r.getShippingAddress().getFullName() : "Customer");
@@ -61,11 +61,11 @@ public class AdminReturnController {
             
             // Build items preview
             StringBuilder itemsSb = new StringBuilder("[");
-            List<com.ceylonletterco.entity.OrderItem> items = em.createQuery(
-                    "SELECT i FROM OrderItem i WHERE i.order = :ord", com.ceylonletterco.entity.OrderItem.class)
+            List<com.auracraft.entity.OrderItem> items = em.createQuery(
+                    "SELECT i FROM OrderItem i WHERE i.order = :ord", com.auracraft.entity.OrderItem.class)
                     .setParameter("ord", r).getResultList();
             for (int k = 0; k < items.size(); k++) {
-                com.ceylonletterco.entity.OrderItem it = items.get(k);
+                com.auracraft.entity.OrderItem it = items.get(k);
                 if (k > 0) itemsSb.append(",");
                 String pName = it.getProductVariant() != null && it.getProductVariant().getProduct() != null ? it.getProductVariant().getProduct().getName() : "Jewellery Item";
                 String color = it.getProductVariant() != null ? it.getProductVariant().getMetalColor() : "";
@@ -96,7 +96,7 @@ public class AdminReturnController {
                .append("}");
         }
 
-        for (com.ceylonletterco.entity.PosOrder r : posReturns) {
+        for (com.auracraft.entity.PosOrder r : posReturns) {
             if (!first) arr.append(",");
             first = false;
             String cust = (r.getCustomerName() != null ? r.getCustomerName() : "POS Customer") + " (POS)";
@@ -106,11 +106,11 @@ public class AdminReturnController {
 
             // Build pos items preview
             StringBuilder itemsSb = new StringBuilder("[");
-            List<com.ceylonletterco.entity.PosOrderItem> items = em.createQuery(
-                    "SELECT i FROM PosOrderItem i WHERE i.posOrder = :ord", com.ceylonletterco.entity.PosOrderItem.class)
+            List<com.auracraft.entity.PosOrderItem> items = em.createQuery(
+                    "SELECT i FROM PosOrderItem i WHERE i.posOrder = :ord", com.auracraft.entity.PosOrderItem.class)
                     .setParameter("ord", r).getResultList();
             for (int k = 0; k < items.size(); k++) {
-                com.ceylonletterco.entity.PosOrderItem it = items.get(k);
+                com.auracraft.entity.PosOrderItem it = items.get(k);
                 if (k > 0) itemsSb.append(",");
                 String pName = it.getProductVariant() != null && it.getProductVariant().getProduct() != null ? it.getProductVariant().getProduct().getName() : "Jewellery Item";
                 String color = it.getProductVariant() != null ? it.getProductVariant().getMetalColor() : "";
@@ -158,11 +158,11 @@ public class AdminReturnController {
             int id = body.path("orderId").asInt();
             String instructions = body.path("instructions").asText("").trim();
             if (instructions.isEmpty()) {
-                instructions = "Please courier the item in its original box & certificate to: Ceylon Letter Co., No. 12, Galle Road, Colombo.";
+                instructions = "Please courier the item in its original box & certificate to: AuraCraft Studio, No. 12, Galle Road, Colombo.";
             }
 
             if ("WEB".equalsIgnoreCase(type)) {
-                com.ceylonletterco.entity.Order order = em.find(com.ceylonletterco.entity.Order.class, id);
+                com.auracraft.entity.Order order = em.find(com.auracraft.entity.Order.class, id);
                 if (order == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"Order not found\"}");
                 
                 order.setOrderStatus("RETURN_APPROVED");
@@ -179,7 +179,7 @@ public class AdminReturnController {
                     );
                 }
             } else {
-                com.ceylonletterco.entity.PosOrder posOrder = em.find(com.ceylonletterco.entity.PosOrder.class, id);
+                com.auracraft.entity.PosOrder posOrder = em.find(com.auracraft.entity.PosOrder.class, id);
                 if (posOrder == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"POS Order not found\"}");
                 posOrder.setOrderStatus("RETURN_APPROVED");
                 String oldReason = posOrder.getReturnReason() != null ? posOrder.getReturnReason() : "";
@@ -212,7 +212,7 @@ public class AdminReturnController {
             if (reason.isEmpty()) reason = "Item does not meet return policy criteria.";
 
             if ("WEB".equalsIgnoreCase(type)) {
-                com.ceylonletterco.entity.Order order = em.find(com.ceylonletterco.entity.Order.class, id);
+                com.auracraft.entity.Order order = em.find(com.auracraft.entity.Order.class, id);
                 if (order == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"Order not found\"}");
                 
                 order.setOrderStatus("RETURN_REJECTED");
@@ -229,7 +229,7 @@ public class AdminReturnController {
                     );
                 }
             } else {
-                com.ceylonletterco.entity.PosOrder posOrder = em.find(com.ceylonletterco.entity.PosOrder.class, id);
+                com.auracraft.entity.PosOrder posOrder = em.find(com.auracraft.entity.PosOrder.class, id);
                 if (posOrder == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"POS Order not found\"}");
                 posOrder.setOrderStatus("RETURN_REJECTED");
                 String oldReason = posOrder.getReturnReason() != null ? posOrder.getReturnReason() : "";
@@ -273,7 +273,7 @@ public class AdminReturnController {
                     + (notes.isEmpty() ? "" : " | Notes: " + notes) + "]";
 
             if ("WEB".equalsIgnoreCase(type)) {
-                com.ceylonletterco.entity.Order order = em.find(com.ceylonletterco.entity.Order.class, id);
+                com.auracraft.entity.Order order = em.find(com.auracraft.entity.Order.class, id);
                 if (order == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"Order not found\"}");
                 
                 order.setOrderStatus("RETURNED");
@@ -284,12 +284,12 @@ public class AdminReturnController {
 
                 // Optional restock inventory
                 if (restock) {
-                    List<com.ceylonletterco.entity.OrderItem> items = em.createQuery(
-                            "SELECT i FROM OrderItem i WHERE i.order = :ord", com.ceylonletterco.entity.OrderItem.class)
+                    List<com.auracraft.entity.OrderItem> items = em.createQuery(
+                            "SELECT i FROM OrderItem i WHERE i.order = :ord", com.auracraft.entity.OrderItem.class)
                             .setParameter("ord", order).getResultList();
-                    for (com.ceylonletterco.entity.OrderItem it : items) {
+                    for (com.auracraft.entity.OrderItem it : items) {
                         if (it.getProductVariant() != null) {
-                            com.ceylonletterco.entity.Inventory inv = em.find(com.ceylonletterco.entity.Inventory.class, it.getProductVariant().getId());
+                            com.auracraft.entity.Inventory inv = em.find(com.auracraft.entity.Inventory.class, it.getProductVariant().getId());
                             if (inv != null) {
                                 inv.setQuantityOnHand(inv.getQuantityOnHand() + (it.getQuantity() != null ? it.getQuantity() : 1));
                                 em.merge(inv);
@@ -307,7 +307,7 @@ public class AdminReturnController {
                     );
                 }
             } else {
-                com.ceylonletterco.entity.PosOrder posOrder = em.find(com.ceylonletterco.entity.PosOrder.class, id);
+                com.auracraft.entity.PosOrder posOrder = em.find(com.auracraft.entity.PosOrder.class, id);
                 if (posOrder == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"POS Order not found\"}");
                 
                 posOrder.setOrderStatus("RETURNED");
@@ -317,12 +317,12 @@ public class AdminReturnController {
                 em.merge(posOrder);
 
                 if (restock) {
-                    List<com.ceylonletterco.entity.PosOrderItem> items = em.createQuery(
-                            "SELECT i FROM PosOrderItem i WHERE i.posOrder = :ord", com.ceylonletterco.entity.PosOrderItem.class)
+                    List<com.auracraft.entity.PosOrderItem> items = em.createQuery(
+                            "SELECT i FROM PosOrderItem i WHERE i.posOrder = :ord", com.auracraft.entity.PosOrderItem.class)
                             .setParameter("ord", posOrder).getResultList();
-                    for (com.ceylonletterco.entity.PosOrderItem it : items) {
+                    for (com.auracraft.entity.PosOrderItem it : items) {
                         if (it.getProductVariant() != null) {
-                            com.ceylonletterco.entity.Inventory inv = em.find(com.ceylonletterco.entity.Inventory.class, it.getProductVariant().getId());
+                            com.auracraft.entity.Inventory inv = em.find(com.auracraft.entity.Inventory.class, it.getProductVariant().getId());
                             if (inv != null) {
                                 inv.setQuantityOnHand(inv.getQuantityOnHand() + (it.getQuantity() != null ? it.getQuantity() : 1));
                                 em.merge(inv);
@@ -358,14 +358,14 @@ public class AdminReturnController {
             BigDecimal loss = new BigDecimal(body.path("returnLoss").asText("0"));
 
             if ("WEB".equalsIgnoreCase(type)) {
-                com.ceylonletterco.entity.Order order = em.find(com.ceylonletterco.entity.Order.class, id);
+                com.auracraft.entity.Order order = em.find(com.auracraft.entity.Order.class, id);
                 if (order == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"Order not found\"}");
                 order.setOrderStatus(targetStatus);
                 order.setReturnReason(reason);
                 if (loss.compareTo(BigDecimal.ZERO) > 0) order.setReturnLoss(loss);
                 em.merge(order);
             } else if ("POS".equalsIgnoreCase(type)) {
-                com.ceylonletterco.entity.PosOrder posOrder = em.find(com.ceylonletterco.entity.PosOrder.class, id);
+                com.auracraft.entity.PosOrder posOrder = em.find(com.auracraft.entity.PosOrder.class, id);
                 if (posOrder == null) return ResponseEntity.status(404).body("{\"success\":false,\"message\":\"POS Order not found\"}");
                 posOrder.setOrderStatus(targetStatus);
                 posOrder.setReturnReason(reason);

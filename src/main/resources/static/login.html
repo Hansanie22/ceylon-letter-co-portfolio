@@ -4,7 +4,7 @@
 <head>
   <script>
     (function () {
-      const stored = localStorage.getItem('Ceylon Letter Co._user') || sessionStorage.getItem('Ceylon Letter Co._user');
+      const stored = localStorage.getItem('AuraCraft Studio_user') || sessionStorage.getItem('AuraCraft Studio_user');
       if (stored) {
         try {
           const u = JSON.parse(stored);
@@ -37,8 +37,8 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="description" content="Ceylon Letter Co. – Sign in or sign up to your account.">
-  <title>Ceylon Letter Co. – Account Access</title>
+  <meta name="description" content="AuraCraft Studio – Sign in or sign up to your account.">
+  <title>AuraCraft Studio – Account Access</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -802,7 +802,7 @@
           </div>
 
           <p class="auth-switch-prompt" style="margin-top: var(--sp-5);">
-            New to Ceylon Letter Co.?
+            New to AuraCraft Studio?
             <a href="#" onclick="event.preventDefault(); toggleMobilePanel(true)">Create Account</a>
           </p>
         </form>
@@ -818,7 +818,7 @@
             <button class="btn btn-outline" id="signIn" onclick="toggleDesktopPanel(false)">Sign In</button>
           </div>
           <div class="overlay-panel overlay-right">
-            <h1>New to Ceylon Letter Co.?</h1>
+            <h1>New to AuraCraft Studio?</h1>
             <p style="font-family: var(--font-body), sans-serif;">Create a personal account today to unlock fast checkout, order
               tracking, and exclusive discounts.</p>
             <button class="btn btn-outline" id="signUp" onclick="toggleDesktopPanel(true)">Sign Up</button>
@@ -1120,7 +1120,7 @@
                 if (document.getElementById('pw-fill')) document.getElementById('pw-fill').style.width = '0%';
                 if (document.getElementById('pw-label')) document.getElementById('pw-label').textContent = '';
               } else {
-                window.AppLoader?.showNotification('Account created successfully! Welcome to Ceylon Letter Co.');
+                window.AppLoader?.showNotification('Account created successfully! Welcome to AuraCraft Studio');
                 const urlParams = new URLSearchParams(window.location.search);
                 const returnUrl = urlParams.get('returnUrl');
                 let redirectUrl = 'account.html';
@@ -1190,17 +1190,17 @@
                   role: data.role,
                   isSubscribed: data.isSubscribed
                 };
-                localStorage.setItem('Ceylon Letter Co._user', JSON.stringify(uObj));
-                sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(uObj));
+                localStorage.setItem('AuraCraft Studio_user', JSON.stringify(uObj));
+                sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify(uObj));
                 // ── Remember Me (SECURITY FIX VULN-02: email only — never store password) ──
                 const rememberChk = document.getElementById('signin-remember');
                 if (rememberChk?.checked) {
-                  sessionStorage.setItem('Ceylon Letter Co._remember_email', email);
+                  sessionStorage.setItem('AuraCraft Studio_remember_email', email);
                 } else {
-                  sessionStorage.removeItem('Ceylon Letter Co._remember_email');
+                  sessionStorage.removeItem('AuraCraft Studio_remember_email');
                 }
                 // Always ensure no legacy password entry exists
-                sessionStorage.removeItem('Ceylon Letter Co._remember_pwd');
+                sessionStorage.removeItem('AuraCraft Studio_remember_pwd');
                 window.AppLoader?.showNotification('Welcome back, ' + data.name + '!');
                 
                 // Determine redirect URL
@@ -1293,8 +1293,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       // ── Restore remembered email (SECURITY FIX VULN-02: password never stored) ──
       // Remove any legacy plain-text password that may have been stored by an older version
-      sessionStorage.removeItem('Ceylon Letter Co._remember_pwd');
-      const savedEmail = sessionStorage.getItem('Ceylon Letter Co._remember_email');
+      sessionStorage.removeItem('AuraCraft Studio_remember_pwd');
+      const savedEmail = sessionStorage.getItem('AuraCraft Studio_remember_email');
       if (savedEmail) {
         const emailInput = document.getElementById('signin-email');
         const rememberChk = document.getElementById('signin-remember');
@@ -1677,7 +1677,7 @@
         if (btn) { btn.disabled = false; btn.textContent = origTxt; }
         if (data.success) {
           closeOtpLogin();
-          sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify({
+          sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify({
             id: data.id,
             name: data.name,
             email: data.email,
@@ -1744,7 +1744,7 @@
         if (btn) { btn.disabled = false; btn.textContent = origTxt; }
         if (data.success) {
           closeOtpLogin();
-          sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify({
+          sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify({
             id: data.id,
             name: data.name,
             email: data.email,

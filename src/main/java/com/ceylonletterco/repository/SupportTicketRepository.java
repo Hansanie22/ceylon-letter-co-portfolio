@@ -1,6 +1,6 @@
-package com.ceylonletterco.repository;
+package com.auracraft.repository;
 
-import com.ceylonletterco.entity.SupportTicket;
+import com.auracraft.entity.SupportTicket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

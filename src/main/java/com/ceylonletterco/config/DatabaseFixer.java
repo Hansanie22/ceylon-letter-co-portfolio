@@ -1,4 +1,4 @@
-package com.ceylonletterco.config;
+package com.auracraft.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,7 +39,7 @@ public class DatabaseFixer {
             "ALTER TABLE product_variants MODIFY COLUMN METALCOLOR VARCHAR(50) DEFAULT ''",
             "ALTER TABLE product_variants MODIFY COLUMN SIZELENGTH VARCHAR(50) DEFAULT ''",
             "ALTER TABLE product_variants MODIFY COLUMN SKUVARIANT VARCHAR(50) DEFAULT ''",
-            "UPDATE users SET role = 'ADMIN', email_verified = 1 WHERE email = 'ceylonletterco@gmail.com'",
+            "UPDATE users SET role = 'ADMIN', email_verified = 1 WHERE email = 'admin@auracraft.com'",
             "CREATE TABLE IF NOT EXISTS store_videos ("
             + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
             + "title VARCHAR(255) NOT NULL, "

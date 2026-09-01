@@ -1,6 +1,6 @@
-package com.ceylonletterco.filter;
+package com.auracraft.filter;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -9,34 +9,34 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.ceylonletterco.entity.SupportTicket;
-import com.ceylonletterco.entity.SupportMessage;
+import com.auracraft.entity.SupportTicket;
+import com.auracraft.entity.SupportMessage;
 
 @RestController
 @RequestMapping("/api/admin/messages")
 public class AdminMessageController {
     @Autowired
-    private com.ceylonletterco.repository.SupportTicketRepository ticketRepo;
+    private com.auracraft.repository.SupportTicketRepository ticketRepo;
 
     @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<?> getMessages(HttpServletRequest request) {
         // Fetch real support tickets from database
-        java.util.List<com.ceylonletterco.entity.SupportTicket> tickets = ticketRepo.findAllByOrderByCreatedAtDesc();
+        java.util.List<com.auracraft.entity.SupportTicket> tickets = ticketRepo.findAllByOrderByCreatedAtDesc();
         
         StringBuilder arr = new StringBuilder("[");
         for (int i = 0; i < tickets.size(); i++) {
             if (i > 0) arr.append(",");
-            com.ceylonletterco.entity.SupportTicket t = tickets.get(i);
+            com.auracraft.entity.SupportTicket t = tickets.get(i);
             try {
                 String customerName = "Guest";
                 try {

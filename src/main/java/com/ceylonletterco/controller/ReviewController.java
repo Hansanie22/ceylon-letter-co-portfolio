@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -149,10 +149,10 @@ public class ReviewController {
     }
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     // ── POST /api/reviews ────────────────────────────────────────────────────
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -184,7 +184,7 @@ public class ReviewController {
                         .body("{\"success\":false,\"message\":\"Product variant is required.\"}");
             }
 
-            com.ceylonletterco.entity.ProductVariant pv = em.find(com.ceylonletterco.entity.ProductVariant.class,
+            com.auracraft.entity.ProductVariant pv = em.find(com.auracraft.entity.ProductVariant.class,
                     variantId);
             if (pv == null) {
                 return ResponseEntity.badRequest().body("{\"success\":false,\"message\":\"Invalid product variant.\"}");
@@ -194,7 +194,7 @@ public class ReviewController {
                 rating = 5; // Default to 5 stars
             }
 
-            com.ceylonletterco.entity.Review review = new com.ceylonletterco.entity.Review();
+            com.auracraft.entity.Review review = new com.auracraft.entity.Review();
             review.setUser(user);
             review.setProductVariant(pv);
             review.setRating(rating);

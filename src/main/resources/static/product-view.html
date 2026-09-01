@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ceylon Letter Co. – Product Detail. Shop now with 1-year warranty and islandwide delivery.">
-  <title id="page-title-meta">Ceylon Letter Co. – Product</title>
+  <meta name="description" content="AuraCraft Studio – Product Detail. Shop now with 1-year warranty and islandwide delivery.">
+  <title id="page-title-meta">AuraCraft Studio – Product</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -333,7 +333,7 @@
           </div>
 
           <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
-            Every handcrafted piece is backed by Ceylon Letter Co.'s official anti-tarnish &amp; durability warranty. If you experience any issues, explore our policy or reach our team for immediate claim assistance.
+            Every handcrafted piece is backed by AuraCraft Studio's official anti-tarnish &amp; durability warranty. If you experience any issues, explore our policy or reach our team for immediate claim assistance.
           </p>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;">
@@ -483,8 +483,8 @@
 
       // Auto-submit review draft if redirected from login
       const isSubmitReview = params.get('submitReview') === 'true';
-      const draftStr = sessionStorage.getItem('Ceylon Letter Co._review_draft');
-      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      const draftStr = sessionStorage.getItem('AuraCraft Studio_review_draft');
+      const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
       
       if (isSubmitReview && draftStr && isLoggedIn) {
         try {
@@ -498,7 +498,7 @@
             if (window.AppLoader) {
                window.AppLoader.showNotification('Review submitted successfully!', 'success');
             }
-            sessionStorage.removeItem('Ceylon Letter Co._review_draft');
+            sessionStorage.removeItem('AuraCraft Studio_review_draft');
             setTimeout(() => { loadReviews(productId); }, 500);
           }
         } catch (e) {
@@ -627,9 +627,9 @@
       comment: comment
     };
 
-    const isLoggedIn = !!(localStorage.getItem('Ceylon Letter Co._user') || sessionStorage.getItem('Ceylon Letter Co._user'));
+    const isLoggedIn = !!(localStorage.getItem('AuraCraft Studio_user') || sessionStorage.getItem('AuraCraft Studio_user'));
     if (!isLoggedIn) {
-      sessionStorage.setItem('Ceylon Letter Co._review_draft', JSON.stringify(reviewDraft));
+      sessionStorage.setItem('AuraCraft Studio_review_draft', JSON.stringify(reviewDraft));
       window.AppLoader?.showNotification('Please sign in to submit your review', 'info');
       setTimeout(() => {
         const returnUrl = encodeURIComponent(`product-view.html?id=${currentProduct.id}&submitReview=true`);
@@ -651,7 +651,7 @@
         document.getElementById('review-comment').value = '';
         selectedStarRating = 5;
         updateStarRatingUI(5);
-        sessionStorage.removeItem('Ceylon Letter Co._review_draft');
+        sessionStorage.removeItem('AuraCraft Studio_review_draft');
         loadReviews(currentProduct.id);
       } else {
         window.AppLoader?.showNotification(data.message || 'Failed to submit review', 'error');
@@ -704,9 +704,9 @@
       requiresDeposit: hasCustomization // Deposit ONLY if customized
     };
 
-    sessionStorage.setItem('Ceylon Letter Co._buy_now', JSON.stringify(buyNowItem));
+    sessionStorage.setItem('AuraCraft Studio_buy_now', JSON.stringify(buyNowItem));
 
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
     if (!isLoggedIn) {
       window.AppLoader?.showNotification('Please sign in to proceed with Buy Now', 'info');
       setTimeout(() => {
@@ -786,8 +786,8 @@
   /* ── Render product into the page ── */
   function renderProduct(p) {
     // Page title & breadcrumb
-    document.title = `Ceylon Letter Co. – ${p.name}`;
-    document.getElementById('page-title-meta').textContent = `Ceylon Letter Co. – ${p.name}`;
+    document.title = `AuraCraft Studio – ${p.name}`;
+    document.getElementById('page-title-meta').textContent = `AuraCraft Studio – ${p.name}`;
     document.getElementById('breadcrumb-name').textContent = p.name;
 
     // Name & description
@@ -1147,7 +1147,7 @@
             ${btnHtml}
           </div>
           <div class="product-info">
-            <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:4px;">${p.brand || 'Ceylon Letter Co.'}</p>
+            <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:4px;">${p.brand || 'AuraCraft Studio'}</p>
             <p class="product-name">${p.name}</p>
             <div class="product-price"><span class="price-new">Rs. ${price}</span></div>
           </div>
@@ -1174,7 +1174,7 @@
       const targetQty = qty + delta;
       
       if (delta > 0 && targetQty > 10) {
-        window.AppLoader?.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email ceylonletterco@gmail.com', 'warning');
+        window.AppLoader?.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email admin@auracraft.com', 'warning');
         return;
       }
       

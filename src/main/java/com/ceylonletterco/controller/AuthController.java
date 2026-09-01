@@ -1,7 +1,7 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.service.AuthService;
+import com.auracraft.entity.User;
+import com.auracraft.service.AuthService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.ceylonletterco.service.CloudinaryService;
+import com.auracraft.service.CloudinaryService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,7 +109,7 @@ public class AuthController {
     }
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     // ── POST /api/auth/signup ────────────────────────────────────────────────
     @PostMapping(value = "/signup", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -128,8 +128,8 @@ public class AuthController {
 
             auditLogService.log(email, "CUSTOMER", "SIGNUP", "AUTH",
                     "New customer registered: " + name + " (" + email + ")",
-                    com.ceylonletterco.service.AuditLogService.extractClientIp(request),
-                    com.ceylonletterco.service.AuditLogService.extractUserAgent(request),
+                    com.auracraft.service.AuditLogService.extractClientIp(request),
+                    com.auracraft.service.AuditLogService.extractUserAgent(request),
                     "SUCCESS");
 
             return ResponseEntity.ok("{\"success\":true,\"requiresVerification\":true,\"message\":\"Account created! Please check your email to verify your account before signing in.\"}");
@@ -157,8 +157,8 @@ public class AuthController {
 
                 auditLogService.log(user.getEmail(), user.getRole(), "USER_LOGIN", "AUTH",
                         "User logged in successfully: " + user.getEmail() + " [Role: " + user.getRole() + "]",
-                        com.ceylonletterco.service.AuditLogService.extractClientIp(request),
-                        com.ceylonletterco.service.AuditLogService.extractUserAgent(request),
+                        com.auracraft.service.AuditLogService.extractClientIp(request),
+                        com.auracraft.service.AuditLogService.extractUserAgent(request),
                         "SUCCESS");
 
                 ObjectNode resp = mapper.createObjectNode();
@@ -174,8 +174,8 @@ public class AuthController {
             } else {
                 auditLogService.log(email, "GUEST", "LOGIN_FAILED", "AUTH",
                         "Failed login attempt for email: " + email,
-                        com.ceylonletterco.service.AuditLogService.extractClientIp(request),
-                        com.ceylonletterco.service.AuditLogService.extractUserAgent(request),
+                        com.auracraft.service.AuditLogService.extractClientIp(request),
+                        com.auracraft.service.AuditLogService.extractUserAgent(request),
                         "FAILED");
 
                 return ResponseEntity.status(401).body("{\"success\":false,\"message\":\"Invalid email or password.\"}");
@@ -183,8 +183,8 @@ public class AuthController {
         } catch (Exception e) {
             auditLogService.log(email, "GUEST", "LOGIN_BLOCKED", "AUTH",
                     "Login blocked for " + email + ": " + e.getMessage(),
-                    com.ceylonletterco.service.AuditLogService.extractClientIp(request),
-                    com.ceylonletterco.service.AuditLogService.extractUserAgent(request),
+                    com.auracraft.service.AuditLogService.extractClientIp(request),
+                    com.auracraft.service.AuditLogService.extractUserAgent(request),
                     "WARNING");
 
             if ("ACCOUNT_DISABLED".equals(e.getMessage())) {

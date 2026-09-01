@@ -1,4 +1,4 @@
-# 💎 Ceylon Letter Co. — Luxury Fine Jewellery & Bespoke Keepsakes E-Commerce ERP Suite
+# 💎 AuraCraft Studio — Luxury Fine Jewellery & Bespoke Keepsakes E-Commerce ERP Suite
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg?logo=openjdk)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.2-brightgreen.svg?logo=springboot)](https://spring.io/projects/spring-boot)
@@ -13,7 +13,7 @@
 
 ## 🌟 Executive Summary
 
-**Ceylon Letter Co.** is an end-to-end luxury e-commerce and retail operations platform tailored for bespoke jewellery, hallmarked heirloom crafts, and personalized stationery. It integrates a rich, aesthetic customer-facing online boutique with an enterprise-grade administrative back-office system covering inventory control, POS orders, financial analytics, social video commerce, and customer care.
+**AuraCraft Studio** is an end-to-end luxury e-commerce and retail operations platform tailored for bespoke jewellery, hallmarked heirloom crafts, and personalized stationery. It integrates a rich, aesthetic customer-facing online boutique with an enterprise-grade administrative back-office system covering inventory control, POS orders, financial analytics, social video commerce, and customer care.
 
 ---
 
@@ -82,8 +82,8 @@ graph TD
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Hansanie22/ceylon-letter-co-portfolio.git
-   cd ceylon-letter-co-portfolio
+   git clone https://github.com/Hansanie22/auracraft-portfolio.git
+   cd auracraft-portfolio
    ```
 
 2. **Configure Environment Variables:**
@@ -109,7 +109,7 @@ graph TD
 
 | Role | Email | Password | Permissions |
 |---|---|---|---|
-| **Admin** | `ceylonletterco@gmail.com` | `1234` | Full access to Admin Panel, POS, Analytics, Inventory |
+| **Admin** | `admin@auracraft.com` | `1234` | Full access to Admin Panel, POS, Analytics, Inventory |
 | **Customer** | `customer@gmail.com` | `1234` | Storefront browsing, Wishlist, Bag, Support Tickets |
 
 ---
@@ -130,7 +130,7 @@ graph TD
 **Kalatuwawage Hansanie Prabodha**  
 *Full-Stack Software Engineer & Solutions Architect*  
 - **GitHub:** [@Hansanie22](https://github.com/Hansanie22)  
-- **Project Repository:** [ceylon-letter-co-portfolio](https://github.com/Hansanie22/ceylon-letter-co-portfolio)
+- **Project Repository:** [auracraft-portfolio](https://github.com/Hansanie22/auracraft-portfolio)
 
 ---
 

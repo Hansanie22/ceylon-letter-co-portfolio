@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ceylon Letter Co. – Wishlist. Your saved products.">
-  <title>Ceylon Letter Co. – Wishlist</title>
+  <meta name="description" content="AuraCraft Studio – Wishlist. Your saved products.">
+  <title>AuraCraft Studio – Wishlist</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,7 +62,7 @@
     let _wishlistRendered = false;
 
     async function renderWishlist() {
-      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
       let items = null;
 
       if (isLoggedIn) {
@@ -154,7 +154,7 @@
             >Add to Cart</button>
           </div>
           <div class="product-info" style="display:flex; flex-direction:column; gap:4px;">
-            <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0; line-height:1;">${item.brand || 'Ceylon Letter Co.'}</p>
+            <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:0; line-height:1;">${item.brand || 'AuraCraft Studio'}</p>
             <a href="product-view.html?id=${itemId}" class="product-name" style="text-decoration:none;">${itemName}</a>
             <div class="product-price"><span class="price-new">Rs. ${itemPrice.toFixed(2)}</span></div>
             <button onclick="removeWishlistUI(${itemId})"
@@ -207,7 +207,7 @@
       });
 
       window.addEventListener('storage', (e) => {
-        if (e.key === 'techno_wishlist' || e.key === 'Ceylon Letter Co._user') {
+        if (e.key === 'techno_wishlist' || e.key === 'AuraCraft Studio_user') {
           setTimeout(renderWishlist, 100);
         }
       });

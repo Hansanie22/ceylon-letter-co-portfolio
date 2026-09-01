@@ -1,6 +1,6 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.*;
+import com.auracraft.entity.*;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -45,7 +45,7 @@ public class OrderReportScheduler {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${app.mail.noreply.from:ceylonletterco@gmail.com}")
+    @Value("${app.mail.noreply.from:admin@auracraft.com}")
     private String fromEmail;
 
 
@@ -428,15 +428,15 @@ public class OrderReportScheduler {
             if (rawFrom != null && rawFrom.contains("<") && rawFrom.contains(">")) {
                 String email = rawFrom.substring(rawFrom.indexOf("<") + 1, rawFrom.indexOf(">")).trim();
                 String name = rawFrom.substring(0, rawFrom.indexOf("<")).trim();
-                if (name.isEmpty()) name = "Ceylon Letter Co.";
+                if (name.isEmpty()) name = "AuraCraft Studio";
                 helper.setFrom(email, name);
             } else if (rawFrom != null && !rawFrom.isBlank()) {
-                helper.setFrom(rawFrom.trim(), "Ceylon Letter Co.");
+                helper.setFrom(rawFrom.trim(), "AuraCraft Studio");
             } else {
-                helper.setFrom("ceylonletterco@gmail.com", "Ceylon Letter Co.");
+                helper.setFrom("admin@auracraft.com", "AuraCraft Studio");
             }
         } catch (Exception e) {
-            try { helper.setFrom("ceylonletterco@gmail.com"); } catch (Exception ignored) {}
+            try { helper.setFrom("admin@auracraft.com"); } catch (Exception ignored) {}
         }
     }
 
@@ -445,14 +445,14 @@ public class OrderReportScheduler {
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         setSafeFrom(helper, fromEmail);
         helper.setTo(toEmail);
-        helper.setSubject("Your Daily Sales Report — " + date + " | Ceylon Letter Co");
+        helper.setSubject("Your Daily Sales Report — " + date + " | AuraCraft Studio");
         helper.setText(
                 "<div style='font-family:sans-serif;color:#1c1c1e;'>" +
                 "<h2 style='color:#92400e;'>Hi " + repName + "! 👋</h2>" +
                 "<p>Your sales report for <strong>" + date + "</strong> is ready.</p>" +
                 "<p style='font-size:18px;'><strong>Total Orders Today: " + orderCount + "</strong></p>" +
                 "<p>Please find your detailed order list attached as an Excel sheet.</p>" +
-                "<p style='color:#6b7280;font-size:12px;'>This is an automated daily report from Ceylon Letter Co POS System.</p>" +
+                "<p style='color:#6b7280;font-size:12px;'>This is an automated daily report from AuraCraft Studio POS System.</p>" +
                 "</div>", true);
 
         helper.addAttachment("My_Sales_" + date + ".xlsx", new ByteArrayResource(fileData));
@@ -465,14 +465,14 @@ public class OrderReportScheduler {
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         setSafeFrom(helper, fromEmail);
         helper.setTo(ADMIN_EMAILS);
-        helper.setSubject("Daily Business Report — " + date + " | Ceylon Letter Co");
+        helper.setSubject("Daily Business Report — " + date + " | AuraCraft Studio");
         helper.setText(
                 "<div style='font-family:sans-serif;color:#1c1c1e;'>" +
                 "<h2 style='color:#1e40af;'>Daily Business Report</h2>" +
                 "<p>Hello Admin Team,</p>" +
                 "<p>Attached is the comprehensive daily sales report for <strong>" + date + "</strong>.</p>" +
                 "<p>This includes all website orders and POS/WhatsApp orders for today.</p>" +
-                "<br><p style='color:#6b7280;'>Regards,<br>Ceylon Letter Co System</p>" +
+                "<br><p style='color:#6b7280;'>Regards,<br>AuraCraft Studio System</p>" +
                 "</div>", true);
 
         helper.addAttachment("Daily_Sales_" + date + ".xlsx", new ByteArrayResource(fileData));

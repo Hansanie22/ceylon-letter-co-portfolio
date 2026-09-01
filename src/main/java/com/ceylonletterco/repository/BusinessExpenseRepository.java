@@ -1,6 +1,6 @@
-package com.ceylonletterco.repository;
+package com.auracraft.repository;
 
-import com.ceylonletterco.entity.BusinessExpense;
+import com.auracraft.entity.BusinessExpense;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

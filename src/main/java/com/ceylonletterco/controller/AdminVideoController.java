@@ -1,11 +1,11 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.Product;
-import com.ceylonletterco.entity.ProductImage;
-import com.ceylonletterco.entity.StoreVideo;
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.service.CloudinaryService;
-import com.ceylonletterco.service.StoreVideoService;
+import com.auracraft.entity.Product;
+import com.auracraft.entity.ProductImage;
+import com.auracraft.entity.StoreVideo;
+import com.auracraft.entity.User;
+import com.auracraft.service.CloudinaryService;
+import com.auracraft.service.StoreVideoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class AdminVideoController {
     private CloudinaryService cloudinaryService;
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     private boolean isAuthorized(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -71,7 +71,7 @@ public class AdminVideoController {
             
             if (v.getTaggedVariants() != null && !v.getTaggedVariants().isEmpty()) {
                 List<Integer> variantIds = new ArrayList<>();
-                for (com.ceylonletterco.entity.ProductVariant pv : v.getTaggedVariants()) {
+                for (com.auracraft.entity.ProductVariant pv : v.getTaggedVariants()) {
                     variantIds.add(pv.getId());
                 }
                 map.put("taggedVariantIds", variantIds);

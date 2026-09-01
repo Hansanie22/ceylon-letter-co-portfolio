@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.HeroSlide;
+import com.auracraft.entity.HeroSlide;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/api/public/hero-slides")
 public class PublicHeroSlideController {
     @Autowired
-    private com.ceylonletterco.service.HeroSlideService heroSlideService;
+    private com.auracraft.service.HeroSlideService heroSlideService;
 
     @GetMapping
     public ResponseEntity<List<HeroSlide>> getPublicSlides() {

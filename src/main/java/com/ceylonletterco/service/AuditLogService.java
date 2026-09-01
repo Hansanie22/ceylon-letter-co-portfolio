@@ -1,8 +1,8 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.AuditLog;
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.repository.AuditLogRepository;
+import com.auracraft.entity.AuditLog;
+import com.auracraft.entity.User;
+import com.auracraft.repository.AuditLogRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

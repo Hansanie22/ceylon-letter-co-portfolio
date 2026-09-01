@@ -1,4 +1,4 @@
-package com.ceylonletterco.entity;
+package com.auracraft.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

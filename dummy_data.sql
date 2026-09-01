@@ -1,11 +1,11 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- Ceylon Letter Co. - Full Database Schema & Dummy Portfolio Data
+-- AuraCraft Studio - Full Database Schema & Dummy Portfolio Data
 -- Target: TiDB Cloud / MySQL 8.0+
 -- ═══════════════════════════════════════════════════════════════════════
 
 -- 1. CREATE & USE DATABASE
-CREATE DATABASE IF NOT EXISTS `ceylonletterco` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `ceylonletterco`;
+CREATE DATABASE IF NOT EXISTS `auracraft` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `auracraft`;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -294,7 +294,7 @@ CREATE TABLE `audit_logs` (
 
 -- USERS (Admin & Customer - password is 1234)
 INSERT INTO `users` (`id`, `email`, `password`, `full_name`, `phone`, `role`, `email_verified`) VALUES
-(1, 'ceylonletterco@gmail.com', '$2a$12$e6o1jG1tV7rT2rC/aFf36Oq7N5g81eB8x7L0sT.JjKk8xO4b2g9e6', 'Ceylon Letter Co Admin', '+94771234567', 'ADMIN', 1),
+(1, 'admin@auracraft.com', '$2a$12$e6o1jG1tV7rT2rC/aFf36Oq7N5g81eB8x7L0sT.JjKk8xO4b2g9e6', 'AuraCraft Studio Admin', '+94771234567', 'ADMIN', 1),
 (2, 'customer@gmail.com', '$2a$12$e6o1jG1tV7rT2rC/aFf36Oq7N5g81eB8x7L0sT.JjKk8xO4b2g9e6', 'Hansanie Prabodha', '+94719876543', 'CUSTOMER', 1);
 
 -- CATEGORIES
@@ -307,14 +307,14 @@ INSERT INTO `categories` (`id`, `name`, `description`, `image_url`, `is_active`)
 
 -- PRODUCTS
 INSERT INTO `products` (`id`, `name`, `description`, `sku`, `base_price`, `category_id`, `is_active`, `requires_deposit`, `brand`, `summary`, `gender`, `is_customisable`, `availability_status`, `warranty_period`, `is_deleted`) VALUES
-(1, 'Aurelia 18K Solitaire Diamond Ring', 'Handcrafted in 18k solid gold featuring a brilliant certified center diamond. Perfect for engagements and milestones.', 'RNG-AURELIA-01', 125000.00, 1, 1, 0, 'Ceylon Letter Co.', '18K Solid Gold with certified 0.75ct brilliant-cut center stone.', 'Unisex', 1, 'IN_STOCK', 'Lifetime Craftsmanship Warranty', 0),
-(2, 'Helios Heirloom Gold Signet Ring', 'A weighty, classic signet ring made of solid 14k gold with a polished mirror finish. Custom engraving available upon request.', 'RNG-HELIOS-02', 68000.00, 1, 1, 0, 'Ceylon Letter Co.', '14K Solid Gold with customizable flat face engraving.', 'Unisex', 1, 'IN_STOCK', '2 Years Warranty', 0),
-(3, 'Celeste Freshwater Pearl & Gold Pendant', 'A luminous baroque freshwater pearl suspended on an exquisite 18k solid gold delicate cable chain.', 'NCK-CELESTE-01', 42000.00, 2, 1, 0, 'Ceylon Letter Co.', 'Genuine Baroque Freshwater Pearl with 18k gold bail and chain.', 'Women', 0, 'IN_STOCK', '1 Year Warranty', 0),
-(4, 'Serpentine 14K Italian Herringbone Chain', 'Fluid, liquid-like drape that catches the light from every angle. Made in Italy with solid 14k gold.', 'NCK-SERP-02', 85000.00, 2, 1, 0, 'Ceylon Letter Co.', '14K Italian Solid Gold Chain (3.5mm width).', 'Unisex', 0, 'IN_STOCK', '2 Years Warranty', 0),
-(5, 'Eternity Diamond Tennis Bracelet', 'A breathtaking continuous line of 55 round brilliant diamonds set in four-prong 18k white or yellow gold.', 'BRC-ETERN-01', 185000.00, 3, 1, 0, 'Ceylon Letter Co.', '18K Gold with 2.50ct Total Diamond Weight (VS-SI Clarity).', 'Women', 0, 'IN_STOCK', 'Lifetime Guarantee', 0),
-(6, 'Aura Hammered Gold Cuff Bangle', 'Textured by hand with a soft organic artisan finish. Beautiful worn alone or stacked with other bracelets.', 'BRC-AURA-02', 54000.00, 3, 1, 0, 'Ceylon Letter Co.', '18K Gold Plated Vermeil over Solid Sterling Silver.', 'Women', 0, 'IN_STOCK', '1 Year Warranty', 0),
-(7, 'Lumière Baroque Pearl Drop Earrings', 'One-of-a-kind organic baroque pearls gracefully suspended from 14k gold huggie hoops.', 'EAR-LUMI-01', 38000.00, 4, 1, 0, 'Ceylon Letter Co.', 'Natural Baroque Pearls with 14K Gold Hoops.', 'Women', 0, 'IN_STOCK', '1 Year Warranty', 0),
-(8, 'Royal Monogram Custom Brass Wax Seal Kit', 'Precision deep-engraved solid brass seal stamp paired with a polished rosewood handle, melting spoon, and sealing wax beads.', 'KPS-WAX-01', 12500.00, 5, 1, 0, 'Ceylon Letter Co.', 'Custom Engraved Brass Die with Premium Rosewood Handle & Wax Kit.', 'Unisex', 1, 'IN_STOCK', 'Lifetime Stamp Warranty', 0);
+(1, 'Aurelia 18K Solitaire Diamond Ring', 'Handcrafted in 18k solid gold featuring a brilliant certified center diamond. Perfect for engagements and milestones.', 'RNG-AURELIA-01', 125000.00, 1, 1, 0, 'AuraCraft Studio', '18K Solid Gold with certified 0.75ct brilliant-cut center stone.', 'Unisex', 1, 'IN_STOCK', 'Lifetime Craftsmanship Warranty', 0),
+(2, 'Helios Heirloom Gold Signet Ring', 'A weighty, classic signet ring made of solid 14k gold with a polished mirror finish. Custom engraving available upon request.', 'RNG-HELIOS-02', 68000.00, 1, 1, 0, 'AuraCraft Studio', '14K Solid Gold with customizable flat face engraving.', 'Unisex', 1, 'IN_STOCK', '2 Years Warranty', 0),
+(3, 'Celeste Freshwater Pearl & Gold Pendant', 'A luminous baroque freshwater pearl suspended on an exquisite 18k solid gold delicate cable chain.', 'NCK-CELESTE-01', 42000.00, 2, 1, 0, 'AuraCraft Studio', 'Genuine Baroque Freshwater Pearl with 18k gold bail and chain.', 'Women', 0, 'IN_STOCK', '1 Year Warranty', 0),
+(4, 'Serpentine 14K Italian Herringbone Chain', 'Fluid, liquid-like drape that catches the light from every angle. Made in Italy with solid 14k gold.', 'NCK-SERP-02', 85000.00, 2, 1, 0, 'AuraCraft Studio', '14K Italian Solid Gold Chain (3.5mm width).', 'Unisex', 0, 'IN_STOCK', '2 Years Warranty', 0),
+(5, 'Eternity Diamond Tennis Bracelet', 'A breathtaking continuous line of 55 round brilliant diamonds set in four-prong 18k white or yellow gold.', 'BRC-ETERN-01', 185000.00, 3, 1, 0, 'AuraCraft Studio', '18K Gold with 2.50ct Total Diamond Weight (VS-SI Clarity).', 'Women', 0, 'IN_STOCK', 'Lifetime Guarantee', 0),
+(6, 'Aura Hammered Gold Cuff Bangle', 'Textured by hand with a soft organic artisan finish. Beautiful worn alone or stacked with other bracelets.', 'BRC-AURA-02', 54000.00, 3, 1, 0, 'AuraCraft Studio', '18K Gold Plated Vermeil over Solid Sterling Silver.', 'Women', 0, 'IN_STOCK', '1 Year Warranty', 0),
+(7, 'Lumière Baroque Pearl Drop Earrings', 'One-of-a-kind organic baroque pearls gracefully suspended from 14k gold huggie hoops.', 'EAR-LUMI-01', 38000.00, 4, 1, 0, 'AuraCraft Studio', 'Natural Baroque Pearls with 14K Gold Hoops.', 'Women', 0, 'IN_STOCK', '1 Year Warranty', 0),
+(8, 'Royal Monogram Custom Brass Wax Seal Kit', 'Precision deep-engraved solid brass seal stamp paired with a polished rosewood handle, melting spoon, and sealing wax beads.', 'KPS-WAX-01', 12500.00, 5, 1, 0, 'AuraCraft Studio', 'Custom Engraved Brass Die with Premium Rosewood Handle & Wax Kit.', 'Unisex', 1, 'IN_STOCK', 'Lifetime Stamp Warranty', 0);
 
 -- PRODUCT VARIANTS
 INSERT INTO `product_variants` (`id`, `product_id`, `sku_variant`, `metal_color`, `size_length`, `price`, `compare_at_price`, `cost_price`, `is_deleted`) VALUES
@@ -353,7 +353,7 @@ INSERT INTO `product_images` (`id`, `product_id`, `image_url`, `is_primary`, `so
 
 -- HERO SLIDES
 INSERT INTO `hero_slide` (`id`, `heading`, `description`, `tag`, `media_type`, `media_url`, `alt_text`, `display_order`, `is_active`) VALUES
-(1, 'Timeless Heritage, Modern Grace', 'Discover handcrafted fine jewellery sculpted with ethical gemstones and pure gold.', 'THE HEIRLOOM COLLECTION', 'IMAGE', 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&q=85', 'Ceylon Letter Co Fine Jewellery Collection', 1, 1),
+(1, 'Timeless Heritage, Modern Grace', 'Discover handcrafted fine jewellery sculpted with ethical gemstones and pure gold.', 'THE HEIRLOOM COLLECTION', 'IMAGE', 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&q=85', 'AuraCraft Studio Fine Jewellery Collection', 1, 1),
 (2, 'Bespoke Bridal & Solitaires', 'Handcrafted engagement rings and wedding bands designed to celebrate the moments that define a lifetime.', 'BRIDAL EXCLUSIVES', 'IMAGE', 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1600&q=85', 'Solitaire Diamond Engagement Ring', 2, 1),
 (3, 'Artisan Keepsakes & Wax Seals', 'Personalized brass wax stamps, monogram signets, and bespoke stationery crafted for heirloom letter-writing.', 'CUSTOM CRAFTSMANSHIP', 'IMAGE', 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=1600&q=85', 'Artisan Custom Wax Seal Stamp', 3, 1);
 

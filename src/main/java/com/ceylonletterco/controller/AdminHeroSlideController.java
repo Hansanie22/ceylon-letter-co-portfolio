@@ -1,7 +1,7 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.HeroSlide;
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.HeroSlide;
+import com.auracraft.entity.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +15,13 @@ import java.util.List;
 @RequestMapping("/api/admin/hero-slides")
 public class AdminHeroSlideController {
     @Autowired
-    private com.ceylonletterco.service.HeroSlideService heroSlideService;
+    private com.auracraft.service.HeroSlideService heroSlideService;
 
     @Autowired
-    private com.ceylonletterco.service.CloudinaryService cloudinaryService;
+    private com.auracraft.service.CloudinaryService cloudinaryService;
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     private boolean isAdmin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);

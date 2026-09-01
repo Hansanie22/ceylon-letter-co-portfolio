@@ -1,4 +1,4 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

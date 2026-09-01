@@ -1,7 +1,7 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.WarrantyClaim;
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.WarrantyClaim;
+import com.auracraft.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,10 +24,10 @@ public class WarrantyClaimController {
     private EntityManager em;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     private boolean isAdminOrStaff(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -77,7 +77,7 @@ public class WarrantyClaimController {
             }
 
             if ("WEB".equalsIgnoreCase(orderType) && orderId > 0) {
-                com.ceylonletterco.entity.Order ord = em.find(com.ceylonletterco.entity.Order.class, orderId);
+                com.auracraft.entity.Order ord = em.find(com.auracraft.entity.Order.class, orderId);
                 if (ord != null) {
                     if (customerName.isBlank() && ord.getUser() != null) customerName = ord.getUser().getFullName();
                     if (customerEmail.isBlank() && ord.getUser() != null) customerEmail = ord.getUser().getEmail();

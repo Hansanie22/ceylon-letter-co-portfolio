@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.*;
+import com.auracraft.entity.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -28,13 +28,13 @@ public class OrderController {
     private EntityManager em;
     
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.EmailVerificationService emailService;
+    private com.auracraft.service.EmailVerificationService emailService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     // ── GET /api/orders ──────────────────────────────────────────────────────
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -135,7 +135,7 @@ public class OrderController {
             boolean userUpdated = false;
             if (!typedEmail.isEmpty()) {
                 if (persistentUser.getEmail() == null || persistentUser.getEmail().isBlank() 
-                        || persistentUser.getEmail().contains("@phone.ceylonletterco.com") 
+                        || persistentUser.getEmail().contains("@phone.auracraft.com") 
                         || persistentUser.getEmail().startsWith("phone_")) {
                     persistentUser.setEmail(typedEmail);
                     persistentUser.setEmailVerified(true);
@@ -409,7 +409,7 @@ public class OrderController {
             String oldPaymentStatus = order.getPaymentStatus();
             
             String paymentMethod = "COD";
-            java.util.List<com.ceylonletterco.entity.Payment> pmts = em.createQuery("SELECT p FROM Payment p WHERE p.order = :ord ORDER BY p.id DESC", com.ceylonletterco.entity.Payment.class)
+            java.util.List<com.auracraft.entity.Payment> pmts = em.createQuery("SELECT p FROM Payment p WHERE p.order = :ord ORDER BY p.id DESC", com.auracraft.entity.Payment.class)
                     .setParameter("ord", order)
                     .setMaxResults(1)
                     .getResultList();
@@ -562,7 +562,7 @@ public class OrderController {
         }
 
         String email = o.getUser() != null ? o.getUser().getEmail() : "";
-        if (email == null || email.isBlank() || email.contains("@phone.ceylonletterco.com")) {
+        if (email == null || email.isBlank() || email.contains("@phone.auracraft.com")) {
             if (o.getShippingAddress() != null && o.getShippingAddress().getUser() != null) {
                 email = o.getShippingAddress().getUser().getEmail();
             }

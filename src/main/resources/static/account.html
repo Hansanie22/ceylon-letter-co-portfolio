@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <script>
-    const _userStr = localStorage.getItem('Ceylon Letter Co._user') || sessionStorage.getItem('Ceylon Letter Co._user');
+    const _userStr = localStorage.getItem('AuraCraft Studio_user') || sessionStorage.getItem('AuraCraft Studio_user');
     if (!_userStr) {
       window.location.replace('login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search));
     } else {
@@ -16,8 +16,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ceylon Letter Co. – My Account. Manage your profile, orders, and settings.">
-  <title>Ceylon Letter Co. – My Account</title>
+  <meta name="description" content="AuraCraft Studio – My Account. Manage your profile, orders, and settings.">
+  <title>AuraCraft Studio – My Account</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1078,16 +1078,16 @@
 
       if (res.status === 401) {
         // Not logged in – redirect to login page
-        localStorage.removeItem('Ceylon Letter Co._user');
-        sessionStorage.removeItem('Ceylon Letter Co._user');
+        localStorage.removeItem('AuraCraft Studio_user');
+        sessionStorage.removeItem('AuraCraft Studio_user');
         window.location.href = 'login.html';
         return;
       }
 
       const data = await res.json();
       if (!data.success) {
-        localStorage.removeItem('Ceylon Letter Co._user');
-        sessionStorage.removeItem('Ceylon Letter Co._user');
+        localStorage.removeItem('AuraCraft Studio_user');
+        sessionStorage.removeItem('AuraCraft Studio_user');
         window.location.href = 'login.html';
         return;
       }
@@ -1142,7 +1142,7 @@
     if (e) e.preventDefault();
     if(window.showConfirmDialog) {
         window.showConfirmDialog("Are you sure you want to sign out?", async () => {
-            sessionStorage.removeItem('Ceylon Letter Co._user');
+            sessionStorage.removeItem('AuraCraft Studio_user');
             sessionStorage.removeItem('techno_cart');
             sessionStorage.removeItem('techno_wishlist');
             try {
@@ -1220,7 +1220,7 @@
       } else {
         window.AppLoader?.showNotification(data.message || 'Upload failed.', 'error');
         // Revert to initials on failure
-        const stored = JSON.parse(sessionStorage.getItem('Ceylon Letter Co._user') || '{}');
+        const stored = JSON.parse(sessionStorage.getItem('AuraCraft Studio_user') || '{}');
         applyAvatarEverywhere(null, stored.initials || '?');
       }
     } catch (err) {
@@ -2522,7 +2522,7 @@
     modal.innerHTML = `
       <div style="background:var(--white);border-radius:16px;padding:28px;width:90%;max-width:440px;border:1px solid var(--border);box-shadow:0 25px 60px rgba(0,0,0,0.3);">
         <h3 style="margin:0 0 8px;font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--black);">File Warranty Claim (#CLC-${String(orderId).padStart(5, '0')})</h3>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Ceylon Letter Co. Official Anti-Tarnish &amp; Durability Warranty. Please specify issue details.</p>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">AuraCraft Studio Official Anti-Tarnish &amp; Durability Warranty. Please specify issue details.</p>
 
         <div style="margin-bottom:14px;">
           <label style="font-size:12px;font-weight:600;color:var(--black);display:block;margin-bottom:6px;">Product / Item Name *</label>

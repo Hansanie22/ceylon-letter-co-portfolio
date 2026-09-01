@@ -1,8 +1,8 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.AuditLog;
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.service.AuditLogService;
+import com.auracraft.entity.AuditLog;
+import com.auracraft.entity.User;
+import com.auracraft.service.AuditLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

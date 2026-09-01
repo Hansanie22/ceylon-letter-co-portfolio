@@ -1,4 +1,4 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -21,14 +21,14 @@ public class NotificationController {
             return ResponseEntity.status(401).body("{\"success\":false}");
         }
         User user = (User) session.getAttribute("loggedInUser");
-        java.util.List<com.ceylonletterco.entity.Notification> notifs = em.createQuery("SELECT n FROM Notification n WHERE n.recipientId = :uid ORDER BY n.id DESC", com.ceylonletterco.entity.Notification.class)
+        java.util.List<com.auracraft.entity.Notification> notifs = em.createQuery("SELECT n FROM Notification n WHERE n.recipientId = :uid ORDER BY n.id DESC", com.auracraft.entity.Notification.class)
                 .setParameter("uid", user.getId())
                 .getResultList();
         
         StringBuilder arr = new StringBuilder("[");
         for (int i = 0; i < notifs.size(); i++) {
             if (i > 0) arr.append(",");
-            com.ceylonletterco.entity.Notification n = notifs.get(i);
+            com.auracraft.entity.Notification n = notifs.get(i);
             arr.append("{")
                .append("\"id\":").append(n.getId()).append(",")
                .append("\"type\":\"").append(n.getType() != null ? n.getType().replace("\"", "\\\"") : "").append("\",")

@@ -1,9 +1,9 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.Product;
-import com.ceylonletterco.entity.ProductImage;
-import com.ceylonletterco.entity.StoreVideo;
-import com.ceylonletterco.service.StoreVideoService;
+import com.auracraft.entity.Product;
+import com.auracraft.entity.ProductImage;
+import com.auracraft.entity.StoreVideo;
+import com.auracraft.service.StoreVideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +63,7 @@ public class PublicVideoController {
                             java.util.List<Map<String, Object>> varList = new java.util.ArrayList<>();
                             java.math.BigDecimal minPrice = null;
                             java.math.BigDecimal maxPrice = null;
-                            for (com.ceylonletterco.entity.ProductVariant pv : v.getTaggedVariants()) {
+                            for (com.auracraft.entity.ProductVariant pv : v.getTaggedVariants()) {
                                 Map<String, Object> vMap = new HashMap<>();
                                 vMap.put("id", pv.getId());
                                 vMap.put("price", pv.getPrice());

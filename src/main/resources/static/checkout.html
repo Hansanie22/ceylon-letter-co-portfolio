@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ceylon Letter Co. – Secure Checkout. Complete your order safely.">
-  <title>Ceylon Letter Co. – Checkout</title>
+  <meta name="description" content="AuraCraft Studio – Secure Checkout. Complete your order safely.">
+  <title>AuraCraft Studio – Checkout</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -670,7 +670,7 @@
       }
 
       // Pre-fill user information if available from local cache first
-      const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+      const stored = sessionStorage.getItem('AuraCraft Studio_user');
       if (stored) {
         try {
           const u = JSON.parse(stored);
@@ -878,7 +878,7 @@
       const isBuyNow = params.get('buyNow') === 'true';
 
       if (isBuyNow) {
-        const stored = sessionStorage.getItem('Ceylon Letter Co._buy_now');
+        const stored = sessionStorage.getItem('AuraCraft Studio_buy_now');
         if (!stored) {
           window.AppLoader?.showNotification('No buy now item found. Redirecting to shop...', 'warning');
           setTimeout(() => { window.location.href = 'products.html'; }, 1500);
@@ -1318,7 +1318,7 @@
 
         if (!data.success) {
           if (res.status === 401) {
-            sessionStorage.removeItem('Ceylon Letter Co._user');
+            sessionStorage.removeItem('AuraCraft Studio_user');
             window.AppLoader?.showNotification('Your session has expired. Redirecting to login...', 'error');
             setTimeout(() => {
               window.location.href = `login.html?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
@@ -1333,13 +1333,13 @@
         }
 
         // Save phone to local user info cache only if they didn't have one previously
-        const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+        const stored = sessionStorage.getItem('AuraCraft Studio_user');
         if (stored) {
           try {
             const u = JSON.parse(stored);
             if (u && (!u.phone || u.phone.trim() === '')) {
               u.phone = phone;
-              sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(u));
+              sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify(u));
             }
           } catch (_) {}
         }
@@ -1350,7 +1350,7 @@
           if (!isBuyNow) {
             window.AppLoader?.clearCart();
           } else {
-            sessionStorage.removeItem('Ceylon Letter Co._buy_now');
+            sessionStorage.removeItem('AuraCraft Studio_buy_now');
           }
           setTimeout(() => {
             window.location.href = 'order-confirm.html?orderId=' + data.orderId;
@@ -1360,7 +1360,7 @@
           if (!isBuyNow) {
             window.AppLoader?.clearCart();
           } else {
-            sessionStorage.removeItem('Ceylon Letter Co._buy_now');
+            sessionStorage.removeItem('AuraCraft Studio_buy_now');
           }
           setTimeout(() => {
             window.location.href = 'order-confirm.html?orderId=' + data.orderId;
@@ -1373,9 +1373,9 @@
           // Set to true ONLY during local/sandbox testing.
           "sandbox": false,
             "merchant_id": data.merchantId,
-            "return_url": window.location.origin + "/Ceylon Letter Co.EE-web/order-confirm.html?orderId=" + data.orderId,
+            "return_url": window.location.origin + "/AuraCraft StudioEE-web/order-confirm.html?orderId=" + data.orderId,
             "cancel_url": window.location.href,
-            "notify_url": window.location.origin + "/Ceylon Letter Co.EE-web/api/orders/pay-success",
+            "notify_url": window.location.origin + "/AuraCraft StudioEE-web/api/orders/pay-success",
             "order_id": String(data.orderId),
             "items": _checkoutItems.map(item => item.name).join(', '),
             "amount": data.payhereAmount || data.amount,
@@ -1403,7 +1403,7 @@
                 if (!isBuyNow) {
                    window.AppLoader?.clearCart();
                 } else {
-                  sessionStorage.removeItem('Ceylon Letter Co._buy_now');
+                  sessionStorage.removeItem('AuraCraft Studio_buy_now');
                 }
                 setTimeout(() => {
                   window.location.href = 'order-confirm.html?orderId=' + data.orderId;

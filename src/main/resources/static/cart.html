@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ceylon Letter Co. – Your shopping cart. Review and complete your order.">
-  <title>Ceylon Letter Co. – Shopping Cart</title>
+  <meta name="description" content="AuraCraft Studio – Your shopping cart. Review and complete your order.">
+  <title>AuraCraft Studio – Shopping Cart</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,7 +109,7 @@
     let _cartItems = [];
 
     async function renderCart() {
-      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
       let items = null;
 
       if (isLoggedIn) {
@@ -233,7 +233,7 @@
       let newQty = currentQty + delta;
       
       if (delta > 0 && newQty > 10) {
-        window.AppLoader?.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email ceylonletterco@gmail.com', 'warning');
+        window.AppLoader?.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email admin@auracraft.com', 'warning');
         return;
       }
       
@@ -255,7 +255,7 @@
 
       _showItems(_cartItems); // re-render with updated totals
 
-      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
       if (isLoggedIn) {
         // Send update to backend
         fetch('api/cart', {
@@ -295,7 +295,7 @@
         }
 
         // 2. Remove from database — use variantId (authoritative from backend)
-        const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+        const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
         if (isLoggedIn) {
           try {
             const res = await fetch(`api/cart?variantId=${variantId}`, {
@@ -322,7 +322,7 @@
 
     function proceedToCheckout(e) {
       e.preventDefault();
-      const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+      const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
       if (!isLoggedIn) {
         if (window.AppLoader) {
           window.AppLoader.showNotification('Please sign in to proceed to checkout', 'info');
@@ -345,7 +345,7 @@
       });
 
       window.addEventListener('storage', (e) => {
-        if (e.key === 'techno_cart' || e.key === 'Ceylon Letter Co._user') {
+        if (e.key === 'techno_cart' || e.key === 'AuraCraft Studio_user') {
           setTimeout(renderCart, 100);
         }
       });

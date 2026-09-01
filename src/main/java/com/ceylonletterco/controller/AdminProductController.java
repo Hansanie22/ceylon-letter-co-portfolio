@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.*;
+import com.auracraft.entity.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,7 +17,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import com.ceylonletterco.service.CloudinaryService;
+import com.auracraft.service.CloudinaryService;
 
 /**
  * AdminProductController – migrated from AdminServlet/AdminProductServlet.
@@ -32,13 +32,13 @@ public class AdminProductController {
     private EntityManager em;
     
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.EmailVerificationService emailService;
+    private com.auracraft.service.EmailVerificationService emailService;
     
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     @Autowired
     private CloudinaryService cloudinaryService;
@@ -91,9 +91,9 @@ public class AdminProductController {
         List<Product> products = em.createQuery(
                 "SELECT p FROM Product p WHERE (p.isDeleted = false OR p.isDeleted IS NULL) ORDER BY p.createdAt DESC", Product.class).getResultList();
         
-        List<com.ceylonletterco.entity.Inventory> inventories = em.createQuery("SELECT i FROM Inventory i", com.ceylonletterco.entity.Inventory.class).getResultList();
+        List<com.auracraft.entity.Inventory> inventories = em.createQuery("SELECT i FROM Inventory i", com.auracraft.entity.Inventory.class).getResultList();
         java.util.Map<Integer, Integer> stockMap = new java.util.HashMap<>();
-        for(com.ceylonletterco.entity.Inventory inv : inventories) {
+        for(com.auracraft.entity.Inventory inv : inventories) {
             stockMap.put(inv.getVariantId(), inv.getQuantityOnHand() != null ? inv.getQuantityOnHand() : 0);
         }
 
@@ -584,7 +584,7 @@ public class AdminProductController {
                     .append("\"totalAmount\":").append(o.getTotalAmount()).append(",")
                     .append("\"createdAt\":\"").append(o.getCreatedAt() != null ? o.getCreatedAt().toString() : "").append("\",");
 
-                List<com.ceylonletterco.entity.Payment> payments = em.createQuery("SELECT p FROM Payment p WHERE p.order = :ord", com.ceylonletterco.entity.Payment.class)
+                List<com.auracraft.entity.Payment> payments = em.createQuery("SELECT p FROM Payment p WHERE p.order = :ord", com.auracraft.entity.Payment.class)
                                                                      .setParameter("ord", o).getResultList();
                 String paymentMethod = payments.isEmpty() ? "N/A" : payments.get(0).getPaymentMethod();
                 String slipUrl = payments.isEmpty() || payments.get(0).getSlipImageUrl() == null ? "" : payments.get(0).getSlipImageUrl();
@@ -730,7 +730,7 @@ public class AdminProductController {
             .append("\"totalAmount\":").append(o.getTotalAmount()).append(",")
             .append("\"createdAt\":\"").append(o.getCreatedAt() != null ? o.getCreatedAt().toString() : "").append("\",");
 
-        List<com.ceylonletterco.entity.Payment> payments = em.createQuery("SELECT p FROM Payment p WHERE p.order = :ord", com.ceylonletterco.entity.Payment.class)
+        List<com.auracraft.entity.Payment> payments = em.createQuery("SELECT p FROM Payment p WHERE p.order = :ord", com.auracraft.entity.Payment.class)
                                                              .setParameter("ord", o).getResultList();
         String paymentMethod = payments.isEmpty() ? "N/A" : payments.get(0).getPaymentMethod();
         String slipUrl = payments.isEmpty() || payments.get(0).getSlipImageUrl() == null ? "" : payments.get(0).getSlipImageUrl();

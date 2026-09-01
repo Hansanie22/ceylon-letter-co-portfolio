@@ -9,12 +9,12 @@
         <relativePath />
     </parent>
 
-    <groupId>com.ceylonletterco</groupId>
-    <artifactId>ceylonletterco-springboot</artifactId>
+    <groupId>com.auracraft</groupId>
+    <artifactId>auracraft-springboot</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>CeylonLetterCo Spring Boot</name>
-    <description>Ceylon Letter Co – migrated from Jakarta EE to Spring Boot</description>
+    <name>AuraCraft Spring Boot</name>
+    <description>AuraCraft Studio – migrated from Jakarta EE to Spring Boot</description>
 
     <properties>
         <java.version>17</java.version>

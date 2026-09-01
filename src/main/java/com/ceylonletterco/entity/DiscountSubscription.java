@@ -12,9 +12,9 @@
  *  jakarta.persistence.ManyToOne
  *  jakarta.persistence.Table
  */
-package com.ceylonletterco.entity;
+package com.auracraft.entity;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

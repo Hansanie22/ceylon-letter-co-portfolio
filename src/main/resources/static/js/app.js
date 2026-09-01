@@ -261,7 +261,7 @@ class TechnoApp {
   }
 
   _populateNewsletterEmail() {
-    const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+    const stored = sessionStorage.getItem('AuraCraft Studio_user');
     const newsletterSection = document.querySelector('.footer-newsletter');
     if (stored) {
       try {
@@ -416,7 +416,7 @@ class TechnoApp {
       const link = e.target.closest('#nav-profile-link, #nav-mobile-account-link');
       if (link) {
         e.preventDefault();
-        const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+        const stored = sessionStorage.getItem('AuraCraft Studio_user');
         if (stored) {
           // Already logged in → go to account
           window.location.href = 'account.html';
@@ -482,13 +482,13 @@ class TechnoApp {
           form.reset();
 
           // Update local storage if the user is logged in and the email matches
-          const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+          const stored = sessionStorage.getItem('AuraCraft Studio_user');
           if (stored) {
             try {
               const u = JSON.parse(stored);
               if (u && u.email && u.email.toLowerCase() === email.toLowerCase()) {
                 u.isSubscribed = true;
-                sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(u));
+                sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify(u));
               }
             } catch (_) { }
           }
@@ -545,7 +545,7 @@ class TechnoApp {
     };
 
     // ── PHASE 1: Instant sessionStorage check (synchronous, zero delay) ────
-    const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+    const stored = sessionStorage.getItem('AuraCraft Studio_user');
     
     const _toggleAdminLink = (isStaff) => {
       const adminLi = document.getElementById('nav-admin-li');
@@ -601,7 +601,7 @@ class TechnoApp {
 
       // 401/403 = session expired or invalid — clear stale data silently (no console error)
       if (res.status === 401 || res.status === 403) {
-        sessionStorage.removeItem('Ceylon Letter Co._user');
+        sessionStorage.removeItem('AuraCraft Studio_user');
         _setNavToLogin();
         _toggleAdminLink(false);
         this._updateBadges();
@@ -647,7 +647,7 @@ class TechnoApp {
           u.email = data.email;
           u.role = data.role;
           u.isSubscribed = data.isSubscribed;
-          sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(u));
+          sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify(u));
         } catch (_) { }
 
         // Sync Cart & Wishlist with Backend
@@ -656,7 +656,7 @@ class TechnoApp {
         this._populateNewsletterEmail();
       } else {
         // Server says not logged in → clear stale data and revert links
-        sessionStorage.removeItem('Ceylon Letter Co._user');
+        sessionStorage.removeItem('AuraCraft Studio_user');
         _setNavToLogin();
         _toggleAdminLink(false);
         this._updateBadges();
@@ -687,7 +687,7 @@ class TechnoApp {
 
   /* ── AUTH HELPERS ── */
   requireLogin(actionDesc) {
-    const stored = sessionStorage.getItem('Ceylon Letter Co._user');
+    const stored = sessionStorage.getItem('AuraCraft Studio_user');
     if (!stored) {
       const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
       window.location.href = `login.html?returnUrl=${returnUrl}`;
@@ -706,7 +706,7 @@ class TechnoApp {
     const currentQty = existingIdx !== -1 ? (this.cart[existingIdx].quantity || 1) : 0;
     const addingQty = item.quantity || 1;
     if (currentQty + addingQty > 10) {
-      this.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email ceylonletterco@gmail.com', 'warning');
+      this.showNotification('For wholesale orders exceeding 10 items, please contact us at +94 76 492 1325 or email admin@auracraft.com', 'warning');
       return;
     }
 
@@ -722,7 +722,7 @@ class TechnoApp {
     if (item.engravingText) payload.engravingText = item.engravingText;
     if (item.customResize) payload.customResize = item.customResize;
     
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
 
     if (isLoggedIn) {
       try {
@@ -769,7 +769,7 @@ class TechnoApp {
     this._save('cart', this.cart);
     this._updateBadges();
 
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
     if (isLoggedIn) {
       // API update — send both id and variantId so servlet can match either
       fetch(`api/cart?variantId=${id}&id=${id}`, {
@@ -784,7 +784,7 @@ class TechnoApp {
     this._save('cart', this.cart);
     this._updateBadges();
 
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
     if (isLoggedIn) {
       // API update
       fetch('api/cart?clear=true', {
@@ -802,7 +802,7 @@ class TechnoApp {
       return;
     }
     
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
 
     if (isLoggedIn) {
       try {
@@ -839,7 +839,7 @@ class TechnoApp {
     this._save('wishlist', this.wishlist);
     this._updateBadges();
 
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
     if (isLoggedIn) {
       // API update
       await fetch(`api/wishlist?id=${id}`, {
@@ -855,7 +855,7 @@ class TechnoApp {
     this._save('wishlist', this.wishlist);
     this._updateBadges();
 
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
     if (isLoggedIn) {
       // API update
       await fetch('api/wishlist?clear=true', {
@@ -930,7 +930,7 @@ class TechnoApp {
 
   /* ── BADGE UPDATE ── */
   _updateBadges() {
-    const isLoggedIn = !!sessionStorage.getItem('Ceylon Letter Co._user');
+    const isLoggedIn = !!sessionStorage.getItem('AuraCraft Studio_user');
 
     const cartCount = document.getElementById('cart-count');
     const total = this.cart.reduce((sum, i) => sum + (i.quantity || 1), 0);
@@ -1038,14 +1038,14 @@ let notifOpen = false;
 
 async function fetchNotifications() {
   // Only fetch notifications if the user is logged in — prevents 401 for guests
-  if (!sessionStorage.getItem('Ceylon Letter Co._user')) return;
+  if (!sessionStorage.getItem('AuraCraft Studio_user')) return;
 
   try {
     const res = await fetch('api/notifications', { credentials: 'same-origin' });
 
     // Silently ignore 401/403 (session expired) without logging to console
     if (res.status === 401 || res.status === 403) {
-      sessionStorage.removeItem('Ceylon Letter Co._user');
+      sessionStorage.removeItem('AuraCraft Studio_user');
       const badge = document.getElementById('notif-badge');
       if (badge) badge.style.display = 'none';
       return;
@@ -1056,7 +1056,7 @@ async function fetchNotifications() {
       
       // Handle the new graceful 200 OK unauthenticated response
       if (data.success === false && data.message === 'Not authenticated') {
-        sessionStorage.removeItem('Ceylon Letter Co._user');
+        sessionStorage.removeItem('AuraCraft Studio_user');
         const badge = document.getElementById('notif-badge');
         if (badge) badge.style.display = 'none';
         return;
@@ -1118,7 +1118,7 @@ async function fetchNotifications() {
 
 window.toggleNotifications = function () {
   // Guard: only open notifications if user is logged in
-  if (!sessionStorage.getItem('Ceylon Letter Co._user')) return;
+  if (!sessionStorage.getItem('AuraCraft Studio_user')) return;
 
   const dd = document.getElementById('notif-dropdown');
   if (!dd) return;
@@ -1158,7 +1158,7 @@ window.clearNotifications = async function () {
 };
 
 // Only run the initial notification fetch if user appears to be logged in
-if (sessionStorage.getItem('Ceylon Letter Co._user')) {
+if (sessionStorage.getItem('AuraCraft Studio_user')) {
   setTimeout(fetchNotifications, 1500);
 }
 
@@ -1167,7 +1167,7 @@ if (sessionStorage.getItem('Ceylon Letter Co._user')) {
 // order-status notifications pushed by the admin are received immediately
 // (without waiting for the next poll).
 (function connectCustomerWebSocket() {
-  const raw = sessionStorage.getItem('Ceylon Letter Co._user');
+  const raw = sessionStorage.getItem('AuraCraft Studio_user');
   if (!raw) return;
 
   let userId;

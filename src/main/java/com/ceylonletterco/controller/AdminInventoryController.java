@@ -1,8 +1,8 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.*;
-import com.ceylonletterco.entity.InventoryLog;
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.*;
+import com.auracraft.entity.InventoryLog;
+import com.auracraft.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -32,13 +32,13 @@ public class AdminInventoryController {
     private EntityManager em;
     
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.EmailVerificationService emailService;
+    private com.auracraft.service.EmailVerificationService emailService;
     
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     private boolean isAdminOrStaff(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -240,7 +240,7 @@ public class AdminInventoryController {
                     logInventory(inv.getProductVariant(), "ADD", qty, reason, adminUser);
                     try {
                         String primaryImageUrl = "";
-                        java.util.List<com.ceylonletterco.entity.ProductImage> primaryImages = em.createQuery("SELECT pi FROM ProductImage pi WHERE pi.product.id = :pid AND pi.isPrimary = true", com.ceylonletterco.entity.ProductImage.class)
+                        java.util.List<com.auracraft.entity.ProductImage> primaryImages = em.createQuery("SELECT pi FROM ProductImage pi WHERE pi.product.id = :pid AND pi.isPrimary = true", com.auracraft.entity.ProductImage.class)
                                 .setParameter("pid", inv.getProductVariant().getProduct().getId())
                                 .getResultList();
                         if (!primaryImages.isEmpty()) {

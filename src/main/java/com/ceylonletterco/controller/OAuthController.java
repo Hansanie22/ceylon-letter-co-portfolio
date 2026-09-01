@@ -1,7 +1,7 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.service.AuthService;
+import com.auracraft.entity.User;
+import com.auracraft.service.AuthService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ public class OAuthController {
     private AuthService authService;
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     @Value("${oauth.google.client-id:}")
     private String googleClientId;
@@ -174,8 +174,8 @@ public class OAuthController {
                     role: '%s',
                     isSubscribed: %b
                   };
-                  localStorage.setItem('Ceylon Letter Co._user', JSON.stringify(userObj));
-                  sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(userObj));
+                  localStorage.setItem('AuraCraft Studio_user', JSON.stringify(userObj));
+                  sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify(userObj));
               } catch(e) {
                   console.error(e);
               }
@@ -197,7 +197,7 @@ public class OAuthController {
             googleClientSecret = System.getenv("GOOGLE_CLIENT_SECRET");
         }
         try (InputStream in = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("ceylonletterco_oauth.properties")) {
+                .getResourceAsStream("auracraft_oauth.properties")) {
             if (in != null) {
                 Properties props = new Properties();
                 props.load(in);
@@ -217,7 +217,7 @@ public class OAuthController {
             String ctx = request.getContextPath();
             return scheme + "://" + host + (port != 80 && port != 443 ? ":" + port : "") + ctx;
         }
-        return "https://ceylonletterco.com";
+        return "https://auracraft.com";
     }
 
     private String esc(String s) {

@@ -1,7 +1,7 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.Notification;
-import com.ceylonletterco.websocket.NotificationEndpoint;
+import com.auracraft.entity.Notification;
+import com.auracraft.websocket.NotificationEndpoint;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.scheduling.annotation.Async;

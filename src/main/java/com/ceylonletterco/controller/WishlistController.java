@@ -1,9 +1,9 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.ProductVariant;
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.entity.WishlistItem;
-import com.ceylonletterco.service.WishlistService;
+import com.auracraft.entity.ProductVariant;
+import com.auracraft.entity.User;
+import com.auracraft.entity.WishlistItem;
+import com.auracraft.service.WishlistService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

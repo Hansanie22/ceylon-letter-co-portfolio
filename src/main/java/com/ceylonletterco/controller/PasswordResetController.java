@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,14 +34,14 @@ public class PasswordResetController {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${app.mail.noreply.from:ceylonletterco@gmail.com}")
+    @Value("${app.mail.noreply.from:admin@auracraft.com}")
     private String fromAddress;
 
     @Autowired
-    private com.ceylonletterco.service.EmailVerificationService emailVerificationService;
+    private com.auracraft.service.EmailVerificationService emailVerificationService;
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     // ── POST /api/auth/forgot-password ───────────────────────────────────────
     @PostMapping(value = "/forgot-password", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -15,10 +15,10 @@
  *  jakarta.persistence.Temporal
  *  jakarta.persistence.TemporalType
  */
-package com.ceylonletterco.entity;
+package com.auracraft.entity;
 
-import com.ceylonletterco.entity.ProductVariant;
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.ProductVariant;
+import com.auracraft.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

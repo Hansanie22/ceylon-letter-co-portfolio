@@ -1,8 +1,8 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.service.AuthService;
-import com.ceylonletterco.service.EmailVerificationService;
+import com.auracraft.entity.User;
+import com.auracraft.service.AuthService;
+import com.auracraft.service.EmailVerificationService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,8 +89,8 @@ public class EmailVerificationController {
                         role: '%s',
                         isSubscribed: %b
                       };
-                      sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(userObj));
-                      localStorage.setItem('Ceylon Letter Co._user', JSON.stringify(userObj));
+                      sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify(userObj));
+                      localStorage.setItem('AuraCraft Studio_user', JSON.stringify(userObj));
                   } catch(e) {
                       console.error(e);
                   }

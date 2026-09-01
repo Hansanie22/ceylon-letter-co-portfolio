@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.mindrot.jbcrypt.BCrypt;
@@ -16,7 +16,7 @@ public class ResetDatabaseController {
     private EntityManager em;
 
     @Autowired
-    private com.ceylonletterco.service.DataSeeder dataSeeder;
+    private com.auracraft.service.DataSeeder dataSeeder;
 
     @GetMapping("/api/seed-database")
     @Transactional
@@ -64,14 +64,14 @@ public class ResetDatabaseController {
             em.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
 
             User admin = new User();
-            admin.setEmail("ceylonletterco@gmail.com");
+            admin.setEmail("admin@auracraft.com");
             admin.setPassword(BCrypt.hashpw("1234", BCrypt.gensalt(12)));
             admin.setFullName("Admin");
             admin.setRole("ADMIN");
             admin.setEmailVerified(true);
             em.persist(admin);
 
-            return "Database cleared successfully! Admin user created with email ceylonletterco@gmail.com and password 1234.";
+            return "Database cleared successfully! Admin user created with email admin@auracraft.com and password 1234.";
         } catch (Exception e) {
             return "Failed: " + e.getMessage();
         }

@@ -1,4 +1,4 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

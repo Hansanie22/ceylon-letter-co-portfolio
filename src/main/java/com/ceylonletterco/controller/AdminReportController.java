@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.*;
+import com.auracraft.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -101,7 +101,7 @@ public class AdminReportController {
 
         for (int c = 0; c < totalColumns; c++) {
             Cell cell = titleRow.createCell(c);
-            if (c == 0) cell.setCellValue("CEYLON LETTER CO. — OFFICIAL BUSINESS REPORT");
+            if (c == 0) cell.setCellValue("AURACRAFT STUDIO — OFFICIAL BUSINESS REPORT");
             cell.setCellStyle(titleStyle);
         }
         sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, totalColumns - 1));

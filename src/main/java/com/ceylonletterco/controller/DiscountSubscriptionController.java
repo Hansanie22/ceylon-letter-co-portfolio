@@ -1,6 +1,6 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -26,7 +26,7 @@ public class DiscountSubscriptionController {
     private EntityManager em;
     
     @org.springframework.beans.factory.annotation.Autowired
-    private com.ceylonletterco.service.EmailVerificationService emailService;
+    private com.auracraft.service.EmailVerificationService emailService;
 
     // ── POST /api/discounts/subscribe ────────────────────────────────────────
     @PostMapping(value = "/subscribe", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,4 +1,4 @@
-package com.ceylonletterco.websocket;
+package com.auracraft.websocket;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;

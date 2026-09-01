@@ -1,8 +1,8 @@
-package com.ceylonletterco.service;
+package com.auracraft.service;
 
-import com.ceylonletterco.entity.ProductVariant;
-import com.ceylonletterco.entity.User;
-import com.ceylonletterco.entity.WishlistItem;
+import com.auracraft.entity.ProductVariant;
+import com.auracraft.entity.User;
+import com.auracraft.entity.WishlistItem;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;

@@ -1,13 +1,13 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.service.CloudinaryService;
+import com.auracraft.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import com.ceylonletterco.entity.User;
+import com.auracraft.entity.User;
 
 @RestController
 @RequestMapping("/api/upload")

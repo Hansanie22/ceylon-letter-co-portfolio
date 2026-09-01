@@ -10,7 +10,7 @@
  *  jakarta.persistence.PrePersist
  *  jakarta.persistence.Table
  */
-package com.ceylonletterco.entity;
+package com.auracraft.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

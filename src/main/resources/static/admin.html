@@ -5,8 +5,8 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ceylon Letter Co. – Enterprise Administrator Control Panel &amp; System Metrics Dashboard.">
-  <title>Ceylon Letter Co. – Administrator Dashboard</title>
+  <meta name="description" content="AuraCraft Studio – Enterprise Administrator Control Panel &amp; System Metrics Dashboard.">
+  <title>AuraCraft Studio – Administrator Dashboard</title>
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <script>
@@ -20,7 +20,7 @@
 
     // ── Layer 1: fast sessionStorage gate (prevents flash for real admins) ──
     (function () {
-      const stored = localStorage.getItem('Ceylon Letter Co._user') || sessionStorage.getItem('Ceylon Letter Co._user');
+      const stored = localStorage.getItem('AuraCraft Studio_user') || sessionStorage.getItem('AuraCraft Studio_user');
       if (!stored) {
         window.location.replace('login.html');
         return;
@@ -47,8 +47,8 @@
         .then(function (data) {
           if (!data.success || data.role === 'CUSTOMER' || !data.role) {
             // Server says: not authenticated or not staff — clear stale data
-            localStorage.removeItem('Ceylon Letter Co._user');
-            sessionStorage.removeItem('Ceylon Letter Co._user');
+            localStorage.removeItem('AuraCraft Studio_user');
+            sessionStorage.removeItem('AuraCraft Studio_user');
             window.location.replace('index.html');
             return;
           }
@@ -59,8 +59,8 @@
             email: data.email,
             role:  data.role
           };
-          localStorage.setItem('Ceylon Letter Co._user', JSON.stringify(currentUser));
-          sessionStorage.setItem('Ceylon Letter Co._user', JSON.stringify(currentUser));
+          localStorage.setItem('AuraCraft Studio_user', JSON.stringify(currentUser));
+          sessionStorage.setItem('AuraCraft Studio_user', JSON.stringify(currentUser));
           // Remove blocking overlay — admin UI is now safe to show
           if (overlay) overlay.remove();
           
@@ -1308,7 +1308,7 @@
   <aside class="admin-sidebar">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
       <div class="admin-logo" style="margin-bottom: 0;">
-        <span class="admin-logo-full"><span>Ceylon Letter Co.</span> Admin</span>
+        <span class="admin-logo-full"><span>AuraCraft Studio</span> Admin</span>
         <span class="admin-logo-short">CLC</span>
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
@@ -1889,7 +1889,7 @@
               </span>
               Web Storefront Sales
             </div>
-            <p style="font-size:12px; color:var(--admin-muted); margin:0 0 16px 0;">Online sales processed via ceylonletterco.com.</p>
+            <p style="font-size:12px; color:var(--admin-muted); margin:0 0 16px 0;">Online sales processed via auracraft.com.</p>
             <button class="admin-btn admin-btn-outline" onclick="downloadSelectedReport('web-sale')" style="font-size:12px; padding:7px 14px; width:100%;">Download Report</button>
           </div>
           <!-- 15. Expenses & Profit Report -->
@@ -2228,7 +2228,7 @@
             </div>
             <div class="ap-grid-3">
               <input type="text" id="prod-name" placeholder="Product Name *" class="ap-input" style="grid-column:1/3;">
-              <input type="text" id="prod-brand" placeholder="Brand *" class="ap-input" value="Ceylon Letter Co.">
+              <input type="text" id="prod-brand" placeholder="Brand *" class="ap-input" value="AuraCraft Studio">
               <select id="prod-cat" class="ap-input" onchange="onCategoryChange(this.value)">
                 <option value="0">Select Category *</option>
               </select>
@@ -4632,10 +4632,10 @@
       try {
         await fetch('api/auth/logout', { method: 'POST', credentials: 'same-origin' });
       } catch (_) {}
-      localStorage.removeItem('Ceylon Letter Co._user');
-      sessionStorage.removeItem('Ceylon Letter Co._user');
-      localStorage.removeItem('Ceylon Letter Co._remember_email');
-      sessionStorage.removeItem('Ceylon Letter Co._remember_email');
+      localStorage.removeItem('AuraCraft Studio_user');
+      sessionStorage.removeItem('AuraCraft Studio_user');
+      localStorage.removeItem('AuraCraft Studio_remember_email');
+      sessionStorage.removeItem('AuraCraft Studio_remember_email');
       window.location.replace('login.html');
     }
 
@@ -5870,7 +5870,7 @@
         if (el) el.value = '';
       });
       const brandEl = document.getElementById('prod-brand');
-      if (brandEl) brandEl.value = 'Ceylon Letter Co.';
+      if (brandEl) brandEl.value = 'AuraCraft Studio';
       
       document.getElementById('prod-cat').value = '0';
       if (document.getElementById('prod-customisable')) {
@@ -5900,7 +5900,7 @@
           document.querySelector('#add-product-panel .admin-table-title').innerText = 'Edit Product (Basic Info)';
 
           document.getElementById('prod-name').value = p.name || '';
-          document.getElementById('prod-brand').value = p.brand || 'Ceylon Letter Co.';
+          document.getElementById('prod-brand').value = p.brand || 'AuraCraft Studio';
           document.getElementById('prod-summary').value = p.summary || '';
           document.getElementById('prod-desc').value = p.description || '';
           
@@ -9341,7 +9341,7 @@
   // ── CSV BULK PRODUCT IMPORT ──
   function downloadSampleProductCsv() {
     const csvContent = "Name,Category,Description,SKU,Color,Size,Price,CompareAtPrice,CostPrice,Stock,ImageUrl\n" +
-      "Cricket Pendant,Pendants,Handcrafted Cricket Player Pendant,SKU-PENDANT-CRICKET-01,Silver,18 inch,2500,3000,1200,25,https://ceylonletterco.com/images/sample.jpg\n" +
+      "Cricket Pendant,Pendants,Handcrafted Cricket Player Pendant,SKU-PENDANT-CRICKET-01,Silver,18 inch,2500,3000,1200,25,https://auracraft.com/images/sample.jpg\n" +
       "Double Box Bracelet,Bracelets,Elegant Double Box Bracelet,SKU-BRAC-DBOX-SLV,Silver,Standard,1650,2000,800,20,\n" +
       "Double Box Bracelet,Bracelets,Elegant Double Box Bracelet,SKU-BRAC-DBOX-GLD,Gold,Standard,1850,2200,900,15,\n" +
       "Snake Flat Chain,Chains,Classic Snake Flat Chain,SKU-CHAIN-SNAKE-18,Silver,18 inch,1800,2200,850,30,\n" +

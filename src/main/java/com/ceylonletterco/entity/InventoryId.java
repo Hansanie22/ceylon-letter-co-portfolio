@@ -1,4 +1,4 @@
-package com.ceylonletterco.entity;
+package com.auracraft.entity;
 
 import java.io.Serializable;
 import java.util.Objects;

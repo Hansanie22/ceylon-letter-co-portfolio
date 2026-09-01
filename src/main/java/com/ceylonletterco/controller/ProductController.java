@@ -1,8 +1,8 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.Product;
-import com.ceylonletterco.entity.ProductImage;
-import com.ceylonletterco.entity.ProductVariant;
+import com.auracraft.entity.Product;
+import com.auracraft.entity.ProductImage;
+import com.auracraft.entity.ProductVariant;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -1,7 +1,7 @@
-package com.ceylonletterco.controller;
+package com.auracraft.controller;
 
-import com.ceylonletterco.entity.*;
-import com.ceylonletterco.service.CloudinaryService;
+import com.auracraft.entity.*;
+import com.auracraft.service.CloudinaryService;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -39,10 +39,10 @@ public class PosOrderController {
     private CloudinaryService cloudinaryService;
 
     @Autowired
-    private com.ceylonletterco.service.NotificationService notificationService;
+    private com.auracraft.service.NotificationService notificationService;
 
     @Autowired
-    private com.ceylonletterco.service.AuditLogService auditLogService;
+    private com.auracraft.service.AuditLogService auditLogService;
 
     @Value("${app.upload.path:/uploads}")
     private String uploadPath;
@@ -285,8 +285,8 @@ public class PosOrderController {
 
             auditLogService.log(staff.getEmail(), staff.getRole(), "POS_SALE", "POS",
                     "POS Order #POS-" + String.format("%05d", fOrderId) + " created by " + fRepName + " (" + staff.getEmail() + ") | " + paymentBreakdown + " [Customer: " + order.getCustomerName() + ", Phone: " + order.getPhone1() + "]",
-                    com.ceylonletterco.service.AuditLogService.extractClientIp(request),
-                    com.ceylonletterco.service.AuditLogService.extractUserAgent(request),
+                    com.auracraft.service.AuditLogService.extractClientIp(request),
+                    com.auracraft.service.AuditLogService.extractUserAgent(request),
                     "SUCCESS");
 
             return ResponseEntity.ok("{\"success\":true,\"message\":\"POS order created successfully!\",\"orderId\":" + order.getId() + "}");
@@ -315,8 +315,8 @@ public class PosOrderController {
 
             auditLogService.log(staff.getEmail(), staff.getRole(), "UPLOAD_PAYMENT_SLIP", "POS",
                     "Payment slip uploaded for POS Order #POS-" + String.format("%05d", id) + " (Customer: " + order.getCustomerName() + ") by " + staff.getEmail(),
-                    com.ceylonletterco.service.AuditLogService.extractClientIp(request),
-                    com.ceylonletterco.service.AuditLogService.extractUserAgent(request),
+                    com.auracraft.service.AuditLogService.extractClientIp(request),
+                    com.auracraft.service.AuditLogService.extractUserAgent(request),
                     "SUCCESS");
 
             return ResponseEntity.ok("{\"success\":true,\"url\":\"" + url + "\"}");

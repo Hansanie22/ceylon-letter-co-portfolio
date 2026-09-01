@@ -19,7 +19,7 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Copy the built jar from builder stage
-COPY --from=builder /app/target/ceylonletterco-springboot-1.0.0.jar app.jar
+COPY --from=builder /app/target/*.jar app.jar
 
 # Run the Spring Boot application
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
